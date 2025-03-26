@@ -5,6 +5,8 @@ import SignUp from "./pages/SignUp";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/aboutUs";
 import Header from "./components/header";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import OurServices from "./pages/OurServices";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/aboutUs" element={<AboutUs />} />
+        <Route path="/ourServices" element={<OurServices />} />
+        <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
       </Routes>
     </BrowserRouter>
   )
