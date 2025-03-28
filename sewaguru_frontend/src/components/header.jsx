@@ -47,7 +47,7 @@ export default function Header() {
             Become a SewaGuru
           </Link>
           <Link
-            to="/login"
+            to="/SignIn"
             className="w-full md:w-auto text-center bg-yellow-400 hover:bg-yellow-500 text-black font-medium px-4 py-2 rounded-full text-sm shadow-md hover:shadow-lg transition"
           >
             Log In / Sign Up

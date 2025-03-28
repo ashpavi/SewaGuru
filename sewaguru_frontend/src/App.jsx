@@ -1,12 +1,12 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Home from "./pages/Home";
-import SignIn from "./pages/signIn";
 import SignUp from "./pages/SignUp";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/aboutUs";
 import Header from "./components/header";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import OurServices from "./pages/OurServices";
+import SignIn from "./pages/SignIn";
 
 function App() {
   return (
