@@ -7,6 +7,7 @@ import Header from "./components/header";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import OurServices from "./pages/OurServices";
 import SignIn from "./pages/SignIn";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -21,8 +22,10 @@ function App() {
         <Route path="/ourServices" element={<OurServices />} />
         <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
       </Routes>
+      <Footer/>
     </BrowserRouter>
   )
 }
 
 export default App
+
