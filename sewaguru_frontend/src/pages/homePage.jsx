@@ -1,5 +1,5 @@
 
-import { Button } from "flowbite-react";
+import { Button, Footer } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 import {
   FaBroom,
@@ -11,10 +11,13 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt
 } from "react-icons/fa";
+import Header from "../components/header";
 
 export default function HomePage() {
   return (
     <div className="w-full">
+      <Header/>
+     
 
 
       {/* Hero Section with Search */}
@@ -146,8 +149,11 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+
       </section>
+      <Footer/>
     </div>
+
   )
 }
 
