@@ -1,5 +1,5 @@
 
-import { Button, Footer } from "flowbite-react";
+import { Button } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 import {
   FaBroom,
@@ -12,6 +12,7 @@ import {
   FaMapMarkerAlt
 } from "react-icons/fa";
 import Header from "../components/header";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   return (
@@ -65,6 +66,45 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Emergency Services Section */}
+        
+          <section className="relative py-12 px-4">
+            <div className="max-w-5xl mx-auto relative z-10 border-2 border-red-300 rounded-2xl bg-red-50/80 shadow-lg overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-red-100 via-white to-red-50 opacity-30 pointer-events-none rounded-2xl"></div>
+
+              <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8 p-8">
+                {/* Left: Info */}
+                <div className="space-y-5 max-w-xl">
+                  <h2 className="text-3xl font-bold text-red-600">
+                    Emergency Services, Anytime
+                  </h2>
+                  <p className="text-gray-700 text-lg">
+                    We’re here for you 24/7. Whether it’s a burst pipe, sudden power outage, or a security concern — just give us a call. 
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 text-white text-base font-semibold">
+                    <div className="bg-red-600 px-5 py-3 rounded-lg flex items-center gap-3 shadow-md">
+                      <FaPhoneAlt />
+                      <span>+94 77 111 4444 </span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 pt-2">We're available in Homagama and nearby towns.</p>
+                  
+                </div>
+
+                {/* Right: Emergency Image */}
+                <div className="flex justify-center w-full max-w-xs">
+                  <img
+                    src="/plumbing.jpg"
+                    alt="Emergency Help"
+                    className="w-full h-auto object-cover drop-shadow-xl rounded-xl"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+
 
       
 

@@ -12,7 +12,7 @@ export default function SignUp() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role] = useState("user");
+  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -66,6 +66,18 @@ export default function SignUp() {
           />
         </div>
 
+        {/* Role  */}
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm">
+         
+          <option value="" disabled>Select your role</option>
+          <option value="user">User</option>
+          <option value="provider">SewaGuru Service Provider</option>
+        </select>
+
+
         {/* Email */}
         <input
           type="email"
@@ -74,16 +86,6 @@ export default function SignUp() {
           onChange={(e) => setEmail(e.target.value)}
           className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
         />
-
-        {/* Phone */}
-        <input
-          type="text"
-          placeholder="Phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
-        />
-
         {/* Password */}
         <input
           type="password"
@@ -99,14 +101,25 @@ export default function SignUp() {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full mb-2 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+          className="w-full mb-5 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
         />
+
+        {/* Phone */}
+        <input
+          type="text"
+          placeholder="Phone"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+        />
+
+        
 
         {/* Register Button */}
         <button
           onClick={handleRegister}
           disabled={loading}
-          className="w-full bg-gradient-to-r from-[#48B8E3] to-[#2498d2] hover:from-[#3baede] hover:to-[#1f88c3] transition text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg mb-4"
+          className="w-full bg-gradient-to-r from-[#48B8E3] to-[#2498d2] hover:from-[#3baede] hover:to-[#1f88c3] transition text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg mb-1"
         >
           {loading ? "Registering..." : "Sign Up"}
         </button>
@@ -129,7 +142,7 @@ export default function SignUp() {
         {/* Redirect */}
         <div className="w-full text-center text-sm text-[#1F2937] mt-6">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:underline font-medium">
+          <Link to="/signIn" className="text-blue-600 hover:underline font-medium">
             Login
           </Link>
         </div>

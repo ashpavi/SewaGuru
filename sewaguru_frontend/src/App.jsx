@@ -2,13 +2,15 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 
 import { Toaster } from "react-hot-toast";
 import HomePage from "./pages/homepage";
-import SignIn from "./pages/SignIn";
+import SignIn from "./pages/signIn";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/AboutUs";
 import OurServices from "./pages/OurServices";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import SignUp from "./pages/SignUp";
+import SignUp from "./pages/signUp";
 import AdminPage from "./pages/adminPage";
+import SGHomePage from "./pages/sewaguru/sgHomePage";
+import Testing from "./pages/testing";
 
 
 
@@ -27,6 +29,8 @@ function App() {
         <Route path="/aboutUs" element={<AboutUs />} />
         <Route path="/ourServices" element={<OurServices />} />
         <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+        <Route path="/sewaguru/*" element={<SGHomePage/>} />
+        <Route path="/testing" element={<Testing />} />
       </Routes>
       
     </BrowserRouter>

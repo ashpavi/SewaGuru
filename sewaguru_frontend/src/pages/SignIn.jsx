@@ -64,7 +64,7 @@ export default function SignIn() {
         {/* Register Prompt */}
         <div className="w-full text-center text-sm text-[#1F2937] mt-6">
           Don’t have an account?{' '}
-          <Link to="/SignUp" className="text-blue-600 hover:underline font-medium">
+          <Link to="/signUp" className="text-blue-600 hover:underline font-medium">
             Sign Up
           </Link>
         </div>
