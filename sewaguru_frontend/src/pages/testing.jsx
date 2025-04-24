@@ -27,7 +27,7 @@ export default function Testing() {
         </div>
         <Button onClick={() => setOpenModal(true)}>Toggle modal</Button>
       </div>
-      {/* <Modal show={openModal} size={modalSize} onClose={() => setOpenModal(false)}>
+      <Modal show={openModal} size={modalSize} onClose={() => setOpenModal(false)}>
         <ModalHeader>Small modal</ModalHeader>
         <ModalBody>
           <div className="space-y-6 p-6">
@@ -48,7 +48,7 @@ export default function Testing() {
             Decline
           </Button>
         </ModalFooter>
-      </Modal> */}
+      </Modal>
     </>
   );
 }
