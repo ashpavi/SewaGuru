@@ -1,53 +1,64 @@
 
 "use client";
 
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Select } from "flowbite-react";
+import { Button, Checkbox, Label, Modal, ModalBody, ModalHeader, TextInput } from "flowbite-react";
 import { useState } from "react";
 
 export default function Testing() {
   const [openModal, setOpenModal] = useState(true);
-  const [modalSize, setModalSize] = useState("md");
+  const [email, setEmail] = useState("");
+
+  function onCloseModal() {
+    setOpenModal(false);
+    setEmail("");
+  }
 
   return (
     <>
-      <div className="flex flex-wrap gap-4">
-        <div className="w-40">
-          <Select defaultValue="md" onChange={(event) => setModalSize(event.target.value)}>
-            <option value="sm">sm</option>
-            <option value="md">md</option>
-            <option value="lg">lg</option>
-            <option value="xl">xl</option>
-            <option value="2xl">2xl</option>
-            <option value="3xl">3xl</option>
-            <option value="4xl">4xl</option>
-            <option value="5xl">5xl</option>
-            <option value="6xl">6xl</option>
-            <option value="7xl">7xl</option>
-          </Select>
-        </div>
-        <Button onClick={() => setOpenModal(true)}>Toggle modal</Button>
-      </div>
-      <Modal show={openModal} size={modalSize} onClose={() => setOpenModal(false)}>
-        <ModalHeader>Small modal</ModalHeader>
+      <Button onClick={() => setOpenModal(true)}>Toggle modal</Button>
+      <Modal show={openModal} size="md" onClose={onCloseModal} popup>
+        <ModalHeader />
         <ModalBody>
-          <div className="space-y-6 p-6">
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              With less than a month to go before the European Union enacts new consumer privacy laws for its citizens,
-              companies around the world are updating their terms of service agreements to comply.
-            </p>
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant
-              to ensure a common set of data rights in the European Union. It requires organizations to notify users as
-              soon as possible of high-risk data breaches that could personally affect them.
-            </p>
+          <div className="space-y-6">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="email">Your email</Label>
+              </div>
+              <TextInput
+                id="email"
+                placeholder="name@company.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="password">Your password</Label>
+              </div>
+              <TextInput id="password" type="password" required />
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <Checkbox id="remember" />
+                <Label htmlFor="remember">Remember me</Label>
+              </div>
+              <a href="#" className="text-sm text-cyan-700 hover:underline dark:text-cyan-500">
+                Lost Password?
+              </a>
+            </div>
+            <div className="w-full">
+              <Button>Log in to your account</Button>
+            </div>
+            <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-300">
+              Not registered?&nbsp;
+              <a href="#" className="text-cyan-700 hover:underline dark:text-cyan-500">
+                Create account
+              </a>
+            </div>
           </div>
         </ModalBody>
-        <ModalFooter>
-          <Button onClick={() => setOpenModal(false)}>I accept</Button>
-          <Button color="gray" onClick={() => setOpenModal(false)}>
-            Decline
-          </Button>
-        </ModalFooter>
       </Modal>
     </>
   );
