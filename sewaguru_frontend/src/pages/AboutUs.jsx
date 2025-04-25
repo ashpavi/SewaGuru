@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FaCheckCircle, FaUserShield, FaTools, FaBolt, FaMobileAlt } from "react-icons/fa";
 import Header from "../components/header";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 
 export default function AboutUsPage() {
@@ -90,7 +91,7 @@ export default function AboutUsPage() {
           <p className="text-gray-700 max-w-3xl mx-auto text-lg mb-6">
             Are you a skilled professional looking to expand your business? Become a SewaGuru and reach more customers. We provide the platform, marketing, and support — you provide the expertise.
           </p>
-          <button className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">Register Now</button>
+          <Link to="/sewaguru/sgRegister" className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">Register Now</Link>
         </motion.div>
       </section>
 

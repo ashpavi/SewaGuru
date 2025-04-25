@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FcGoogle } from "react-icons/fc";
 
-export default function SignIn() {
+export default function LogIn() {
   return (
     <div className="w-full h-screen bg-[url('/SignIn-bg4.jpg')] bg-cover bg-center flex items-center justify-center px-4">
       
@@ -21,14 +21,14 @@ export default function SignIn() {
         <input
           type="email"
           placeholder="Email"
-          className="w-full mb-4 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+          className="w-full mb-4 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
 
         {/* Password */}
         <input
           type="password"
           placeholder="Password"
-          className="w-full px-5 py-3 mb-2 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+          className="w-full px-5 py-3 mb-2 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
 
         {/* Forgot Password */}

@@ -55,14 +55,14 @@ export default function SignUp() {
             placeholder="First Name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="w-full sm:w-1/2 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+            className="w-full sm:w-1/2 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
           />
           <input
             type="text"
             placeholder="Last Name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="w-full sm:w-1/2 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+            className="w-full sm:w-1/2 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
           />
         </div>
 
@@ -75,7 +75,7 @@ export default function SignUp() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
         {/* Password */}
         <input
@@ -83,7 +83,7 @@ export default function SignUp() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
 
         {/* Confirm Password */}
@@ -92,7 +92,7 @@ export default function SignUp() {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full mb-5 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+          className="w-full mb-5 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
 
         {/* Phone */}
@@ -101,7 +101,7 @@ export default function SignUp() {
           placeholder="Phone"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm"
+          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
 
         
@@ -133,7 +133,7 @@ export default function SignUp() {
         {/* Redirect */}
         <div className="w-full text-center text-sm text-[#1F2937] mt-6">
           Already have an account?{" "}
-          <Link to="/signIn" className="text-blue-600 hover:underline font-medium">
+          <Link to="/logIn" className="text-blue-600 hover:underline font-medium">
             Login
           </Link>
         </div>
