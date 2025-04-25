@@ -18,7 +18,7 @@ export default function AdminHeader() {
           />
         </Link>
         <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
+            <h1 className="text-2xl font-bold text-white">Admin</h1>
         </div>
 
        
@@ -27,7 +27,7 @@ export default function AdminHeader() {
             
             <Link
               to="/SignIn"
-              className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium px-4 py-2 rounded-full text-sm shadow-md hover:shadow-lg transition text-center"
+              className="bg-[#104DA3] hover:bg-[#334E73] text-white font-medium px-4 py-2 rounded-full text-sm shadow-md hover:shadow-lg transition text-center"
             >
               Log In / Sign Up
             </Link>

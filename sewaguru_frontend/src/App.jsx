@@ -35,7 +35,7 @@ function App() {
         <Route path="/ourServices" element={<OurServices />} />
         <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/sewaguru/sgRegister" element={<SGRegister />} />
-        <Route path="/sewaguru/sgHomePage" element={<SGHomePage />} />
+        <Route path="/sewaguru/*" element={<SGHomePage />} />
         
         
         <Route path="/testing" element={<Testing />} />

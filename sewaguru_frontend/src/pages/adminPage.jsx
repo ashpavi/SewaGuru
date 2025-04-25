@@ -1,7 +1,13 @@
 import { Link, Route, Routes } from "react-router-dom";
 import { AiFillProduct } from "react-icons/ai";
-import { FaUsers } from "react-icons/fa";
-import { FaWpforms } from "react-icons/fa";
+import { ImProfile } from "react-icons/im";
+import { GoHomeFill } from "react-icons/go";
+import { BiSolidMessageDetail } from "react-icons/bi";
+import { BsPersonFill } from "react-icons/bs";
+import { GrUserWorker } from "react-icons/gr";
+
+
+
 
 import AdminHeader from "../components/adminHeader";
 import AdminDashboard from "./admin/dashboard";
@@ -14,12 +20,12 @@ export default function AdminPage(){
         <div className="w-full h-screen bg-gray-200  flex p-2.5">
             
             <div className="h-full w-[300px] ">
-                <Link to="/admin/dashboard" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><FaUsers className="mr-2" />Dashboard</Link>
+                <Link to="/admin/dashboard" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><GoHomeFill className="mr-2" />Dashboard</Link>
                 <Link to="/admin/services" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><AiFillProduct className="mr-2" />Services</Link>
-                <Link to="/admin/messages" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><AiFillProduct className="mr-2" />Messages</Link>
-                <Link to="/admin/users" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><FaWpforms className="mr-2"/>Registered Customers</Link>
-                <Link to="/admin/serviceProviders" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><FaWpforms className="mr-2"/>Service Providers</Link>
-                <Link to="/admin/applications" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><FaWpforms className="mr-2"/>Service Provider Applications</Link>
+                <Link to="/admin/messages" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><BiSolidMessageDetail className="mr-2" />Messages</Link>
+                <Link to="/admin/users" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><BsPersonFill className="mr-2"/>Registered Customers</Link>
+                <Link to="/admin/serviceProviders" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><GrUserWorker  className="mr-2"/>Service Providers</Link>
+                <Link to="/admin/applications" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><ImProfile  className="mr-2"/>Service Provider Applications</Link>
             </div>
             <div className="h-full bg-white w-[calc(110vw-300px)] rounded-lg">
                 <Routes path="/*">
