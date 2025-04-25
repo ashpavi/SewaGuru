@@ -1,90 +1,125 @@
-import bcrypt from "bcrypt";
-import User from "../models/user.js";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv"; //importing the dotenv package
-dotenv.config(); //configuring the dotenv package
+import jwt from 'jsonwebtoken';
+import User from '../models/user.js';
 
-export function saveUser(req, res) {
-
-    if(req.body.role== "admin"){     //ony admin can create another admin
-        if(req.user==null){     //if user is not logged in 
-            res.status(403).json({
-                message:"Please login as admin before creating admin account"
-            })
-            return;
-        }
-        if(req.user.role!="admin"){     //if user is not admin
-            res.status(403).json({
-                message:"You are not authorized to create admin account"
-            })
-            return;
-        }
-    }
-    
-    //to create a hash password
-    const hashedPassword = bcrypt.hashSync(req.body.password,10)
-    const user = new User({
-        email: req.body.email,
-        firstName:req.body.firstName,
-        lastName:req.body.lastName,
-        password: hashedPassword,
-        role:req.body.role,
-    })
-
-    user.save().then(()=>{
-        res.json({
-            message:"User saved successfully"
-        })
-    }).catch((err) => {
-        console.error(err);
-        res.status(500).json({ message: "User not saved" 
-
-        })
+const generateTokens = async (user) => {
+    const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
     });
-    
-} 
 
-export function loginUser(req, res) {
-    const email=req.body.email;
-    const password=req.body.password;
+    const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, {
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
+    });
 
-    User.findOne({
-        email:email
-    }).then((user)=>{
-        if(user==null){
-            res.status(404).json({
-                message:"User not found"
-            })
-        }else{
-            const isPasswordCorrect= bcrypt.compareSync(password,user.password);
-            if(isPasswordCorrect){
-                
-                const userData={
-                    email: user.email,
-                    firstName:user.firstName,
-                    lastName:user.lastName,
-                    role:user.role,
-                    phone:user.phone,
-                    isDisabled:user.isDisabled,
-                    isEmailVerified:user.isEmailVerified
+    user.refreshToken = refreshToken;
+    await user.save();
 
-                }
-                console.log(userData)
+    return { accessToken, refreshToken };
+};
 
-                const token=jwt.sign(userData,process.env.JWT_KEY)
-                res.json({
-                    message:"Login successful",
-                    token:token,
-                    user:userData,
-                })
+export const createAdmin = async (req, res) => {
+    try {
+        const { email, password, firstName, lastName, phone } = req.body;
+
+        const existing = await User.findOne({ email });
+        if (existing) return res.status(400).json({ msg: 'Email already registered' });
+
+        const user = new User({
+            email,
+            password,
+            firstName,
+            lastName,
+            phone,
+            role: 'admin',
+        });
+
+        await user.save();
+        res.status(201).json({ msg: 'Admin created successfully' });
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+};
 
 
-            }else{
-                res.status(403).json({
-                    message:"Password is incorrect"
-                })
-            }
-        }  
-        
-    })
-}
+export const register = async (req, res) => {
+    try {
+        const {
+            email, password, firstName, lastName, phone, role
+        } = req.body;
+
+        // Prevent self-registration as admin
+        if (role === 'admin') {
+            return res.status(403).json({ msg: 'Unauthorized to register as admin' });
+        }
+
+        const existing = await User.findOne({ email });
+        if (existing) return res.status(400).json({ msg: 'Email already registered' });
+
+        const user = new User({
+            email,
+            password,
+            firstName,
+            lastName,
+            phone,
+            role
+        });
+
+        await user.save();
+
+        res.status(201).json({ msg: 'User created successfully' });
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+};
+
+
+export const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user || !(await user.comparePassword(password)))
+            return res.status(400).json({ msg: 'Invalid credentials' });
+
+        if (user.isDisabled)
+            return res.status(403).json({ msg: 'Account is disabled' });
+
+        const tokens = await generateTokens(user);
+        res.json(tokens);
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+};
+
+
+export const refreshToken = async (req, res) => {
+    const { token } = req.body;
+    if (!token) return res.status(401).json({ msg: 'No token provided' });
+  
+    try {
+      // Verify the refresh token
+      const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+      const user = await User.findById(payload.id);
+  
+      if (!user || user.refreshToken !== token) {
+        return res.status(403).json({ msg: 'Invalid refresh token' });
+      }
+  
+      // Generate new tokens
+      const tokens = await generateTokens(user);
+  
+      res.json(tokens);
+    } catch {
+      res.status(403).json({ msg: 'Invalid or expired refresh token' });
+    }
+  };
+  
+  export const logout = async (req, res) => {
+    const { id } = req.user;
+    const user = await User.findById(id);
+    if (user) {
+      user.refreshToken = null;
+      await user.save();
+    }
+    res.json({ msg: 'Logged out successfully' });
+  };
+  

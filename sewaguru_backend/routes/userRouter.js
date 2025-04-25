@@ -1,9 +1,14 @@
 import express from "express";
-import { loginUser, saveUser } from "../controllers/userController.js";
+import { adminOnly } from '../middleware/adminOnly.js';
+import { authenticate } from '../middleware/auth.js';
+import { login, register, refreshToken, createAdmin, logout } from "../controllers/userController.js";
 
-const userRouter = express.Router();
+const router = express.Router();
 
-userRouter.post("/",saveUser)
-userRouter.post("/login",loginUser)
+router.post('/register', register);
+router.post('/create-admin', authenticate, adminOnly, createAdmin);
+router.post('/login', login);
+router.post('/refresh', refreshToken);
+router.post('/logout', logout);
 
-export default userRouter; 
+export default router; 

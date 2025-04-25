@@ -1,19 +1,16 @@
-import jwt from "jsonwebtoken"; //importing the jsonwebtoken package
+import jwt from 'jsonwebtoken';
 
-export default function verifyJWT (req,res,next){
-    const header= req.header("Authorization");
-    if(header != null){
-        const token= header.replace("Bearer ","") //this will remove the bearer from the token
-    
-    console.log(token) // this will print the token
-    jwt.verify(token, "random456",(err, decoded)=>{      //this will verify the token
-        console.log(decoded) //this will print the decoded token
+export const authenticate = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(' ')[1];
 
-        if(decoded != null){     //if the token is not null then we will set the user to the decoded token
-            req.user= decoded
-        }
-    }
-) 
-    }
-     next(); //next is used to pass the control to the next middleware function 
-}
+  if (!token) return res.status(401).json({ msg: 'No token' });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch {
+    res.status(403).json({ msg: 'Invalid token' });
+  }
+};
