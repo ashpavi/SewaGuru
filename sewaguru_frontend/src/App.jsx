@@ -1,7 +1,7 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 
 import { Toaster } from "react-hot-toast";
-import HomePage from "./pages/homepage";
+import HomePage from "./pages/homePage";
 import SignIn from "./pages/signIn";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/AboutUs";
@@ -9,8 +9,9 @@ import OurServices from "./pages/OurServices";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import SignUp from "./pages/signUp";
 import AdminPage from "./pages/adminPage";
-import SGHomePage from "./pages/sewaguru/sgHomePage";
+
 import Testing from "./pages/testing";
+import SGRegister from "./pages/sewaguru/sgRegister";
 
 
 
@@ -29,7 +30,7 @@ function App() {
         <Route path="/aboutUs" element={<AboutUs />} />
         <Route path="/ourServices" element={<OurServices />} />
         <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
-        <Route path="/sewaguru/*" element={<SGHomePage/>} />
+        <Route path="/sewaguru/*" element={<SGRegister/>} />
         <Route path="/testing" element={<Testing />} />
       </Routes>
       

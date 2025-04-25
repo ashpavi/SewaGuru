@@ -1,5 +1,4 @@
 
-import { Button } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 import {
   FaBroom,
@@ -13,8 +12,33 @@ import {
 } from "react-icons/fa";
 import Header from "../components/header";
 import Footer from "../components/Footer";
+import React, { useState } from "react";
+
+import { Button} from "flowbite-react";
+
 
 export default function HomePage() {
+   
+  const [isOpen, setIsOpen] = useState(false);
+  const [form, setForm] = useState({
+    fullName: "",
+    contact: "",
+    issue: "",
+    address: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Emergency Request Submitted:", form);
+    // Add your backend call here
+    setIsOpen(false);
+    setForm({ fullName: "", contact: "", issue: "", address: "" });
+  };
+
   return (
     <div className="w-full">
       <Header/>
@@ -69,40 +93,116 @@ export default function HomePage() {
 
         {/* Emergency Services Section */}
         
-          <section className="relative py-12 px-4">
-            <div className="max-w-5xl mx-auto relative z-10 border-2 border-red-300 rounded-2xl bg-red-50/80 shadow-lg overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-red-100 via-white to-red-50 opacity-30 pointer-events-none rounded-2xl"></div>
-
-              <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8 p-8">
-                {/* Left: Info */}
-                <div className="space-y-5 max-w-xl">
-                  <h2 className="text-3xl font-bold text-red-600">
-                    Emergency Services, Anytime
-                  </h2>
-                  <p className="text-gray-700 text-lg">
-                    We’re here for you 24/7. Whether it’s a burst pipe, sudden power outage, or a security concern — just give us a call. 
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-4 text-white text-base font-semibold">
-                    <div className="bg-red-600 px-5 py-3 rounded-lg flex items-center gap-3 shadow-md">
-                      <FaPhoneAlt />
-                      <span>+94 77 111 4444 </span>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600 pt-2">We're available in Homagama and nearby towns.</p>
-                  
+        <section className="relative py-12 px-8">
+        <div className="max-w-5xl mx-auto relative z-10 border-3 border-red-300 rounded-2xl bg-red-50/80 shadow-lg overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-100 via-white to-red-50 opacity-30 pointer-events-none rounded-2xl"></div>
+          <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6 p-8">
+            {/* Left */}
+            <div className="space-y-5 max-w-xl">
+              <h2 className="text-3xl font-bold text-red-600">
+                Emergency Services, Anytime
+              </h2>
+              <p className="text-gray-700 text-lg">
+                We're here for you 24/7. Whether it's a burst pipe, sudden power outage, or a security concern — just give us a call.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 text-white text-base font-semibold">
+                <div className="bg-red-600 px-5 py-3 rounded-lg flex items-center gap-3 shadow-md">
+                  <FaPhoneAlt />
+                  <span>+94 77 111 4444 </span>
                 </div>
-
-                {/* Right: Emergency Image */}
-                <div className="flex justify-center w-full max-w-xs">
-                  <img
-                    src="/plumbing.jpg"
-                    alt="Emergency Help"
-                    className="w-full h-auto object-cover drop-shadow-xl rounded-xl"
-                  />
-                </div>
+                <button
+                onClick={() => setIsOpen(true)}
+                className="bg-red-600 text-white px-5 py-2 rounded-md shadow-md hover:bg-red-700 transition"
+              >
+                Request Emergency Help
+              </button>
               </div>
+              <p className="text-sm text-gray-600 pt-2">
+                We're available in Homagama and nearby towns.
+              </p>
+              
             </div>
-          </section>
+
+            {/* Right */}
+            <div className="flex justify-center w-full max-w-xs">
+              <img
+                src="/plumbing.jpg"
+                alt="Emergency Help"
+                className="w-full h-auto object-cover drop-shadow-xl rounded-xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-3 right-4 text-gray-400 hover:text-gray-700 text-2xl"
+            >
+              &times;
+            </button>
+
+            <h3 className="text-2xl font-bold text-red-600 mb-4 text-center">
+              Emergency Request Form
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block font-medium text-gray-700 mb-1">Full Name</label>
+                <input
+                  name="fullName"
+                  value={form.fullName}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block font-medium text-gray-700 mb-1">Contact (Phone/Email)</label>
+                <input
+                  name="contact"
+                  value={form.contact}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block font-medium text-gray-700 mb-1">Issue Description</label>
+                <textarea
+                  name="issue"
+                  value={form.issue}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div>
+                <label className="block font-medium text-gray-700 mb-1">Address / Location</label>
+                <textarea
+                  name="address"
+                  value={form.address}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
+                  rows="2"
+                  required
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-red-600 text-white font-semibold py-2 rounded-md hover:bg-red-700 transition"
+              >
+                Submit Emergency Request
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
 
 
