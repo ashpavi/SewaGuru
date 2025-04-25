@@ -12,7 +12,7 @@ export default function SignUp() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState("user"); // Default role is 'user'
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -66,16 +66,7 @@ export default function SignUp() {
           />
         </div>
 
-        {/* Role  */}
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-sm">
-         
-          <option value="" disabled>Select your role</option>
-          <option value="user">User</option>
-          <option value="provider">SewaGuru Service Provider</option>
-        </select>
+        
 
 
         {/* Email */}
