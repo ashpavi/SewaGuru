@@ -9,7 +9,12 @@ import userRouter from './routes/userRouter.js';
 dotenv.config();
 const app = express();
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173', // frontend address
+    credentials: true                // allow cookies if needed
+}));
+
+
 //use the body parser middleware
 //BodyParser is used to simplify the process of parsing the body of an HTTP request
 app.use(bodyParser.json());
