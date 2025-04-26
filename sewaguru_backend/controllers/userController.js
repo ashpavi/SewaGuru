@@ -89,9 +89,21 @@ export const register = async (req, res) => {
             role
         });
 
-        await user.save();
+        const savedUser = await user.save();
 
-        res.status(201).json({ msg: 'User created successfully' });
+        if (savedUser.role === 'provider') {
+            const { accessToken, refreshToken } = generateTokens(savedUser);
+            savedUser.refreshToken = refreshToken;
+            await savedUser.save();
+
+            return res.status(201).json({
+                msg: 'Provider registered and logged in successfully',
+                accessToken,
+                refreshToken
+            });
+        }
+
+        res.status(201).json({ msg: 'Customer registered successfully, please log in.' });
     } catch (err) {
         res.status(500).json({ msg: err.message });
     }
@@ -170,9 +182,19 @@ export const upgradeToProvider = async (req, res) => {
         user.gsCertSrc = gsCertSrc;
         user.policeCertSrc = policeCertSrc;
         user.otherSrc = otherSrc;
+        
         await user.save();
 
-        res.json({ msg: 'Upgraded to provider successfully' });
+        // generate new tokens
+        const { accessToken, refreshToken } = generateTokens(user);
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        res.json({
+            msg: 'Upgraded to provider successfully',
+            accessToken,
+            refreshToken
+        });
     } catch (err) {
         if (err.name === 'ValidationError') {
             const errors = Object.keys(err.errors).map(field => ({
