@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    role: {
+        type: String,
+        required: true,
+        enum: ['customer', 'provider', 'admin'],
+        default: 'customer'
     },
     firstName: {
         type: String,
@@ -25,25 +31,64 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: "Not Given"
     },
-    role: {
+    nic: {
         type: String,
-        required: true,
-        enum: ['customer', 'provider', 'admin'],
-        default: 'customer'
+        required: function () {
+            return this.role === 'provider';
+        }
     },
-    isDisabled: {
-        type: Boolean,
-        required: true,
-        default: false
+    location: {
+        type: String,
+        required: function () {
+            return this.role === 'provider';
+        }
     },
-    isEmailVerified: {
-        type: Boolean,
-        required: true,
-        default: false
+    address: {
+        type: String,
+        required: function () {
+            return this.role === 'provider';
+        }
     },
-    refreshToken: {
-        type: String
-    }
+    serviceType: {
+        type: String,
+        enum: [
+            'home_service_repairs',
+            'cleaning_pest_control',
+            'appliance_repair_installation',
+            'home_security_solutions',
+            'moving_transport',
+            'tree_garden_services'
+        ],
+        required: function () {
+            return this.role === 'provider';
+        }
+    },
+    nicImgSrc: {
+        type: [String],
+        required: function () {
+            return this.role === 'provider';
+        }
+    },
+    profilePicSrc: {
+        type: [String],
+        required: function () {
+            return this.role === 'provider';
+        }
+    },
+    gsCertSrc: {
+        type: String,
+        required: function () {
+            return this.role === 'provider';
+        }
+    },
+    policeCertSrc: {
+        type: String,
+        required: function () {
+            return this.role === 'provider';
+        }
+    },
+    otherSrc: { type: [String] },
+    refreshToken: { type: String }
 }, { timestamps: true, versionKey: false });
 
 userSchema.pre('save', async function () {
