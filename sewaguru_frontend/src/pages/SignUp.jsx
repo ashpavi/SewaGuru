@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FcGoogle } from "react-icons/fc";
+import api from "../api/api";
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -12,32 +13,43 @@ export default function SignUp() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState("user"); // Default role is 'user'
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleRegister = () => {
+    if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
+      toast.error("Please fill in all fields");
+      return
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    toast.error("Please enter a valid email address");
+    return;
+  }
+
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
 
     setLoading(true);
-    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/user/", {
-      firstName,
-      lastName,
-      email,
-      phone,
-      password,
-      role,
-    }).then((res) => {
-      toast.success("Registration successful!");
-      navigate("/login");
-    }).catch((err) => {
-      toast.error(err.response?.data?.message || "Registration failed");
-    }).finally(() => setLoading(false));
-  };
+       api.post("/user/register", {
+        firstName,
+        lastName,
+        email,
+        phone,
+        password
+      }).then((res) => {
+            toast.success("Registration successful!");
+            navigate("/login");
+          }).catch((err) => {
+            console.error(err);
+            toast.error(err.response?.data?.message || "Registration failed");
+          }).finally(() => setLoading(false));
+        }
+      
+
 
   return (
     <div className="w-full min-h-screen bg-[url('/SignIn-bg4.jpg')] bg-cover bg-center flex items-center justify-center px-4 overflow-y-auto">
@@ -54,6 +66,7 @@ export default function SignUp() {
             type="text"
             placeholder="First Name"
             value={firstName}
+            required
             onChange={(e) => setFirstName(e.target.value)}
             className="w-full sm:w-1/2 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
           />
@@ -65,6 +78,15 @@ export default function SignUp() {
             className="w-full sm:w-1/2 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
           />
         </div>
+
+         {/* Phone */}
+         <input
+          type="text"
+          placeholder="Phone"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
+        />
 
         
 
@@ -95,14 +117,7 @@ export default function SignUp() {
           className="w-full mb-5 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
 
-        {/* Phone */}
-        <input
-          type="text"
-          placeholder="Phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
-        />
+       
 
         
 

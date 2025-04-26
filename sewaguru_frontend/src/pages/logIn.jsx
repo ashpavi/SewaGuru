@@ -1,8 +1,49 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FcGoogle } from "react-icons/fc";
+import api from "../api/api";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import {jwtDecode} from "jwt-decode";
+
+
 
 export default function LogIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async(email,password) => {
+    try{
+      const response = await api.post("/user/login", {
+
+        email: email,
+        password: password
+      });
+      if (response.status === 200) {
+
+        const { accessToken, refreshToken } = response.data;
+        toast.success("Login successful!");
+
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        const decodedToken = jwtDecode(accessToken);
+        const userrole = decodedToken.role;
+        if (userrole === "admin") {
+          navigate("/admin");
+        }else
+        {
+          // Redirect to the home page or perform any other action
+          navigate("/homePage")
+        }
+      } else {
+        toast.error("Login failed: " + response.data.message);
+      }
+    } catch (error) {
+      toast.error("Login failed: " + error.message);
+    }
+  }
+
   return (
     <div className="w-full h-screen bg-[url('/SignIn-bg4.jpg')] bg-cover bg-center flex items-center justify-center px-4">
       
@@ -20,6 +61,8 @@ export default function LogIn() {
         {/* Email */}
         <input
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           className="w-full mb-4 px-5 py-3 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
@@ -27,6 +70,8 @@ export default function LogIn() {
         {/* Password */}
         <input
           type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           className="w-full px-5 py-3 mb-2 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
@@ -39,7 +84,7 @@ export default function LogIn() {
         </div>
 
         {/* Login Button */}
-        <button className="w-full bg-gradient-to-r from-[#48B8E3] to-[#2498d2] hover:from-[#3baede] hover:to-[#1f88c3] transition text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg mb-4">
+        <button onClick={() => handleLogin(email, password)} className="w-full bg-gradient-to-r from-[#48B8E3] to-[#2498d2] hover:from-[#3baede] hover:to-[#1f88c3] transition text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg mb-4">
           Login
         </button>
 

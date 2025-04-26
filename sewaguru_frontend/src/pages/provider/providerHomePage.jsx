@@ -5,25 +5,25 @@ import { BsPersonFill } from "react-icons/bs";
 import { PiNotepadFill } from "react-icons/pi";
 import { FaCalendarDays } from "react-icons/fa6";
 
-import SGHeader from "../../components/sgHeader";
-import SGDashboard from "./sgDashboard";
-import SGMessages from "./sgMessages";
+import ProviderHeader from "../../components/providerHeader";
+import ProviderDashboard from "./providerDashboard";
+import ProviderMessages from "./providermessages";
 import ServiceRequest from "./serviceRequest";
-import SGBookings from "./sgBookings";
-import SGProfile from "./sgProfile";
+import ProviderBookings from "./providerBookings";
+import ProviderProfile from "./providerProfile";
 
 const sidebarLinks = [
-  { to: "/sewaguru/sgDashboard", icon: <GoHomeFill className="mr-2" />, label: "Dashboard" },
-  { to: "/sewaguru/sgMessages", icon: <BiSolidMessageDetail className="mr-2" />, label: "Messages" },
-  { to: "/sewaguru/serviceRequest", icon: <FaCalendarDays className="mr-2" />, label: "Service Requests" },
-  { to: "/sewaguru/sgBookings", icon: <PiNotepadFill className="mr-2" />, label: "Bookings" },
-  { to: "/sewaguru/sgProfile", icon: <BsPersonFill className="mr-2" />, label: "Profile" },
+  { to: "/provider/providerDashboard", icon: <GoHomeFill className="mr-2" />, label: "Dashboard" },
+  { to: "/provider/providerMessages", icon: <BiSolidMessageDetail className="mr-2" />, label: "Messages" },
+  { to: "/provider/serviceRequest", icon: <FaCalendarDays className="mr-2" />, label: "Service Requests" },
+  { to: "/provider/providerBookings", icon: <PiNotepadFill className="mr-2" />, label: "Bookings" },
+  { to: "/provider/providerProfile", icon: <BsPersonFill className="mr-2" />, label: "Profile" },
 ];
 
-export default function SGHomePage() {
+export default function ProviderHomePage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <SGHeader />
+      <ProviderHeader />
 
       <div className="flex flex-1 bg-gray-200 p-2.5">
         {/* Sidebar */}
@@ -43,11 +43,11 @@ export default function SGHomePage() {
         {/* Main Content */}
         <div className="flex-1 bg-white rounded-lg p-4 overflow-y-auto">
           <Routes>
-            <Route path="/sgDashboard" element={<SGDashboard />} />
-            <Route path="/sgMessages" element={<SGMessages />} />
+            <Route path="/providerDashboard" element={<ProviderDashboard />} />
+            <Route path="/providerMessages" element={<ProviderMessages />} />
             <Route path="/serviceRequest" element={<ServiceRequest />} />
-            <Route path="/sgBookings" element={<SGBookings />} />
-            <Route path="/sgProfile" element={<SGProfile />} />
+            <Route path="/providerBookings" element={<ProviderBookings />} />
+            <Route path="/providerProfile" element={<ProviderProfile />} />
           </Routes>
         </div>
       </div>

@@ -6,19 +6,19 @@ import { IoInformationCircleSharp } from "react-icons/io5";
 
 
 
-export default function SGRegister() {
+export default function ProviderRegister() {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate("/sewaguru/sgHomePage");
+    navigate("/provider/providerHomePage");
   };
 
 
   const [formData, setFormData] = useState({
-    fullName: "",
+    firstName: "",
     email: "",
     service: "",
     phone: "",
@@ -55,8 +55,8 @@ export default function SGRegister() {
   };
 
   const validateStep1 = () => {
-    const { fullName, lastName, nic, location, service } = formData;
-    return fullName && lastName && nic && location && service;
+    const { firstName, lastName, nic, location, service } = formData;
+    return firstName && lastName && nic && location && service;
   };
 
   const validateStep2 = () => {
@@ -138,11 +138,11 @@ export default function SGRegister() {
               <>
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input name="fullName" placeholder="First Name / Business" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                    <input name="lastName" placeholder="Last Name" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                    <input name="firstName" value={formData.firstName} placeholder="First Name / Business" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                    <input name="lastName" value={formData.lastName} placeholder="Last Name" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
                   </div>
-                  <input name="nic" placeholder="NIC" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                  <input name="location" placeholder="Town / City" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <input name="nic" placeholder="NIC" value={formData.nic} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <input name="location" placeholder="Postal Code" value={formData.location} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
                 </div>
                 <div className="flex justify-end pt-6">
                   <button type="button" onClick={() => validateStep1() ? setStep(2) : toast.error("Please fill all the identity details") } className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md">Next</button>
@@ -153,11 +153,11 @@ export default function SGRegister() {
             {step === 2 && (
               <>
                 <div className="space-y-3">
-                  <input name="phone" placeholder="Phone Number" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                  <input name="email" placeholder="Email" type="email" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                  <input name="password" placeholder="Password" type="password" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                  <input name="confirmPassword" placeholder="Confirm Password" type="password" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                  <textarea name="address" placeholder="Full Address" rows={2} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full resize-none" required />
+                  <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <input name="email" placeholder="Email" type="email" value={formData.email} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <input name="password" placeholder="Password" type="password" value={formData.password} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <input name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} type="password" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <textarea name="address" placeholder="Full Address" rows={2} value={formData.address} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full resize-none" required />
                 </div>
                 <div className="flex justify-between pt-2">
                   <button type="button" onClick={() => setStep(1)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Back</button>
@@ -186,15 +186,27 @@ export default function SGRegister() {
                           </div>
                         </div>
                       </label>
+                      <div className="flex items-start gap-4">
                       <input
                         type="file"
                         name={name}
                         accept="image/*"
+                        
                         multiple={!single}
                         onChange={handleFileChange}
-                        className="w-full file:py-2 file:ml-1 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                        required={!single && name !== "extraCerts"}
+                        className="flex-shrink-0 w-full max-w-xs text-transparent file:text-blue-700 file:bg-blue-50 hover:file:bg-blue-100 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold cursor-pointer"                        required={!single && name !== "extraCerts"}
+                        
                       />
+                      {formData[name] && formData[name].length > 0 && (
+    <div className="max-h-24 overflow-y-auto rounded-md border border-gray-200 p-2 bg-gray-50 w-full">
+      <ul className="list-disc list-inside text-sm text-gray-600">
+        {formData[name].map((file, idx) => (
+          <li key={idx} className="truncate">{file.name}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
                     </div>
                   ))}
                             </div>

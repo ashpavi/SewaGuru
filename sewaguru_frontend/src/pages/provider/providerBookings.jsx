@@ -1,4 +1,4 @@
-export default function SGBookings() {
+export default function ProviderBookings() {
     return (
         <div>
             <h1>Bookings Page</h1>

@@ -21,13 +21,13 @@ export default function Header() {
         {/* Action Buttons */}
         <div className="flex md:hidden gap-2 text-xs">
           <Link
-            to="/becomeGuru"
+            to="/provider/providerRegister"
             className="bg-green-500 hover:bg-green-600 text-white font-medium px-3 py-1.5 text-center rounded-full shadow-md hover:shadow-lg transition"
           >
             Become a SewaGuru
           </Link>
           <Link
-            to="/SignIn"
+            to="/logIn"
             className="bg-white text-[#48B8E3] hover:bg-blue-100 font-medium text-center px-3 py-1.5 rounded-full shadow-md hover:shadow-lg transition"
           >
             Log In /Sign Up
@@ -60,7 +60,7 @@ export default function Header() {
           {/* Desktop Action Buttons */}
           <div className="hidden md:flex flex-col md:flex-row gap-6 mt-4 md:mt-0 md:ml-8 w-full md:w-auto">
             <Link
-              to="/sewaguru/sgRegister"
+              to="/provider/providerRegister"
               className="bg-green-500 hover:bg-green-600 text-white font-medium px-4 py-2 rounded-full text-sm shadow-md hover:shadow-lg transition text-center"
             >
               Become a SewaGuru
