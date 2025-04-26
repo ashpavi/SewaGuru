@@ -1,6 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { IoInformationCircleSharp } from "react-icons/io5";
+
 
 
 
@@ -168,14 +170,22 @@ export default function SGRegister() {
               <>
                 <div className="space-y-4">
                   {[
-                    { label: "NIC (Front & Back)", name: "nicImages" },
-                    { label: "Profile Image", name: "profileImage", single: true },
-                    { label: "Grama Seva Certificate (GS)", name: "gsCerts" },
-                    { label: "Police Clearance Certificate", name: "policeCerts" },
-                    { label: "Other Certifications (Optional)", name: "extraCerts" }
-                  ].map(({ label, name, single }) => (
+                    { label: "NIC (Front & Back)", name: "nicImages", info: "Upload clear images of both sides of your NIC to verify identity." },
+                    { label: "Profile Image", name: "profileImage", single: true, info: "Upload a professional profile picture." },
+                    { label: "Grama Seva Certificate (GS)", name: "gsCerts", info: "Upload a scanned copy of your GS certificate to verify proof of residence." },
+                    { label: "Police Clearance Certificate", name: "policeCerts", info: "Upload a valid police clearance certificate to ensure a clean background." },
+                    { label: "Other Certifications (Optional)", name: "extraCerts", info: "Upload any other certificates to showcase your expertise." }
+                  ].map(({ label, name, single, info }) => (
                     <div key={name}>
-                      <label className="block text-gray-700 font-medium mb-2">{label}</label>
+                      <label className="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+                        {label}
+                        <div className="relative group">
+                          <IoInformationCircleSharp className="text-blue-500 hover:text-blue-700 cursor-pointer" />
+                          <div className="absolute left-6 top-1/2 transform -translate-y-1/2 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap z-10">
+                            {info}
+                          </div>
+                        </div>
+                      </label>
                       <input
                         type="file"
                         name={name}
@@ -187,16 +197,16 @@ export default function SGRegister() {
                       />
                     </div>
                   ))}
-                </div>
-                <div className="flex justify-between pt-6">
-                  <button type="button" onClick={() => setStep(2)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Back</button>
-                  <button type="submit" className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg shadow-md">Submit</button>
-                </div>
-              </>
-            )}
-          </form>
-        </div>
-      )}
+                            </div>
+                            <div className="flex justify-between pt-6">
+                              <button type="button" onClick={() => setStep(2)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Back</button>
+                              <button type="submit" className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg shadow-md">Submit</button>
+                            </div>
+                          </>
+                        )}
+                      </form>
+                    </div>
+                  )}
 
             {submitted && (
                     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4 py-6">
