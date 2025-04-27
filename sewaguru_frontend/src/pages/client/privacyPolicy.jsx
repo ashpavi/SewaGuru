@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import Header from "../components/header";
-import Footer from "../components/Footer";
+import Header from "../../components/header";
+import Footer from "../../components/Footer";
 import { FaShieldAlt, FaFileSignature, FaEnvelopeOpenText, FaMapMarkedAlt, FaMoneyBillWave } from "react-icons/fa";
 
 

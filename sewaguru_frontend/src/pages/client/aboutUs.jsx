@@ -1,14 +1,15 @@
 
 import { motion } from "framer-motion";
 import { FaCheckCircle, FaUserShield, FaTools, FaBolt, FaMobileAlt } from "react-icons/fa";
-import Header from "../components/header";
-import Footer from "../components/Footer";
+
 import { Link } from "react-router-dom";
+import Header from "../../components/header";
+import Footer from "../../components/Footer";
 
 
 export default function AboutUsPage() {
   return (
-    <div className="w-full bg-white text-gray-800">
+    <div className="w-full h-screen bg-white max-h-screen  text-gray-800">
       <Header />
 
       {/* Hero Section */}
@@ -33,7 +34,7 @@ export default function AboutUsPage() {
 
       {/* Who We Are */}
       <section className="py-12 bg-white px-6 max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        <img src="construction.jpg" alt="About SewaGuru" className="rounded-xl shadow-lg w-full" />
+        <img src="/construction.jpg" alt="About SewaGuru" className="rounded-xl shadow-lg w-full " />
         <div>
           <h2 className="text-3xl font-semibold text-blue-700 mb-4">Who We Are</h2>
           <p className="text-gray-700 text-lg leading-relaxed">
@@ -59,7 +60,7 @@ export default function AboutUsPage() {
       {/* Why Choose Us */}
       <section className="py-12 px-6 max-w-6xl mx-auto">
         <h2 className="text-3xl font-semibold text-blue-700 mb-8 text-center">Why Choose SewaGuru?</h2>
-        <div className="grid md:grid-cols-3 gap-8 text-center">
+        <div className="grid md:grid-cols-3 gap-8 justify-center text-center items-center">
           {[
             { icon: <FaTools size={30} />, title: "Wide Range of Services" },
             { icon: <FaUserShield size={30} />, title: "Verified Professionals" },
@@ -91,7 +92,7 @@ export default function AboutUsPage() {
           <p className="text-gray-700 max-w-3xl mx-auto text-lg mb-6">
             Are you a skilled professional looking to expand your business? Become a SewaGuru and reach more customers. We provide the platform, marketing, and support — you provide the expertise.
           </p>
-          <Link to="/sewaguru/sgRegister" className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">Register Now</Link>
+          <Link to="/provider/providerRegister" className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">Register Now</Link>
         </motion.div>
       </section>
 

@@ -1,9 +1,7 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 
-export default function ForbiddenPage() {
-  const navigate = useNavigate();
-
+export default function NotFoundPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 px-6 py-12">
       <motion.div
@@ -13,20 +11,20 @@ export default function ForbiddenPage() {
         className="bg-white p-10 rounded-3xl shadow-2xl flex flex-col items-center space-y-6 max-w-lg w-full text-center"
       >
         <img
-          src="forbidden.jpg"
-          alt="Forbidden Access"
+          src="404.jpg"
+          alt="Page Not Found"
           className="w-64 h-auto object-contain rounded-2xl shadow-md"
         />
-        <h1 className="text-3xl font-bold text-red-600">403 Forbidden</h1>
+        <h1 className="text-3xl font-bold text-red-600">404 Not Found</h1>
         <p className="text-gray-600">
-          You don't have permission to access this page. Please check your credentials or try going back.
+          The page you are looking for does not exist. Please check the URL or go back to the homepage.
         </p>
-        <button
-          onClick={() => navigate(-1)}
-          className="mt-6 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full shadow-md transition duration-300"
+        <Link
+          to="/"
+          className="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-md transition duration-300"
         >
-          Go Back
-        </button>
+          Go to Homepage
+        </Link>
       </motion.div>
     </div>
   );

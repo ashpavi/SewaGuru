@@ -3,10 +3,6 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import HomePage from "./pages/homePage";
 
-import ContactUs from "./pages/ContactUs";
-import AboutUs from "./pages/AboutUs";
-import OurServices from "./pages/OurServices";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
 import SignUp from "./pages/signUp";
 import AdminPage from "./pages/adminPage";
 
@@ -18,6 +14,13 @@ import ProviderHomePage from "./pages/provider/providerHomePage";
 import ProtectedRoute from "./components/protectedRoute";
 import { jwtDecode } from "jwt-decode";
 import ForbiddenPage from "./pages/forbidden";
+
+import AboutUsPage from "./pages/client/AboutUs";
+import ContactUs from "./pages/client/contactUs";
+import OurServices from "./pages/client/ourServices";
+import PrivacyPolicyPage from "./pages/client/privacyPolicy";
+import NotFoundPage from "./pages/404";
+import ProfileDashboard from "./pages/client/profiledashboard";
 
 
 
@@ -36,18 +39,24 @@ function App() {
       <Toaster position="top-right" />
     
       <Routes>
+        
         <Route element={<ProtectedRoute isAllowed={isAdmin} redirectPath="/forbidden"/>}>
         <Route path="/admin/*" element={<AdminPage />} />
         </Route>
+        <Route path="/" element={<HomePage />} />
         
         <Route path="/forbidden" element={<ForbiddenPage />} />
+        
         <Route path="/logIn" element={<LogIn />} />
         <Route path="/signUp" element={<SignUp />} />
-        <Route path="/contactUs" element={<ContactUs />} />
-        <Route path="/aboutUs" element={<AboutUs />} />
-        <Route path="/ourServices" element={<OurServices />} />
-        <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+        <Route path="/client/aboutUs" element={<AboutUsPage />} />
+        <Route path="/client/contactUs" element={<ContactUs />} />
+        <Route path="/client/ourServices" element={<OurServices />} />
+        <Route path="/client/privacyPolicy" element={<PrivacyPolicyPage />} />
+        <Route path="/client/profileDashboard" element={<ProfileDashboard />} />
+
         <Route path="/provider/providerRegister" element={<ProviderRegister />} />
+        
 
         
         <Route element={<ProtectedRoute isAllowed={isProvider} redirectPath="/forbidden"/>}>
@@ -55,8 +64,9 @@ function App() {
         </Route>
         
         <Route path="/testing" element={<Testing />} />
+        <Route path="/*" element={<NotFoundPage />} />
 
-        <Route path="/*" element={<HomePage />} />
+        
       </Routes>
       
     </BrowserRouter>

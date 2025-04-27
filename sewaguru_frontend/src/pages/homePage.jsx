@@ -12,9 +12,15 @@ import {
 } from "react-icons/fa";
 import Header from "../components/header";
 import Footer from "../components/Footer";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { Button} from "flowbite-react";
+import AboutUsPage from "./client/AboutUs";
+import ContactUs from "./client/contactUs";
+import OurServices from "./client/ourServices";
+import PrivacyPolicyPage from "./client/privacyPolicy";
+import NotFoundPage from "./404";
+import { Route, Routes } from "react-router-dom";
 
 
 export default function HomePage() {
@@ -40,11 +46,11 @@ export default function HomePage() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full h-screen bg-white max-h-screen  text-gray-800">
       <Header/>
+      
+
      
-
-
       {/* Hero Section with Search */}
         <section className="bg-gray-100 w-full py-12">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center px-6">
@@ -91,8 +97,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Emergency Services Section */}
-        
+
+      {/* Emergency Services Section */}       
         <section className="relative py-12 px-8">
         <div className="max-w-5xl mx-auto relative z-10 border-3 border-red-300 rounded-2xl bg-red-50/80 shadow-lg overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-red-100 via-white to-red-50 opacity-30 pointer-events-none rounded-2xl"></div>
@@ -133,7 +139,8 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
+
 
       {/* Modal */}
       {isOpen && (
@@ -205,13 +212,8 @@ export default function HomePage() {
       )}
 
 
-
-      
-
-            
-            {/* Services Icons */}
-      
-          <section className="py-10 bg-gray-50">
+      {/* Services Icons */}
+      <section className="py-10 bg-gray-50">
             <div className="max-w-6xl mx-auto px-6 grid grid-cols-3 md:grid-cols-6 gap-6 text-center text-sm text-gray-700">
               {[ 
                 { icon: <FaBroom size={30} />, label: "Cleaning" },
@@ -229,7 +231,7 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          </section>
+      </section>
 
 
       {/* Popular Services Near You */}
@@ -245,6 +247,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
 
       {/* Subscription Based Services */}
       <section className="py-10 bg-gray-100">
@@ -273,6 +276,7 @@ export default function HomePage() {
         </div>
       </section>
 
+
       {/* Testimonials */}
       <section className="py-10">
         <div className="max-w-6xl mx-auto px-6">
@@ -293,7 +297,7 @@ export default function HomePage() {
       </section>
       <Footer/>
     </div>
-
+    
   )
 }
 

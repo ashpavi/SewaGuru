@@ -2,7 +2,9 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { IoInformationCircleSharp } from "react-icons/io5";
-
+import { FaSearchLocation } from "react-icons/fa";
+import Header from "../../components/header";
+import Footer from "../../components/footer";
 
 
 
@@ -16,23 +18,44 @@ export default function ProviderRegister() {
     navigate("/provider/providerHomePage");
   };
 
+  const closeModel=()=>{
+    setOpenModal(false)
+    setFormData({
+      firstName:"",
+      lastName: "",
+      email: "",
+      service: "",
+      phone: "",
+      location: "",
+      nic: "",
+      password: "",
+      confirmPassword: "",
+      address: "",
+      profileImage: null,
+      nicImages: [],
+      gsCerts: [],
+      policeCerts: [],
+      extraCerts: []
+    })
+  }
+
 
   const [formData, setFormData] = useState({
     firstName: "",
-    email: "",
-    service: "",
-    phone: "",
-    location: "",
-    lastName: "",
-    nic: "",
-    password: "",
-    confirmPassword: "",
-    address: "",
-    profileImage: null,
-    nicImages: [],
-    gsCerts: [],
-    policeCerts: [],
-    extraCerts: []
+      email: "",
+      service: "",
+      phone: "",
+      location: "",
+      lastName: "",
+      nic: "",
+      password: "",
+      confirmPassword: "",
+      address: "",
+      profileImage: null,
+      nicImages: [],
+      gsCerts: [],
+      policeCerts: [],
+      extraCerts: []
   });
 
   const handleChange = (e) => {
@@ -70,6 +93,8 @@ export default function ProviderRegister() {
   };
 
   return (
+    <>
+    <Header/>
     <div className="bg-gradient-to-br from-gray-100 to-blue-50 min-h-screen flex items-center justify-center py-12 px-6">
       <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full flex flex-col md:flex-row overflow-hidden">
         <div className="md:w-1/2 bg-white flex items-center justify-center p-6 md:p-10">
@@ -120,7 +145,7 @@ export default function ProviderRegister() {
       {openModal && !submitted && (
         <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-md flex items-center justify-center px-4 py-6">
           <form onSubmit={handleSubmit} className="bg-white w-full max-w-2xl p-8 sm:p-10 rounded-3xl shadow-2xl space-y-6 animate-fadeIn relative">
-            <button type="button" onClick={() => setOpenModal(false)} className="absolute top-5 right-10 text-red-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+            <button type="button" onClick={() => closeModel()} className="absolute top-5 right-10 text-red-500 hover:text-red-600 text-2xl font-bold">&times;</button>
             <div className="text-center">
               <h3 className="text-3xl font-bold text-gray-800">
                 {step === 1 && "Let's Get Started"}
@@ -138,26 +163,85 @@ export default function ProviderRegister() {
               <>
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input name="firstName" value={formData.firstName} placeholder="First Name / Business" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                    <input name="lastName" value={formData.lastName} placeholder="Last Name" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                    <input
+                      name="firstName"
+                      value={formData.firstName}
+                      placeholder="First Name / Business"
+                      onChange={handleChange}
+                      className="border px-4 py-2 rounded-lg w-full"
+                      required
+                    />
+                    <input
+                      name="lastName"
+                      value={formData.lastName}
+                      placeholder="Last Name"
+                      onChange={handleChange}
+                      className="border px-4 py-2 rounded-lg w-full"
+                      required
+                    />
                   </div>
-                  <input name="nic" placeholder="NIC" value={formData.nic} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                  <input name="location" placeholder="Postal Code" value={formData.location} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <input
+                    name="nic"
+                    placeholder="NIC"
+                    value={formData.nic}
+                    onChange={handleChange}
+                    className="border px-4 py-2 rounded-lg w-full"
+                    required
+                  />
+                  
+                  {/* Postal Code Input + Button in same line */}
+                  <div className="grid grid-cols-5 gap-4">
+                    <div className="col-span-4">
+                      <input
+                        name="location"
+                        placeholder="Postal Code"
+                        value={formData.location}
+                        onChange={handleChange}
+                        className="border px-4 py-2 rounded-lg w-full"
+                        required
+                      />
+                    </div>
+                    <div className="col-span-1 flex justify-center items-center">
+                    
+                      <a
+                        
+                        href="https://www.geonames.org/postalcode-search.html?q=&country=lk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-green-500 hover:bg-green-600 text-white flex justify-center items-center gap-1 text-xs px-3 py-2 rounded-lg shadow-md text-center"
+                      >
+                        <FaSearchLocation />
+                        Find
+                      </a>
+                    </div>
+                  </div>
+
                 </div>
                 <div className="flex justify-end pt-6">
-                  <button type="button" onClick={() => validateStep1() ? setStep(2) : toast.error("Please fill all the identity details") } className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md">Next</button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      validateStep1()
+                        ? setStep(2)
+                        : toast.error("Please fill all the identity details")
+                    }
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md"
+                  >
+                    Next
+                  </button>
                 </div>
               </>
             )}
+
 
             {step === 2 && (
               <>
                 <div className="space-y-3">
                   <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <textarea name="address" placeholder="Full Address" rows={2} value={formData.address} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full resize-none" required />
                   <input name="email" placeholder="Email" type="email" value={formData.email} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
                   <input name="password" placeholder="Password" type="password" value={formData.password} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
                   <input name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} type="password" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                  <textarea name="address" placeholder="Full Address" rows={2} value={formData.address} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full resize-none" required />
                 </div>
                 <div className="flex justify-between pt-2">
                   <button type="button" onClick={() => setStep(1)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Back</button>
@@ -177,7 +261,7 @@ export default function ProviderRegister() {
                     { label: "Other Certifications (Optional)", name: "extraCerts", info: "Upload any other certificates to showcase your expertise." }
                   ].map(({ label, name, single, info }) => (
                     <div key={name}>
-                      <label className="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+                      <label className=" text-gray-700 font-medium mb-2 flex items-center gap-2">
                         {label}
                         <div className="relative group">
                           <IoInformationCircleSharp className="text-blue-500 hover:text-blue-700 cursor-pointer" />
@@ -186,7 +270,7 @@ export default function ProviderRegister() {
                           </div>
                         </div>
                       </label>
-                      <div className="flex items-start gap-4">
+                      <div className="flex items-start gap-2">
                       <input
                         type="file"
                         name={name}
@@ -194,23 +278,23 @@ export default function ProviderRegister() {
                         
                         multiple={!single}
                         onChange={handleFileChange}
-                        className="flex-shrink-0 w-full max-w-xs text-transparent file:text-blue-700 file:bg-blue-50 hover:file:bg-blue-100 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold cursor-pointer"                        required={!single && name !== "extraCerts"}
+                        className="flex-shrink-0 w-full max-w-xs text-transparent file:text-blue-700 file:bg-blue-50 hover:file:bg-blue-100 file:ml-1 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold cursor-pointer"                        required={!single && name !== "extraCerts"}
                         
                       />
                       {formData[name] && formData[name].length > 0 && (
-    <div className="max-h-24 overflow-y-auto rounded-md border border-gray-200 p-2 bg-gray-50 w-full">
-      <ul className="list-disc list-inside text-sm text-gray-600">
-        {formData[name].map((file, idx) => (
-          <li key={idx} className="truncate">{file.name}</li>
-        ))}
-      </ul>
-    </div>
-  )}
-</div>
+                        <div className="max-h-24 overflow-y-auto rounded-md border border-gray-200 p-2 bg-gray-50 w-full">
+                          <ul className="list-disc list-inside text-sm text-gray-600">
+                            {formData[name].map((file, idx) => (
+                              <li key={idx} className="truncate">{file.name}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                  </div>
                     </div>
                   ))}
                             </div>
-                            <div className="flex justify-between pt-6">
+                            <div className="flex justify-between pt-1">
                               <button type="button" onClick={() => setStep(2)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Back</button>
                               <button type="submit" className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg shadow-md">Submit</button>
                             </div>
@@ -245,5 +329,7 @@ export default function ProviderRegister() {
                     </div>
                   )}
     </div>
+    <Footer/>
+    </>
   );
 }
