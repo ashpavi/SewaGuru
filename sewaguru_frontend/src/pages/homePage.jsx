@@ -15,12 +15,7 @@ import Footer from "../components/Footer";
 import { useState } from "react";
 
 import { Button} from "flowbite-react";
-import AboutUsPage from "./client/AboutUs";
-import ContactUs from "./client/contactUs";
-import OurServices from "./client/ourServices";
-import PrivacyPolicyPage from "./client/privacyPolicy";
-import NotFoundPage from "./404";
-import { Route, Routes } from "react-router-dom";
+
 
 
 export default function HomePage() {

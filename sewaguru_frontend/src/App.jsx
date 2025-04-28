@@ -1,12 +1,13 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 
 import { Toaster } from "react-hot-toast";
-import HomePage from "./pages/homePage";
+
 
 import SignUp from "./pages/signUp";
 import AdminPage from "./pages/adminPage";
 
 import Testing from "./pages/testing";
+import HomePage from "./pages/homePage";
 
 import LogIn from "./pages/logIn";
 import ProviderRegister from "./pages/provider/providerRegister";
@@ -43,7 +44,7 @@ function App() {
         <Route element={<ProtectedRoute isAllowed={isAdmin} redirectPath="/forbidden"/>}>
         <Route path="/admin/*" element={<AdminPage />} />
         </Route>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage/>} />
         
         <Route path="/forbidden" element={<ForbiddenPage />} />
         
@@ -64,7 +65,7 @@ function App() {
         </Route>
         
         <Route path="/testing" element={<Testing />} />
-        <Route path="/*" element={<NotFoundPage />} />
+        <Route path="*" element={<NotFoundPage />} />
 
         
       </Routes>
