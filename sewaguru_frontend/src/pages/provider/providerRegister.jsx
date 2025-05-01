@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { IoInformationCircleSharp } from "react-icons/io5";
 import { FaSearchLocation } from "react-icons/fa";
 import Header from "../../components/header";
-import Footer from "../../components/footer";
+import Footer from "../../components/Footer";
+
 
 
 
@@ -15,7 +16,7 @@ export default function ProviderRegister() {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate("/provider/providerHomePage");
+    navigate("/providerHomePage");
   };
 
   const closeModel=()=>{
@@ -274,7 +275,7 @@ export default function ProviderRegister() {
                       <input
                         type="file"
                         name={name}
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         
                         multiple={!single}
                         onChange={handleFileChange}

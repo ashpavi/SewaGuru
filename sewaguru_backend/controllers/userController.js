@@ -123,6 +123,12 @@ export const login = async (req, res) => {
 
         const tokens = await generateTokens(user);
         res.json(tokens);
+
+
+        console.log("User logged in:", { id: user.id, name: user.firstName + " " + user.lastName, email: user.email, role: user.role });
+
+
+
     } catch (err) {
         res.status(500).json({ msg: err.message });
     }
