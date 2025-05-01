@@ -16,7 +16,6 @@ const generateTokens = async (user) => {
     });
 
     user.refreshToken = refreshToken;
-    await user.save();
 
     return { accessToken, refreshToken };
 };
@@ -75,8 +74,8 @@ export const register = async (req, res) => {
 
         // Upload and assign provider-related files
         let nicImgSrc = [];
-        if (files?.nicImg?.length) {
-            for (const file of files.nicImg) {
+        if (files?.nicImages?.length) {
+            for (const file of files.nicImages) {
                 const url = await uploadBufferToSupabase(file.buffer, email, 'nicImg');
                 uploadedFiles.push(url);
                 nicImgSrc.push(url);
@@ -85,24 +84,24 @@ export const register = async (req, res) => {
 
         let profilePicSrc, gsCertSrc, policeCertSrc;
 
-        if (files?.profileImg?.[0]) {
-            profilePicSrc = await uploadBufferToSupabase(files.profileImg[0].buffer, email, 'profileImg');
+        if (files?.profileImage?.[0]) {
+            profilePicSrc = await uploadBufferToSupabase(files.profileImage[0].buffer, email, 'profileImg');
             uploadedFiles.push(profilePicSrc);
         }
 
-        if (files?.gsCertImg?.[0]) {
-            gsCertSrc = await uploadBufferToSupabase(files.gsCertImg[0].buffer, email, 'gsCertImg');
+        if (files?.gsCerts?.[0]) {
+            gsCertSrc = await uploadBufferToSupabase(files.gsCerts[0].buffer, email, 'gsCertImg');
             uploadedFiles.push(gsCertSrc);
         }
 
-        if (files?.policeCertImg?.[0]) {
-            policeCertSrc = await uploadBufferToSupabase(files.policeCertImg[0].buffer, email, 'policeCertImg');
+        if (files?.policeCerts?.[0]) {
+            policeCertSrc = await uploadBufferToSupabase(files.policeCerts[0].buffer, email, 'policeCertImg');
             uploadedFiles.push(policeCertSrc);
         }
 
         const otherSrc = [];
-        if (files?.otherImg?.length) {
-            for (const file of files.otherImg) {
+        if (files?.extraCerts?.length) {
+            for (const file of files.extraCerts) {
                 const url = await uploadBufferToSupabase(file.buffer, email, 'otherImg', ['image/', 'application/pdf']);
                 uploadedFiles.push(url);
                 otherSrc.push(url);
@@ -129,21 +128,14 @@ export const register = async (req, res) => {
             })
         });
 
-        const savedUser = await user.save();
-
-        if (savedUser.role === 'provider') {
-            const { accessToken, refreshToken } = generateTokens(savedUser);
-            savedUser.refreshToken = refreshToken;
-            await savedUser.save();
-
-            return res.status(201).json({
-                msg: 'Provider registered and logged in successfully',
-                accessToken,
-                refreshToken
-            });
+        if (role === 'provider') {
+            const { accessToken, refreshToken } = generateTokens(user);
+            user.refreshToken = refreshToken;
         }
 
-        res.status(201).json({ msg: 'Customer registered successfully, please log in.' });
+        const savedUser = await user.save();
+
+        res.status(201).json({ msg: 'Registered successfully, please log in.' });
 
     } catch (err) {
         // Clean up any uploaded files on failure
@@ -190,8 +182,11 @@ export const login = async (req, res) => {
         if (user.isDisabled)
             return res.status(403).json({ msg: 'Account is disabled' });
 
-        const tokens = await generateTokens(user);
-        res.json(tokens);
+        const {accessToken, refreshToken} = await generateTokens(user);
+        user.refreshToken = refreshToken;
+        user.save()
+
+        res.json({ accessToken, refreshToken });
 
 
         console.log("User logged in:", { id: user.id, name: user.firstName + " " + user.lastName, email: user.email, role: user.role });
@@ -219,9 +214,11 @@ export const refreshToken = async (req, res) => {
         }
 
         // Generate new tokens
-        const tokens = await generateTokens(user);
+        const {accessToken,refreshToken} = await generateTokens(user);
+        user.refreshToken=refreshToken;
+        user.save()
 
-        res.json(tokens);
+        res.json({accessToken,refreshToken});
     } catch (e) {
         res.status(403).json({ msg: 'Invalid or expired refresh token' });
         console.log(e);
@@ -259,7 +256,7 @@ export const upgradeToProvider = async (req, res) => {
         const nicImgSrc = [];
         if (files?.nicImg?.length) {
             for (const file of files.nicImg) {
-                const url = await uploadBufferToSupabase(file.buffer, user._id, 'nicImg');
+                const url = await uploadBufferToSupabase(file.buffer, user.email, 'nicImg');
                 uploadedFiles.push(url);
                 nicImgSrc.push(url);
             }
@@ -267,26 +264,26 @@ export const upgradeToProvider = async (req, res) => {
 
         let profilePicSrc = user.profilePicSrc;
         if (files?.profileImg?.[0]) {
-            profilePicSrc = await uploadBufferToSupabase(files.profileImg[0].buffer, user._id, 'profileImg');
+            profilePicSrc = await uploadBufferToSupabase(files.profileImg[0].buffer, user.email, 'profileImg');
             uploadedFiles.push(profilePicSrc);
         }
 
         let gsCertSrc = user.gsCertSrc;
         if (files?.gsCertImg?.[0]) {
-            gsCertSrc = await uploadBufferToSupabase(files.gsCertImg[0].buffer, user._id, 'gsCertImg');
+            gsCertSrc = await uploadBufferToSupabase(files.gsCertImg[0].buffer, user.email, 'gsCertImg');
             uploadedFiles.push(gsCertSrc);
         }
 
         let policeCertSrc = user.policeCertSrc;
         if (files?.policeCertImg?.[0]) {
-            policeCertSrc = await uploadBufferToSupabase(files.policeCertImg[0].buffer, user._id, 'policeCertImg');
+            policeCertSrc = await uploadBufferToSupabase(files.policeCertImg[0].buffer, user.email, 'policeCertImg');
             uploadedFiles.push(policeCertSrc);
         }
 
         const otherSrc = [];
         if (files?.otherImg?.length) {
             for (const file of files.otherImg) {
-                const url = await uploadBufferToSupabase(file.buffer, user._id, 'otherImg', ['image/', 'application/pdf']);
+                const url = await uploadBufferToSupabase(file.buffer, user.email, 'otherImg', ['image/', 'application/pdf']);
                 uploadedFiles.push(url);
                 otherSrc.push(url);
             }

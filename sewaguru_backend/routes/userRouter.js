@@ -10,7 +10,15 @@ const router = express.Router();
 router.get('/test', test)
 
 router.get('/', authenticate, getLoggedInUser);
-router.post('/register', register);
+
+router.post('/register',upload.fields([
+  { name: 'nicImages', maxCount: 2 },
+  { name: 'profileImage', maxCount: 1 },
+  { name: 'gsCerts', maxCount: 1 },
+  { name: 'policeCerts', maxCount: 1 },
+  { name: 'extraCerts' },
+]), register);
+
 router.post('/create-admin', authenticate, adminOnly, createAdmin);
 router.post('/login', login);
 router.post('/refresh', refreshToken);
@@ -21,11 +29,11 @@ router.post('/upgrade',
   authenticate,
   customerOnly,
   upload.fields([
-    { name: 'nicImg', maxCount: 2 },
-    { name: 'profileImg', maxCount: 1 },
-    { name: 'gsCertImg', maxCount: 1 },
-    { name: 'policeCertImg', maxCount: 1 },
-    { name: 'otherImg' },
+    { name: 'nicImages', maxCount: 2 },
+    { name: 'profileImage', maxCount: 1 },
+    { name: 'gsCerts', maxCount: 1 },
+    { name: 'policeCerts', maxCount: 1 },
+    { name: 'extraCerts' },
   ]),
   upgradeToProvider
 );

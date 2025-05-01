@@ -37,7 +37,7 @@ export default function LogIn() {
         if (userrole === "admin") {
           window.location.href = "/admin"; 
         } else if (userrole === "provider") {
-          window.location.href = "/providerHomepage";
+          window.location.href = "provider/providerDashboard";
         } else {
           window.location.href = "/";
         }

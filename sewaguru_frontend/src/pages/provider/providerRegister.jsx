@@ -5,18 +5,59 @@ import { IoInformationCircleSharp } from "react-icons/io5";
 import { FaSearchLocation } from "react-icons/fa";
 import Header from "../../components/header";
 import Footer from "../../components/Footer";
+import api from "../../api/api";
 
 
 
 
 export default function ProviderRegister() {
+
+  const handleRegister = () => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("firstName", formData.firstName);
+    formDataToSend.append("lastName", formData.lastName);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("phone", formData.phone);
+    formDataToSend.append("password",formData.password);
+    formDataToSend.append("role","provider");
+    formDataToSend.append("nic",formData.nic)
+    formDataToSend.append("location",formData.location)
+    formDataToSend.append("address",formData.address)
+    formDataToSend.append("serviceType",formData.serviceType)
+    formDataToSend.append("gsCerts",formData.gsCerts)
+    formDataToSend.append("policeCerts",formData.policeCerts)
+    formDataToSend.append("profileImage",formData.profileImage)
+    Array.from(formData.nicImages).forEach(file => {
+      formDataToSend.append('nicImages', file);
+    });
+    Array.from(formData.extraCerts).forEach(file => {
+      formDataToSend.append('extraCerts', file);
+    });
+    
+    
+    
+       api.post("/user/register",
+        formDataToSend,{
+          headers:{
+            'Content-Type':'multipart/form-data'
+          }
+        }
+       ).then((res) => {
+            toast.success("Registration successful!");
+            navigate("/login");
+          }).catch((err) => {
+            console.error(err);
+            toast.error(err.response?.data?.message || "Registration failed");
+          })
+        }
+
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate("/provider/providerDashboard");
+    navigate("/login");
   };
 
   const closeModel=()=>{
@@ -25,7 +66,7 @@ export default function ProviderRegister() {
       firstName:"",
       lastName: "",
       email: "",
-      service: "",
+      serviceType: "",
       phone: "",
       location: "",
       nic: "",
@@ -34,8 +75,8 @@ export default function ProviderRegister() {
       address: "",
       profileImage: null,
       nicImages: [],
-      gsCerts: [],
-      policeCerts: [],
+      gsCerts: null,
+      policeCerts: null,
       extraCerts: []
     })
   }
@@ -44,7 +85,7 @@ export default function ProviderRegister() {
   const [formData, setFormData] = useState({
     firstName: "",
       email: "",
-      service: "",
+      serviceType: "",
       phone: "",
       location: "",
       lastName: "",
@@ -54,8 +95,8 @@ export default function ProviderRegister() {
       address: "",
       profileImage: null,
       nicImages: [],
-      gsCerts: [],
-      policeCerts: [],
+      gsCerts: null,
+      policeCerts: null,
       extraCerts: []
   });
 
@@ -67,20 +108,26 @@ export default function ProviderRegister() {
     const { name, files } = e.target;
     if (name === "profileImage") {
       setFormData({ ...formData, profileImage: files[0] });
+    } else if (name === "gsCerts") {
+      setFormData({ ...formData, gsCerts: files[0] });
+    } else if(name==="policeCerts") {
+      setFormData({ ...formData, policeCerts: files[0] });
     } else {
       setFormData({ ...formData, [name]: [...files] });
     }
   };
 
   const handleSubmit = (e) => {
+
     e.preventDefault();
+    handleRegister()
     toast.success("Form Submitted");
     setSubmitted(true);
   };
 
   const validateStep1 = () => {
-    const { firstName, lastName, nic, location, service } = formData;
-    return firstName && lastName && nic && location && service;
+    const { firstName, lastName, nic, location, serviceType } = formData;
+    return firstName && lastName && nic && location && serviceType;
   };
 
   const validateStep2 = () => {
@@ -111,23 +158,24 @@ export default function ProviderRegister() {
           </p>
           <div className="flex flex-wrap gap-4 items-center">
             <select
-              name="service"
+              name="serviceType"
               onChange={handleChange}
               className="w-48 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-400"
-              value={formData.service}
+              value={formData.serviceType}
             >
+            
               <option value="">Your Service</option>
-              <option value="Home Service & Repair">Home Service & Repair</option>
-              <option value="Moving & Transport">Moving & Transport</option>
-              <option value="Cleaning & Pest Control">Cleaning & Pest Control</option>
-              <option value="Appliance Repair & Installation">Appliance Repair & Installation</option>
-              <option value="Home Security & Smart Solutions">Home Security & Smart Solutions</option>
-              <option value="Tree & Garden Services">Tree & Garden Services</option>
+              <option value="home_service_repairs">Home Service & Repair</option>
+              <option value="moving_transport">Moving & Transport</option>
+              <option value="cleaning_pest_control">Cleaning & Pest Control</option>
+              <option value="appliance_repair_installation">Appliance Repair & Installation</option>
+              <option value="home_security_solutions">Home Security & Smart Solutions</option>
+              <option value="tree_garden_services">Tree & Garden Services</option>
 
             </select>
             <button
               onClick={() => {
-                if (!formData.service) {
+                if (!formData.serviceType) {
                   toast.error("Please select your service type before continuing.");
                 } else {
                   setStep(1);
@@ -257,8 +305,8 @@ export default function ProviderRegister() {
                   {[
                     { label: "NIC (Front & Back)", name: "nicImages", info: "Upload clear images of both sides of your NIC to verify identity." },
                     { label: "Profile Image", name: "profileImage", single: true, info: "Upload a professional profile picture." },
-                    { label: "Grama Seva Certificate (GS)", name: "gsCerts", info: "Upload a scanned copy of your GS certificate to verify proof of residence." },
-                    { label: "Police Clearance Certificate", name: "policeCerts", info: "Upload a valid police clearance certificate to ensure a clean background." },
+                    { label: "Grama Seva Certificate (GS)", name: "gsCerts", single: true, info: "Upload a scanned copy of your GS certificate to verify proof of residence." },
+                    { label: "Police Clearance Certificate", name: "policeCerts", single: true, info: "Upload a valid police clearance certificate to ensure a clean background." },
                     { label: "Other Certifications (Optional)", name: "extraCerts", info: "Upload any other certificates to showcase your expertise." }
                   ].map(({ label, name, single, info }) => (
                     <div key={name}>

@@ -1,15 +1,30 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+import api from "../api/api";
 
 export default function ProviderHeader() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate("/logIn");
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      console.log("Logout token:", token);
+      await api.post("/user/logout",null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }); 
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      navigate("/logIn");
+    } catch (error) {
+      console.error("Logout error:", error);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      navigate("/logIn");
+    }
   };
 
   return (
