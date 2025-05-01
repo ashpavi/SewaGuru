@@ -81,12 +81,6 @@ export default function LogIn() {
           className="w-full px-5 py-3 mb-2 bg-white/10 border border-white/30 rounded-xl placeholder:text-gray-600 text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#104DA3] shadow-sm"
         />
 
-        {/* Forgot Password */}
-        <div className="w-full text-right mb-4">
-          <Link to="/forgot" className="text-sm text-blue-600 hover:underline">
-            Forgot password?
-          </Link>
-        </div>
 
         {/* Login Button */}
         <button onClick={() => handleLogin(email, password)} className="w-full bg-gradient-to-r from-[#48B8E3] to-[#2498d2] hover:from-[#3baede] hover:to-[#1f88c3] transition text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg mb-4">
