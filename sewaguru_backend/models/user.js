@@ -70,7 +70,7 @@ const userSchema = new mongoose.Schema({
         }
     },
     profilePicSrc: {
-        type: [String],
+        type: String,
         required: function () {
             return this.role === 'provider';
         }

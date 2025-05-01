@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
+import { uploadBufferToSupabase, getSupabase } from './uploadToSuperbase.js';
 
 const generateTokens = async (user) => {
-    const accessToken = jwt.sign({ id: user._id, role: user.role , firstName:user.firstName }, process.env.JWT_SECRET, {
+    const accessToken = jwt.sign({ id: user._id, role: user.role, firstName: user.firstName }, process.env.JWT_SECRET, {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
     });
 
@@ -125,6 +126,7 @@ export const login = async (req, res) => {
         res.json(tokens);
     } catch (err) {
         res.status(500).json({ msg: err.message });
+        console.log(err);
     }
 };
 
@@ -146,8 +148,9 @@ export const refreshToken = async (req, res) => {
         const tokens = await generateTokens(user);
 
         res.json(tokens);
-    } catch {
+    } catch (e) {
         res.status(403).json({ msg: 'Invalid or expired refresh token' });
+        console.log(e);
     }
 };
 
@@ -162,49 +165,109 @@ export const logout = async (req, res) => {
 };
 
 export const upgradeToProvider = async (req, res) => {
-    try {
-        const {
-            nic, location, address,
-            serviceType,
-            nicImgSrc,
-            gsCertSrc, policeCertSrc,
-            otherSrc
-        } = req.body;
+    const uploadedFiles = [];
 
+    try {
+        const { nic, location, address, serviceType } = req.body;
+        const files = req.files;
         const user = req.user;
 
+        // Set basic info
         user.role = 'provider';
         user.nic = nic;
         user.location = location;
         user.address = address;
         user.serviceType = serviceType;
+
+        // Image uploads (store in temporary variables)
+        const nicImgSrc = [];
+        if (files?.nicImg?.length) {
+            for (const file of files.nicImg) {
+                const url = await uploadBufferToSupabase(file.buffer, user._id, 'nicImg');
+                uploadedFiles.push(url);
+                nicImgSrc.push(url);
+            }
+        }
+
+        let profilePicSrc = user.profilePicSrc;
+        if (files?.profileImg?.[0]) {
+            profilePicSrc = await uploadBufferToSupabase(files.profileImg[0].buffer, user._id, 'profileImg');
+            uploadedFiles.push(profilePicSrc);
+        }
+
+        let gsCertSrc = user.gsCertSrc;
+        if (files?.gsCertImg?.[0]) {
+            gsCertSrc = await uploadBufferToSupabase(files.gsCertImg[0].buffer, user._id, 'gsCertImg');
+            uploadedFiles.push(gsCertSrc);
+        }
+
+        let policeCertSrc = user.policeCertSrc;
+        if (files?.policeCertImg?.[0]) {
+            policeCertSrc = await uploadBufferToSupabase(files.policeCertImg[0].buffer, user._id, 'policeCertImg');
+            uploadedFiles.push(policeCertSrc);
+        }
+
+        const otherSrc = [];
+        if (files?.otherImg?.length) {
+            for (const file of files.otherImg) {
+                const url = await uploadBufferToSupabase(file.buffer, user._id, 'otherImg');
+                uploadedFiles.push(url);
+                otherSrc.push(url);
+            }
+        }
+
+        // Now assign URLs to user after successful uploads
         user.nicImgSrc = nicImgSrc;
+        user.profilePicSrc = profilePicSrc;
         user.gsCertSrc = gsCertSrc;
         user.policeCertSrc = policeCertSrc;
         user.otherSrc = otherSrc;
-        
+
+        // Try saving
         await user.save();
 
-        // generate new tokens
+        // Generate new tokens
         const { accessToken, refreshToken } = generateTokens(user);
         user.refreshToken = refreshToken;
         await user.save();
 
-        res.json({
+        return res.json({
             msg: 'Upgraded to provider successfully',
             accessToken,
             refreshToken
         });
     } catch (err) {
+        // Clean up orphaned Supabase files
+        if (uploadedFiles.length > 0) {
+            const paths = uploadedFiles.map(url => {
+                const [, path] = url.split(`/storage/v1/object/public/`);
+                return path;
+            });
+            await getSupabase().storage.from('images').remove(paths);
+        }
+
         if (err.name === 'ValidationError') {
+            const userFriendlyMessages = {
+                nic: 'NIC is required.',
+                location: 'Location is required.',
+                address: 'Address is required.',
+                serviceType: 'Service type is required.',
+                profilePicSrc: 'Profile picture is required.',
+                gsCertSrc: 'Grama Sevaka certificate is required.',
+                policeCertSrc: 'Police clearance certificate is required.'
+            };
+
             const errors = Object.keys(err.errors).map(field => ({
                 field,
-                message: err.errors[field].message
+                message: userFriendlyMessages[field] || 'Invalid input.'
             }));
+
             return res.status(400).json({ msg: 'Validation failed', errors });
         }
 
-        res.status(500).json({ msg: 'Something went wrong', error: err.message });
+
+        return res.status(500).json({ msg: 'Something went wrong', error: err.message });
     }
+
 };
 
