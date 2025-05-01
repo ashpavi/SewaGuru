@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import { uploadBufferToSupabase, getSupabase } from './uploadToSuperbase.js';
+import { getSupabase, uploadBufferToSupabase } from './uploadToSuperbase.js';
 
 const generateTokens = async (user) => {
     const accessToken = jwt.sign({
@@ -277,19 +277,13 @@ export const upgradeToProvider = async (req, res) => {
 
 export const getUserById = async (req, res) => {
     try {
-        const userId = req.user._id;
+        const userObj = req.user.toObject();
+        userObj.id = userObj._id.toString();
+        delete userObj._id;
+        delete userObj.password;
+        delete userObj.refreshToken;
 
-        const user = await User.findById(userId).select('-password -refreshToken');
-
-        if (!user) {
-            return res.status(404).json({ msg: 'User not found' });
-        }
-
-        const userObj = user.toObject(); // Convert Mongoose document to plain JS object
-        userObj.id = userObj._id.toString(); // Add 'id' field
-        delete userObj._id; // Remove '_id'
-
-        res.json({ user: userObj });
+        res.json(userObj);
     } catch (err) {
         res.status(500).json({ msg: 'Server error', error: err.message });
     }

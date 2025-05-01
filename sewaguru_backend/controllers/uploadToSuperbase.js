@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { v4 as uuidv4 } from 'uuid';
+import { fileTypeFromBuffer } from 'file-type';
 
 
 const getSupabase = () => {
@@ -10,14 +10,24 @@ const getSupabase = () => {
 
 
 
-const uploadBufferToSupabase = async (buffer, folderName = 'uploads', filePrefix = 'img') => {
+const uploadBufferToSupabase = async (buffer, folderName = 'uploads', fileName = 'img') => {
   const supabase = getSupabase();
-  const fileName = `${folderName}/${filePrefix}_${uuidv4()}.jpg`;
+
+  const fileType = await fileTypeFromBuffer(buffer);
+  if (!fileType || !fileType.mime.startsWith('image/')) {
+    throw new Error('Unsupported or invalid image format');
+  }
+
+  const ext = fileType.ext; // e.g., 'png', 'webp'
+  const contentType = fileType.mime; // e.g., 'image/png'
+
+
+  const fileName = `${folderName}/${fileName}.${ext}`;
 
   const { data, error } = await supabase.storage
     .from('images')
     .upload(fileName, buffer, {
-      contentType: 'image/jpeg',
+      contentType: contentType,
       upsert: true,
     });
 
