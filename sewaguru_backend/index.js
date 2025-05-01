@@ -3,10 +3,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
+dotenv.config();
+
 
 import userRouter from './routes/userRouter.js';
 
-dotenv.config();
+
 const app = express();
 
 app.use(cors({
@@ -36,7 +38,7 @@ app.use("/api/user", userRouter)
 
 
 
-//-------------------------------------------
+// -------------------------------------------
 
 // Declare port
 const PORT = process.env.PORT || 5001;
