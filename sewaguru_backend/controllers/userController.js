@@ -281,7 +281,7 @@ export const upgradeToProvider = async (req, res) => {
 
 };
 
-export const getUserById = async (req, res) => {
+export const getLoggedInUser = async (req, res) => {
     try {
         const userObj = req.user.toObject();
         userObj.id = userObj._id.toString();
@@ -295,3 +295,93 @@ export const getUserById = async (req, res) => {
     }
 };
 
+
+export const updateUser = async (req, res) => {
+    const uploadedFiles = [];
+    try {
+        const userId = req.user._id;
+        const updateData = req.body;
+        const files = req.files;
+
+        // Block restricted fields
+        const disallowedFields = ['_id', 'email', 'password', 'role', 'refreshToken'];
+        for (const field of disallowedFields) {
+            if (field in updateData) {
+                return res.status(400).json({ msg: `Field '${field}' cannot be updated.` });
+            }
+        }
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ msg: 'User not found' });
+
+        // Handle image uploads if present
+        if (files?.profileImg?.[0]) {
+            const url = await uploadBufferToSupabase(files.profileImg[0].buffer, user._id, 'profileImg');
+            uploadedFiles.push(url);
+            user.profilePicSrc = url;
+        }
+
+        if (files?.nicImg?.length) {
+            user.nicImgSrc = [];
+            for (const file of files.nicImg) {
+                const url = await uploadBufferToSupabase(file.buffer, user._id, 'nicImg');
+                uploadedFiles.push(url);
+                user.nicImgSrc.push(url);
+            }
+        }
+
+        if (files?.gsCertImg?.[0]) {
+            const url = await uploadBufferToSupabase(files.gsCertImg[0].buffer, user._id, 'gsCertImg');
+            uploadedFiles.push(url);
+            user.gsCertSrc = url;
+        }
+
+        if (files?.policeCertImg?.[0]) {
+            const url = await uploadBufferToSupabase(files.policeCertImg[0].buffer, user._id, 'policeCertImg');
+            uploadedFiles.push(url);
+            user.policeCertSrc = url;
+        }
+
+        if (files?.otherImg?.length) {
+            user.otherSrc = [];
+            for (const file of files.otherImg) {
+                const url = await uploadBufferToSupabase(file.buffer, user._id, 'otherImg');
+                uploadedFiles.push(url);
+                user.otherSrc.push(url);
+            }
+        }
+
+        // Update valid fields
+        Object.assign(user, updateData);
+
+        await user.save();
+
+        const userObj = user.toObject();
+        userObj.id = userObj._id.toString();
+        delete userObj._id;
+        delete userObj.password;
+        delete userObj.refreshToken;
+
+        res.json({ msg: 'User updated successfully', user: userObj });
+
+    } catch (err) {
+        // Cleanup orphaned files if validation or save fails
+        if (uploadedFiles.length) {
+            const paths = uploadedFiles.map(url => {
+                const [, path] = url.split(`/storage/v1/object/public/`);
+                return path;
+            });
+            await getSupabase().storage.from('images').remove(paths);
+        }
+
+        if (err.name === 'ValidationError') {
+            const errors = Object.keys(err.errors).map(field => ({
+                field,
+                message: err.errors[field].message
+            }));
+            return res.status(400).json({ msg: 'Validation failed', errors });
+        }
+
+        res.status(500).json({ msg: 'Server error', error: err.message });
+    }
+};
