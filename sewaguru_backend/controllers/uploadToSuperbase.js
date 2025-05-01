@@ -22,11 +22,11 @@ const uploadBufferToSupabase = async (buffer, folderName = 'uploads', fileName =
   const contentType = fileType.mime; // e.g., 'image/png'
 
 
-  const fileName = `${folderName}/${fileName}.${ext}`;
+  const filePath = `${folderName}/${fileName}.${ext}`;
 
   const { data, error } = await supabase.storage
     .from('images')
-    .upload(fileName, buffer, {
+    .upload(filePath, buffer, {
       contentType: contentType,
       upsert: true,
     });
