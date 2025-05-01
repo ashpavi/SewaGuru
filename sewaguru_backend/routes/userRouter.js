@@ -3,8 +3,11 @@ import { createAdmin, login, logout, refreshToken, register, upgradeToProvider, 
 import { adminOnly, customerOnly } from '../middleware/accessLevel.js';
 import { authenticate } from '../middleware/auth.js';
 import { upload } from "../middleware/fileHandler.js";
+import {test} from '../controllers/test.js';
 
 const router = express.Router();
+
+router.get('/test', test)
 
 router.get('/', authenticate, getLoggedInUser);
 router.post('/register', register);

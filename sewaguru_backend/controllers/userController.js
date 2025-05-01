@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import { getSupabase, uploadBufferToSupabase } from './uploadToSuperbase.js';
+import { getSupabase, uploadBufferToSupabase } from '../utils/uploadToSuperbase.js';
 
 const generateTokens = async (user) => {
     const accessToken = jwt.sign({
@@ -20,6 +20,7 @@ const generateTokens = async (user) => {
 
     return { accessToken, refreshToken };
 };
+
 
 export const createAdmin = async (req, res) => {
     try {
@@ -164,6 +165,7 @@ export const refreshToken = async (req, res) => {
     }
 };
 
+
 export const logout = async (req, res) => {
     const { id } = req.user;
     const user = await User.findById(id);
@@ -173,6 +175,7 @@ export const logout = async (req, res) => {
     }
     res.json({ msg: 'Logged out successfully' });
 };
+
 
 export const upgradeToProvider = async (req, res) => {
     const uploadedFiles = [];
@@ -220,7 +223,7 @@ export const upgradeToProvider = async (req, res) => {
         const otherSrc = [];
         if (files?.otherImg?.length) {
             for (const file of files.otherImg) {
-                const url = await uploadBufferToSupabase(file.buffer, user._id, 'otherImg');
+                const url = await uploadBufferToSupabase(file.buffer, user._id, 'otherImg', ['image/','application/pdf']);
                 uploadedFiles.push(url);
                 otherSrc.push(url);
             }
@@ -280,6 +283,7 @@ export const upgradeToProvider = async (req, res) => {
     }
 
 };
+
 
 export const getLoggedInUser = async (req, res) => {
     try {

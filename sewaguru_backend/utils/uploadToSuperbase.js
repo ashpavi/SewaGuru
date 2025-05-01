@@ -9,25 +9,39 @@ const getSupabase = () => {
 }
 
 
-
-const uploadBufferToSupabase = async (buffer, folderName = 'uploads', fileName = 'img') => {
+/**
+ * 
+ * @param {*} allowedMimes `['image/', 'application/pdf']` defaults to `['image/']`
+ */
+const uploadBufferToSupabase = async (
+  buffer,
+  folderName = 'uploads',
+  fileName = 'file',
+  allowedMimes = ['image/']
+) => {
   const supabase = getSupabase();
 
   const fileType = await fileTypeFromBuffer(buffer);
-  if (!fileType || !fileType.mime.startsWith('image/')) {
-    throw new Error('Unsupported or invalid image format');
+  if (!fileType) {
+    throw new Error('Could not determine file type');
   }
 
-  const ext = fileType.ext; // e.g., 'png', 'webp'
-  const contentType = fileType.mime; // e.g., 'image/png'
+  const { ext, mime } = fileType;
 
+  const isAllowed = allowedMimes.some(type =>
+    type.endsWith('/') ? mime.startsWith(type) : mime === type
+  );
+
+  if (!isAllowed) {
+    throw new Error(`Unsupported file type: ${mime}`);
+  }
 
   const filePath = `${folderName}/${fileName}.${ext}`;
 
   const { data, error } = await supabase.storage
     .from('images')
     .upload(filePath, buffer, {
-      contentType: contentType,
+      contentType: mime,
       upsert: true,
     });
 
@@ -35,9 +49,9 @@ const uploadBufferToSupabase = async (buffer, folderName = 'uploads', fileName =
 
   const { data: publicUrlData } = supabase.storage
     .from('images')
-    .getPublicUrl(fileName);
+    .getPublicUrl(filePath);
 
   return publicUrlData.publicUrl;
 };
 
-export { uploadBufferToSupabase, getSupabase };
+export { getSupabase, uploadBufferToSupabase };
