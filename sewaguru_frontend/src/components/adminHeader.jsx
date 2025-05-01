@@ -1,15 +1,30 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+import api from "../api/api";
 
 export default function AdminHeader() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate("/logIn");
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      console.log("Logout token:", token);
+      await api.post("/user/logout",null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }); 
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      navigate("/logIn");
+    } catch (error) {
+      console.error("Logout error:", error);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      navigate("/logIn");
+    }
   };
 
   return (
@@ -34,7 +49,7 @@ export default function AdminHeader() {
         </button>
 
         {/* Desktop Buttons */}
-        <div className="hidden md:flex gap-4">
+        <div className="hidden md:flex gap-4"> 
           <button
             onClick={handleLogout}
             className="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-full text-sm shadow-md hover:shadow-lg transition"

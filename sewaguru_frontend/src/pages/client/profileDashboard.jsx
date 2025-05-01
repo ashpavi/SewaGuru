@@ -18,7 +18,13 @@ export default function ProfileDashboard() {
 
   const handleLogout = async () => {
     try {
-      await api.post("/user/logout"); // 
+      const token = localStorage.getItem("accessToken");
+      console.log("Logout token:", token);
+      await api.post("/user/logout",null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }); 
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       navigate("/logIn");

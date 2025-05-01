@@ -23,6 +23,7 @@ export default function ProfileDetails() {
       console.log("User data fetched:", response.data);
     } catch (error) {
       console.error("Error fetching user data:", error);
+      toast.error("Failed to fetch user data.");
     } finally {
       setLoading(false);
     }
@@ -31,7 +32,9 @@ export default function ProfileDetails() {
   const handleUpdate = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await api.put("/user/update", formData, {
+      const {email,role, ...rest} = formData; // exclude email from formData
+
+      const response = await api.put("/user/update", rest, { // use rest instead of formData
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -81,9 +84,9 @@ export default function ProfileDetails() {
               name={name}
               value={formData[name] || ""}
               onChange={handleChange}
-              disabled={!editable}
+              disabled={name=="email" || !editable}
               className={`w-full px-4 py-2 border rounded-lg shadow-sm ${
-                editable
+                name != "email" && editable
                   ? "bg-white border-blue-400"
                   : "bg-gray-100 border-gray-300"
               }`}
