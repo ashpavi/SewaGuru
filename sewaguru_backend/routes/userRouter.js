@@ -1,11 +1,12 @@
 import express from "express";
-import { createAdmin, login, logout, refreshToken, register, upgradeToProvider } from "../controllers/userController.js";
+import { createAdmin, login, logout, refreshToken, register, upgradeToProvider, getUserById } from "../controllers/userController.js";
 import { adminOnly, customerOnly } from '../middleware/accessLevel.js';
 import { authenticate } from '../middleware/auth.js';
 import { upload } from "../middleware/fileHandler.js";
 
 const router = express.Router();
 
+router.get('/', authenticate, getUserById);
 router.post('/register', register);
 router.post('/create-admin', authenticate, adminOnly, createAdmin);
 router.post('/login', login);

@@ -3,7 +3,11 @@ import User from '../models/user.js';
 import { uploadBufferToSupabase, getSupabase } from './uploadToSuperbase.js';
 
 const generateTokens = async (user) => {
-    const accessToken = jwt.sign({ id: user._id, role: user.role, firstName: user.firstName }, process.env.JWT_SECRET, {
+    const accessToken = jwt.sign({
+        id: user._id,
+        role: user.role,
+        firstName: user.firstName
+    }, process.env.JWT_SECRET, {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
     });
 
@@ -269,5 +273,25 @@ export const upgradeToProvider = async (req, res) => {
         return res.status(500).json({ msg: 'Something went wrong', error: err.message });
     }
 
+};
+
+export const getUserById = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const user = await User.findById(userId).select('-password -refreshToken');
+
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        const userObj = user.toObject(); // Convert Mongoose document to plain JS object
+        userObj.id = userObj._id.toString(); // Add 'id' field
+        delete userObj._id; // Remove '_id'
+
+        res.json({ user: userObj });
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error', error: err.message });
+    }
 };
 
