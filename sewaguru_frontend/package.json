@@ -11,6 +11,7 @@
     "postinstall": "flowbite-react patch"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.6",
     "@tailwindcss/vite": "^4.0.15",
     "axios": "^1.8.4",
     "flowbite": "^3.1.2",
