@@ -47,6 +47,8 @@ export const createAdmin = async (req, res) => {
 
 
 export const register = async (req, res) => {
+    const uploadedFiles = [];
+
     try {
         const {
             email,
@@ -58,13 +60,10 @@ export const register = async (req, res) => {
             location,
             address,
             serviceType,
-            nicImgSrc,
-            profilePicSrc,
-            gsCertSrc,
-            policeCertSrc,
-            otherSrc,
             role
         } = req.body;
+
+        const files = req.files;
 
         // Prevent self-registration as admin
         if (role === 'admin') {
@@ -74,6 +73,41 @@ export const register = async (req, res) => {
         const existing = await User.findOne({ email });
         if (existing) return res.status(400).json({ msg: 'Email already registered' });
 
+        // Upload and assign provider-related files
+        let nicImgSrc = [];
+        if (files?.nicImg?.length) {
+            for (const file of files.nicImg) {
+                const url = await uploadBufferToSupabase(file.buffer, email, 'nicImg');
+                uploadedFiles.push(url);
+                nicImgSrc.push(url);
+            }
+        }
+
+        let profilePicSrc, gsCertSrc, policeCertSrc;
+
+        if (files?.profileImg?.[0]) {
+            profilePicSrc = await uploadBufferToSupabase(files.profileImg[0].buffer, email, 'profileImg');
+            uploadedFiles.push(profilePicSrc);
+        }
+
+        if (files?.gsCertImg?.[0]) {
+            gsCertSrc = await uploadBufferToSupabase(files.gsCertImg[0].buffer, email, 'gsCertImg');
+            uploadedFiles.push(gsCertSrc);
+        }
+
+        if (files?.policeCertImg?.[0]) {
+            policeCertSrc = await uploadBufferToSupabase(files.policeCertImg[0].buffer, email, 'policeCertImg');
+            uploadedFiles.push(policeCertSrc);
+        }
+
+        const otherSrc = [];
+        if (files?.otherImg?.length) {
+            for (const file of files.otherImg) {
+                const url = await uploadBufferToSupabase(file.buffer, email, 'otherImg', ['image/', 'application/pdf']);
+                uploadedFiles.push(url);
+                otherSrc.push(url);
+            }
+        }
 
         const user = new User({
             email,
@@ -81,6 +115,7 @@ export const register = async (req, res) => {
             firstName,
             lastName,
             phone,
+            role,
             ...(role === 'provider' && {
                 nic,
                 location,
@@ -91,8 +126,7 @@ export const register = async (req, res) => {
                 gsCertSrc,
                 policeCertSrc,
                 otherSrc
-            }),
-            role
+            })
         });
 
         const savedUser = await user.save();
@@ -110,8 +144,37 @@ export const register = async (req, res) => {
         }
 
         res.status(201).json({ msg: 'Customer registered successfully, please log in.' });
+
     } catch (err) {
-        res.status(500).json({ msg: err.message });
+        // Clean up any uploaded files on failure
+        if (uploadedFiles.length > 0) {
+            const paths = uploadedFiles.map(url => {
+                const [, path] = url.split(`/storage/v1/object/public/`);
+                return path;
+            });
+            await getSupabase().storage.from('images').remove(paths);
+        }
+
+        if (err.name === 'ValidationError') {
+            const messages = {
+                nic: 'NIC is required.',
+                location: 'Location is required.',
+                address: 'Address is required.',
+                serviceType: 'Service type is required.',
+                profilePicSrc: 'Profile picture is required.',
+                gsCertSrc: 'Grama Sevaka certificate is required.',
+                policeCertSrc: 'Police clearance certificate is required.'
+            };
+
+            const errors = Object.keys(err.errors).map(field => ({
+                field,
+                message: messages[field] || 'Invalid input.'
+            }));
+
+            return res.status(400).json({ msg: 'Validation failed', errors });
+        }
+
+        res.status(500).json({ msg: 'Something went wrong', error: err.message });
     }
 };
 
@@ -223,7 +286,7 @@ export const upgradeToProvider = async (req, res) => {
         const otherSrc = [];
         if (files?.otherImg?.length) {
             for (const file of files.otherImg) {
-                const url = await uploadBufferToSupabase(file.buffer, user._id, 'otherImg', ['image/','application/pdf']);
+                const url = await uploadBufferToSupabase(file.buffer, user._id, 'otherImg', ['image/', 'application/pdf']);
                 uploadedFiles.push(url);
                 otherSrc.push(url);
             }
