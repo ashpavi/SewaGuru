@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { IoInformationCircleSharp } from "react-icons/io5";
 import { FaSearchLocation } from "react-icons/fa";
 import Header from "../../components/header";
-import Footer from "../../components/footer";
+import Footer from "../../components/Footer";
+
 
 
 
@@ -15,7 +16,7 @@ export default function ProviderRegister() {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate("/provider/providerHomePage");
+    navigate("/provider/providerDashboard");
   };
 
   const closeModel=()=>{
@@ -274,22 +275,27 @@ export default function ProviderRegister() {
                       <input
                         type="file"
                         name={name}
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         
                         multiple={!single}
                         onChange={handleFileChange}
                         className="flex-shrink-0 w-full max-w-xs text-transparent file:text-blue-700 file:bg-blue-50 hover:file:bg-blue-100 file:ml-1 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold cursor-pointer"                        required={!single && name !== "extraCerts"}
                         
                       />
-                      {formData[name] && formData[name].length > 0 && (
-                        <div className="max-h-24 overflow-y-auto rounded-md border border-gray-200 p-2 bg-gray-50 w-full">
+                      {formData[name] && (
+                        <div className="max-h-24 overflow-y-auto rounded-md border border-gray-200 p-2 bg-gray-50 w-full mt-1">
                           <ul className="list-disc list-inside text-sm text-gray-600">
-                            {formData[name].map((file, idx) => (
-                              <li key={idx} className="truncate">{file.name}</li>
-                            ))}
+                            {single ? (
+                              <li className="truncate">{formData[name].name}</li>
+                            ) : (
+                              formData[name].map((file, idx) => (
+                                <li key={idx} className="truncate">{file.name}</li>
+                              ))
+                            )}
                           </ul>
                         </div>
                       )}
+
                   </div>
                     </div>
                   ))}

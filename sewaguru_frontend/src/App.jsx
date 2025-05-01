@@ -11,7 +11,7 @@ import HomePage from "./pages/homePage";
 
 import LogIn from "./pages/logIn";
 import ProviderRegister from "./pages/provider/providerRegister";
-import ProviderHomePage from "./pages/provider/providerHomePage";
+
 import ProtectedRoute from "./components/protectedRoute";
 import { jwtDecode } from "jwt-decode";
 import ForbiddenPage from "./pages/forbidden";
@@ -22,6 +22,7 @@ import OurServices from "./pages/client/ourServices";
 import PrivacyPolicyPage from "./pages/client/privacyPolicy";
 import NotFoundPage from "./pages/404";
 import ProfileDashboard from "./pages/client/profiledashboard";
+import ProviderHomePage from "./pages/providerHomePage";
 
 
 
@@ -60,9 +61,10 @@ function App() {
         
 
         
-        <Route element={<ProtectedRoute isAllowed={isProvider} redirectPath="/forbidden"/>}>
+        {/* <Route element={<ProtectedRoute isAllowed={isProvider} redirectPath="/forbidden"/>}>
         <Route path="/provider/*" element={<ProviderHomePage />} />
-        </Route>
+        </Route> */}
+        <Route path="/provider/*" element={<ProviderHomePage />} />
         
         <Route path="/testing" element={<Testing />} />
         <Route path="*" element={<NotFoundPage />} />

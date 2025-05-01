@@ -6,7 +6,7 @@ import { FaUser, FaBookOpen, FaEnvelope, FaSignOutAlt } from "react-icons/fa";
 import Header from "../../components/header";
 import Footer from "../../components/Footer";
 
-// Components for different sections
+
 import ProfileDetails from "./ProfileDetails";
 import UserBookings from "./userBookings";
 import UserMessages from "./UserMessages";

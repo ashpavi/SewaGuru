@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FcGoogle } from "react-icons/fc";
 import api from "../api/api";
@@ -11,7 +11,7 @@ import {jwtDecode} from "jwt-decode";
 export default function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  
 
   const handleLogin = async(email,password) => {
     try{
@@ -24,17 +24,22 @@ export default function LogIn() {
 
         const { accessToken, refreshToken } = response.data;
         toast.success("Login successful!");
+        
 
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
         const decodedToken = jwtDecode(accessToken);
         const userrole = decodedToken.role;
+
+        
+
+
         if (userrole === "admin") {
-          navigate("/admin");
-        }else
-        {
-          // Redirect to the home page or perform any other action
-          navigate("/homePage")
+          window.location.href = "/admin"; 
+        } else if (userrole === "provider") {
+          window.location.href = "/providerHomepage";
+        } else {
+          window.location.href = "/";
         }
       } else {
         toast.error("Login failed: " + response.data.message);

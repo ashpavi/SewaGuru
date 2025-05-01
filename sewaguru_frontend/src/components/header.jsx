@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [firstLetter, setFirstLetter] = useState("U"); // default letter
+  const [firstLetter, setFirstLetter] = useState("U");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,10 +14,9 @@ export default function Header() {
 
     if (token) {
       setIsLoggedIn(true);
-
       try {
         const decoded = jwtDecode(token);
-        const userFirstName = decoded.firstName || "U"; // firstName must be included in token
+        const userFirstName = decoded.firstName || "U";
         setFirstLetter(userFirstName.charAt(0).toUpperCase());
       } catch (err) {
         console.error("Invalid token:", err);
@@ -32,18 +31,22 @@ export default function Header() {
   return (
     <header className="w-full h-[70px] bg-[#48B8E3] text-white shadow-md">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 flex items-center justify-between relative">
-        
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 flex-shrink-1">
-          <img
-            src={logo}
-            alt="SewaGuru Logo"
-            className="h-12 w-auto object-contain"
-          />
+          <img src={logo} alt="SewaGuru Logo" className="h-12 w-auto object-contain" />
         </Link>
 
         {/* Action Buttons (Mobile) */}
         <div className="flex md:hidden gap-2 text-xs">
+          {/* Become a SewaGuru button (always visible) */}
+          <Link
+            to="/provider/providerRegister"
+            className="bg-green-500 hover:bg-green-600 flex text-white font-medium px-3 py-1.5 text-center  items-center rounded-full shadow-md hover:shadow-lg transition"
+          >
+            Become a SewaGuru
+          </Link>
+
+          {/* Login or Profile Icon */}
           {isLoggedIn ? (
             <button
               onClick={handleProfileClick}
@@ -52,20 +55,12 @@ export default function Header() {
               {firstLetter}
             </button>
           ) : (
-            <>
-              <Link
-                to="/provider/providerRegister"
-                className="bg-green-500 hover:bg-green-600 text-white font-medium px-3 py-1.5 text-center rounded-full shadow-md hover:shadow-lg transition"
-              >
-                Become a SewaGuru
-              </Link>
-              <Link
-                to="/logIn"
-                className="bg-white text-[#48B8E3] hover:bg-blue-100 font-medium text-center px-3 py-1.5 rounded-full shadow-md hover:shadow-lg transition"
-              >
-                Log In / Sign Up
-              </Link>
-            </>
+            <Link
+              to="/logIn"
+              className="bg-white text-[#48B8E3] hover:bg-blue-100 font-medium text-center px-3 py-1.5 rounded-full shadow-md hover:shadow-lg transition"
+            >
+              Log In / Sign Up
+            </Link>
           )}
         </div>
 
@@ -94,6 +89,15 @@ export default function Header() {
 
           {/* Desktop Action Buttons */}
           <div className="hidden md:flex flex-col md:flex-row gap-6 mt-4 md:mt-0 md:ml-8 w-full md:w-auto items-center">
+            {/* Become a SewaGuru button (always visible) */}
+            <Link
+              to="/provider/providerRegister"
+              className="bg-green-500 hover:bg-green-600 text-white font-medium px-4 py-2 rounded-full text-sm shadow-md hover:shadow-lg transition text-center"
+            >
+              Become a SewaGuru
+            </Link>
+
+            {/* Login or Profile Icon */}
             {isLoggedIn ? (
               <button
                 onClick={handleProfileClick}
@@ -102,20 +106,12 @@ export default function Header() {
                 {firstLetter}
               </button>
             ) : (
-              <>
-                <Link
-                  to="/provider/providerRegister"
-                  className="bg-green-500 hover:bg-green-600 text-white font-medium px-4 py-2 rounded-full text-sm shadow-md hover:shadow-lg transition text-center"
-                >
-                  Become a SewaGuru
-                </Link>
-                <Link
-                  to="/logIn"
-                  className="bg-[#104DA3] hover:bg-[#334E73] text-white font-medium px-4 py-2 rounded-full text-sm shadow-md hover:shadow-lg transition text-center"
-                >
-                  Log In / Sign Up
-                </Link>
-              </>
+              <Link
+                to="/logIn"
+                className="bg-[#104DA3] hover:bg-[#334E73] text-white font-medium px-4 py-2 rounded-full text-sm shadow-md hover:shadow-lg transition text-center"
+              >
+                Log In / Sign Up
+              </Link>
             )}
           </div>
         </div>
