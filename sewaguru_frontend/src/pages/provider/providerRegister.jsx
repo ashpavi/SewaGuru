@@ -17,15 +17,17 @@ export default function ProviderRegister() {
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      console.log("Logout token:", token);
-      await api.post("/user/logout",null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }); 
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      navigate("/logIn");
+      if(token){
+        await api.post("/user/logout",null, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }); 
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      }
+        navigate("/logIn");
+      
     } catch (error) {
       console.error("Logout error:", error);
       localStorage.removeItem("accessToken");

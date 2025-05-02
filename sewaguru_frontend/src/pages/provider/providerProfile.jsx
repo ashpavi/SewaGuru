@@ -125,7 +125,7 @@ export default function ProviderProfile() {
         otherCerts: [],
       });
 
-      setFormData(profile);
+      
 
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -136,7 +136,7 @@ export default function ProviderProfile() {
   const renderDocument = (label, fileUrl) => {
     const isPDF = fileUrl.toLowerCase().endsWith(".pdf");
     return (
-      <div className="space-y-1">
+      <div className="space-y-1" key={label}>
         <p className="text-sm text-gray-600">{label}</p>
         {isPDF ? (
           <a href={fileUrl} target="_blank" rel="noopener noreferrer" 

@@ -75,12 +75,11 @@ export const register = async (req, res) => {
         // Upload and assign provider-related files
         let nicImgSrc = [];
         if (files?.nicImages?.length) {
-            user.nicImgSrc = [];
             for (let i = 0; i < files.nicImages.length; i++) {
                 const file = files.nicImages[i];
-                const url = await uploadBufferToSupabase(file.buffer, user._id, `nicImg_${i}`);
+                const url = await uploadBufferToSupabase(file.buffer, email, `nicImg_${i}`);
                 uploadedFiles.push(url);
-                user.nicImgSrc.push(url);
+                nicImgSrc.push(url);
             }
         }
 
@@ -103,12 +102,11 @@ export const register = async (req, res) => {
 
         const otherSrc = [];
         if (files?.extraCerts?.length) {
-            user.otherSrc = [];
             for (let i = 0; i < files.extraCerts.length; i++) {
                 const file = files.extraCerts[i];
-                const url = await uploadBufferToSupabase(file.buffer, user._id, `otherImg_${i}`, ['image/', 'application/pdf']);
+                const url = await uploadBufferToSupabase(file.buffer, email, `otherImg_${i}`, ['image/', 'application/pdf']);
                 uploadedFiles.push(url);
-                user.otherSrc.push(url);
+                otherSrc.push(url);
             }
         }
 
@@ -132,16 +130,14 @@ export const register = async (req, res) => {
             })
         });
 
-        if (role === 'provider') {
-            const { accessToken, refreshToken } = generateTokens(user);
-            user.refreshToken = refreshToken;
-        }
+        
 
         const savedUser = await user.save();
 
         res.status(201).json({ msg: 'Registered successfully, please log in.' });
 
     } catch (err) {
+        console.log(err);
         // Clean up any uploaded files on failure
         if (uploadedFiles.length > 0) {
             const paths = uploadedFiles.map(url => {
@@ -262,7 +258,7 @@ export const upgradeToProvider = async (req, res) => {
             user.nicImgSrc = [];
             for (let i = 0; i < files.nicImages.length; i++) {
                 const file = files.nicImages[i];
-                const url = await uploadBufferToSupabase(file.buffer, user._id, `nicImg_${i}`);
+                const url = await uploadBufferToSupabase(file.buffer, user.email, `nicImg_${i}`);
                 uploadedFiles.push(url);
                 user.nicImgSrc.push(url);
             }
@@ -291,7 +287,7 @@ export const upgradeToProvider = async (req, res) => {
             user.otherSrc = [];
             for (let i = 0; i < files.extraCerts.length; i++) {
                 const file = files.extraCerts[i];
-                const url = await uploadBufferToSupabase(file.buffer, user._id, `otherImg_${i}`, ['image/', 'application/pdf']);
+                const url = await uploadBufferToSupabase(file.buffer, user.email, `otherImg_${i}`, ['image/', 'application/pdf']);
                 uploadedFiles.push(url);
                 user.otherSrc.push(url);
             }
@@ -385,10 +381,12 @@ export const updateUser = async (req, res) => {
 
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ msg: 'User not found' });
+        // Update valid fields
+        Object.assign(user, updateData);
 
         // Handle image uploads if present
         if (files?.profileImage?.[0]) {
-            const url = await uploadBufferToSupabase(files.profileImage[0].buffer, user._id, 'profileImg');
+            const url = await uploadBufferToSupabase(files.profileImage[0].buffer, user.email, 'profileImg');
             uploadedFiles.push(url);
             user.profilePicSrc = url;
         }
@@ -397,20 +395,20 @@ export const updateUser = async (req, res) => {
             user.nicImgSrc = [];
             for (let i = 0; i < files.nicImages.length; i++) {
                 const file = files.nicImages[i];
-                const url = await uploadBufferToSupabase(file.buffer, user._id, `nicImg_${i}`);
+                const url = await uploadBufferToSupabase(file.buffer, user.email, `nicImg_${i}`);
                 uploadedFiles.push(url);
                 user.nicImgSrc.push(url);
             }
         }
 
         if (files?.gsCerts?.[0]) {
-            const url = await uploadBufferToSupabase(files.gsCerts[0].buffer, user._id, 'gsCertImg');
+            const url = await uploadBufferToSupabase(files.gsCerts[0].buffer, user.email, 'gsCertImg');
             uploadedFiles.push(url);
             user.gsCertSrc = url;
         }
 
         if (files?.policeCerts?.[0]) {
-            const url = await uploadBufferToSupabase(files.policeCerts[0].buffer, user._id, 'policeCertImg');
+            const url = await uploadBufferToSupabase(files.policeCerts[0].buffer, user.email, 'policeCertImg');
             uploadedFiles.push(url);
             user.policeCertSrc = url;
         }
@@ -419,14 +417,13 @@ export const updateUser = async (req, res) => {
             user.otherSrc = [];
             for (let i = 0; i < files.extraCerts.length; i++) {
                 const file = files.extraCerts[i];
-                const url = await uploadBufferToSupabase(file.buffer, user._id, `otherImg_${i}`, ['image/', 'application/pdf']);
+                const url = await uploadBufferToSupabase(file.buffer, user.email, `otherImg_${i}`, ['image/', 'application/pdf']);
                 uploadedFiles.push(url);
                 user.otherSrc.push(url);
             }
         }
 
-        // Update valid fields
-        Object.assign(user, updateData);
+        
 
         await user.save();
 
@@ -439,6 +436,7 @@ export const updateUser = async (req, res) => {
         res.json({ msg: 'User updated successfully', user: userObj });
 
     } catch (err) {
+        console.log(err)
         // Cleanup orphaned files if validation or save fails
         if (uploadedFiles.length) {
             const paths = uploadedFiles.map(url => {
