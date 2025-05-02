@@ -23,7 +23,13 @@ router.post('/create-admin', authenticate, adminOnly, createAdmin);
 router.post('/login', login);
 router.post('/refresh', refreshToken);
 router.post('/logout', authenticate, logout);
-router.put('/update', authenticate, updateUser);
+router.put('/update', authenticate,upload.fields([
+  { name: 'nicImages', maxCount: 2 },
+  { name: 'profileImage', maxCount: 1 },
+  { name: 'gsCerts', maxCount: 1 },
+  { name: 'policeCerts', maxCount: 1 },
+  { name: 'extraCerts' },
+]), updateUser);
 
 router.post('/upgrade',
   authenticate,

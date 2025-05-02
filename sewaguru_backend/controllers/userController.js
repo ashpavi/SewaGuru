@@ -75,10 +75,12 @@ export const register = async (req, res) => {
         // Upload and assign provider-related files
         let nicImgSrc = [];
         if (files?.nicImages?.length) {
-            for (const file of files.nicImages) {
-                const url = await uploadBufferToSupabase(file.buffer, email, 'nicImg');
+            user.nicImgSrc = [];
+            for (let i = 0; i < files.nicImages.length; i++) {
+                const file = files.nicImages[i];
+                const url = await uploadBufferToSupabase(file.buffer, user._id, `nicImg_${i}`);
                 uploadedFiles.push(url);
-                nicImgSrc.push(url);
+                user.nicImgSrc.push(url);
             }
         }
 
@@ -101,10 +103,12 @@ export const register = async (req, res) => {
 
         const otherSrc = [];
         if (files?.extraCerts?.length) {
-            for (const file of files.extraCerts) {
-                const url = await uploadBufferToSupabase(file.buffer, email, 'otherImg', ['image/', 'application/pdf']);
+            user.otherSrc = [];
+            for (let i = 0; i < files.extraCerts.length; i++) {
+                const file = files.extraCerts[i];
+                const url = await uploadBufferToSupabase(file.buffer, user._id, `otherImg_${i}`, ['image/', 'application/pdf']);
                 uploadedFiles.push(url);
-                otherSrc.push(url);
+                user.otherSrc.push(url);
             }
         }
 
@@ -254,38 +258,42 @@ export const upgradeToProvider = async (req, res) => {
 
         // Image uploads (store in temporary variables)
         const nicImgSrc = [];
-        if (files?.nicImg?.length) {
-            for (const file of files.nicImg) {
-                const url = await uploadBufferToSupabase(file.buffer, user.email, 'nicImg');
+        if (files?.nicImages?.length) {
+            user.nicImgSrc = [];
+            for (let i = 0; i < files.nicImages.length; i++) {
+                const file = files.nicImages[i];
+                const url = await uploadBufferToSupabase(file.buffer, user._id, `nicImg_${i}`);
                 uploadedFiles.push(url);
-                nicImgSrc.push(url);
+                user.nicImgSrc.push(url);
             }
         }
 
         let profilePicSrc = user.profilePicSrc;
-        if (files?.profileImg?.[0]) {
-            profilePicSrc = await uploadBufferToSupabase(files.profileImg[0].buffer, user.email, 'profileImg');
+        if (files?.profileImage?.[0]) {
+            profilePicSrc = await uploadBufferToSupabase(files.profileImage[0].buffer, user.email, 'profileImg');
             uploadedFiles.push(profilePicSrc);
         }
 
         let gsCertSrc = user.gsCertSrc;
-        if (files?.gsCertImg?.[0]) {
-            gsCertSrc = await uploadBufferToSupabase(files.gsCertImg[0].buffer, user.email, 'gsCertImg');
+        if (files?.gsCerts?.[0]) {
+            gsCertSrc = await uploadBufferToSupabase(files.gsCerts[0].buffer, user.email, 'gsCertImg');
             uploadedFiles.push(gsCertSrc);
         }
 
         let policeCertSrc = user.policeCertSrc;
-        if (files?.policeCertImg?.[0]) {
-            policeCertSrc = await uploadBufferToSupabase(files.policeCertImg[0].buffer, user.email, 'policeCertImg');
+        if (files?.policeCerts?.[0]) {
+            policeCertSrc = await uploadBufferToSupabase(files.policeCerts[0].buffer, user.email, 'policeCertImg');
             uploadedFiles.push(policeCertSrc);
         }
 
         const otherSrc = [];
-        if (files?.otherImg?.length) {
-            for (const file of files.otherImg) {
-                const url = await uploadBufferToSupabase(file.buffer, user.email, 'otherImg', ['image/', 'application/pdf']);
+        if (files?.extraCerts?.length) {
+            user.otherSrc = [];
+            for (let i = 0; i < files.extraCerts.length; i++) {
+                const file = files.extraCerts[i];
+                const url = await uploadBufferToSupabase(file.buffer, user._id, `otherImg_${i}`, ['image/', 'application/pdf']);
                 uploadedFiles.push(url);
-                otherSrc.push(url);
+                user.otherSrc.push(url);
             }
         }
 
@@ -379,37 +387,39 @@ export const updateUser = async (req, res) => {
         if (!user) return res.status(404).json({ msg: 'User not found' });
 
         // Handle image uploads if present
-        if (files?.profileImg?.[0]) {
-            const url = await uploadBufferToSupabase(files.profileImg[0].buffer, user._id, 'profileImg');
+        if (files?.profileImage?.[0]) {
+            const url = await uploadBufferToSupabase(files.profileImage[0].buffer, user._id, 'profileImg');
             uploadedFiles.push(url);
             user.profilePicSrc = url;
         }
 
-        if (files?.nicImg?.length) {
+        if (files?.nicImages?.length) {
             user.nicImgSrc = [];
-            for (const file of files.nicImg) {
-                const url = await uploadBufferToSupabase(file.buffer, user._id, 'nicImg');
+            for (let i = 0; i < files.nicImages.length; i++) {
+                const file = files.nicImages[i];
+                const url = await uploadBufferToSupabase(file.buffer, user._id, `nicImg_${i}`);
                 uploadedFiles.push(url);
                 user.nicImgSrc.push(url);
             }
         }
 
-        if (files?.gsCertImg?.[0]) {
-            const url = await uploadBufferToSupabase(files.gsCertImg[0].buffer, user._id, 'gsCertImg');
+        if (files?.gsCerts?.[0]) {
+            const url = await uploadBufferToSupabase(files.gsCerts[0].buffer, user._id, 'gsCertImg');
             uploadedFiles.push(url);
             user.gsCertSrc = url;
         }
 
-        if (files?.policeCertImg?.[0]) {
-            const url = await uploadBufferToSupabase(files.policeCertImg[0].buffer, user._id, 'policeCertImg');
+        if (files?.policeCerts?.[0]) {
+            const url = await uploadBufferToSupabase(files.policeCerts[0].buffer, user._id, 'policeCertImg');
             uploadedFiles.push(url);
             user.policeCertSrc = url;
         }
 
-        if (files?.otherImg?.length) {
+        if (files?.extraCerts?.length) {
             user.otherSrc = [];
-            for (const file of files.otherImg) {
-                const url = await uploadBufferToSupabase(file.buffer, user._id, 'otherImg');
+            for (let i = 0; i < files.extraCerts.length; i++) {
+                const file = files.extraCerts[i];
+                const url = await uploadBufferToSupabase(file.buffer, user._id, `otherImg_${i}`, ['image/', 'application/pdf']);
                 uploadedFiles.push(url);
                 user.otherSrc.push(url);
             }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { IoInformationCircleSharp } from "react-icons/io5";
@@ -6,58 +6,152 @@ import { FaSearchLocation } from "react-icons/fa";
 import Header from "../../components/header";
 import Footer from "../../components/Footer";
 import api from "../../api/api";
+import { jwtDecode } from "jwt-decode";
+import Loader from "../../components/loader";
 
 
 
 
 export default function ProviderRegister() {
 
-  const handleRegister = () => {
-    const formDataToSend = new FormData();
-    formDataToSend.append("firstName", formData.firstName);
-    formDataToSend.append("lastName", formData.lastName);
-    formDataToSend.append("email", formData.email);
-    formDataToSend.append("phone", formData.phone);
-    formDataToSend.append("password",formData.password);
-    formDataToSend.append("role","provider");
-    formDataToSend.append("nic",formData.nic)
-    formDataToSend.append("location",formData.location)
-    formDataToSend.append("address",formData.address)
-    formDataToSend.append("serviceType",formData.serviceType)
-    formDataToSend.append("gsCerts",formData.gsCerts)
-    formDataToSend.append("policeCerts",formData.policeCerts)
-    formDataToSend.append("profileImage",formData.profileImage)
-    Array.from(formData.nicImages).forEach(file => {
-      formDataToSend.append('nicImages', file);
-    });
-    Array.from(formData.extraCerts).forEach(file => {
-      formDataToSend.append('extraCerts', file);
-    });
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      console.log("Logout token:", token);
+      await api.post("/user/logout",null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }); 
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      navigate("/logIn");
+    } catch (error) {
+      console.error("Logout error:", error);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      navigate("/logIn");
+    }
+  };
+
+const handleRegister = async () => {
+  const token = localStorage.getItem("accessToken");
+  let user = null;
+
+  if (token) {
+    try {
+      user = jwtDecode(token); 
+    } catch (e) {
+      console.error("Invalid token:", e);
+    }
+  }
+
+  const formDataToSend = new FormData();
+  formDataToSend.append("firstName", formData.firstName);
+  formDataToSend.append("lastName", formData.lastName);
+  formDataToSend.append("email", formData.email);
+  formDataToSend.append("phone", formData.phone);
+  formDataToSend.append("password", formData.password);
+  formDataToSend.append("role", "provider");
+  formDataToSend.append("nic", formData.nic);
+  formDataToSend.append("location", formData.location);
+  formDataToSend.append("address", formData.address);
+  formDataToSend.append("serviceType", formData.serviceType);
+  formDataToSend.append("gsCerts", formData.gsCerts);
+  formDataToSend.append("policeCerts", formData.policeCerts);
+  formDataToSend.append("profileImage", formData.profileImage);
+  Array.from(formData.nicImages).forEach(file =>
+    formDataToSend.append("nicImages", file)
+  );
+  Array.from(formData.extraCerts).forEach(file =>
+    formDataToSend.append("extraCerts", file)
+  );
+  setLoading(true);
+
+  try {
+    if (user?.role === "customer") {
+      await api.post("/user/upgrade", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } else {
+      await api.post("/user/register", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    }
+
+    toast.success("Registration successful!");
+
     
-    
-    
-       api.post("/user/register",
-        formDataToSend,{
-          headers:{
-            'Content-Type':'multipart/form-data'
-          }
-        }
-       ).then((res) => {
-            toast.success("Registration successful!");
-            navigate("/login");
-          }).catch((err) => {
-            console.error(err);
-            toast.error(err.response?.data?.message || "Registration failed");
-          })
-        }
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.message || "Registration failed");
+  }finally {
+    setLoading(false); 
+  }
+};
+
 
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchCustomerData = async () => {
+      const token = localStorage.getItem("accessToken");
+      if (!token) return;
+      setLoading(true);
+  
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+  
+        // If customer, fetch their full profile
+        if (decoded.role === "customer") {
+          const res = await api.get("/user/", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+  
+          const data = res.data;
+  
+          // Set form data with backend-provided details
+          setFormData((prev) => ({
+            ...prev,
+            firstName: data.firstName || "",
+            lastName: data.lastName || "",
+            email: data.email || "",
+            phone: data.phone || "",
+            address: data.address || "",
+            nic: data.nic || "",
+            location: data.location || "",
+          }));
+        }
+      } catch (err) {
+        console.error("Error loading user data:", err);
+        toast.error("Failed to load user data. Please try again.");
+      }finally{
+        setLoading(false);
+      }
+    };
+  
+    if (openModal) {
+      fetchCustomerData();
+    }
+  }, [openModal]);
+  
+  
+
   const handleGetStarted = () => {
-    navigate("/login");
+    handleLogout()
   };
 
   const closeModel=()=>{
@@ -132,15 +226,29 @@ export default function ProviderRegister() {
 
   const validateStep2 = () => {
     const { phone, email, password, confirmPassword, address } = formData;
-    if (!phone || !email || !password || !confirmPassword || !address) return false;
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return false;
+  
+    if (!phone || !email || !address) return false;
+  
+    if (user?.role !== "customer") {
+      if (!password || !confirmPassword) return false;
+      if (password !== confirmPassword) {
+        toast.error("Passwords do not match");
+        return false;
+      }
     }
+  
     return true;
   };
+  
 
-  return (
+
+
+  return loading?(
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white">
+      <Loader />
+      <p className="text-gray-500 mt-4">Please wait while we process your request...</p>
+      </div>
+  ) : (
     <>
     <Header/>
     <div className="bg-gradient-to-br from-gray-100 to-blue-50 min-h-screen flex items-center justify-center py-12 px-6">
@@ -178,11 +286,15 @@ export default function ProviderRegister() {
                 if (!formData.serviceType) {
                   toast.error("Please select your service type before continuing.");
                 } else {
+                  if (user && user.role === "customer") {
+                    toast("You're upgrading your account to become a provider");
+                  }
                   setStep(1);
                   setSubmitted(false);
                   setOpenModal(true);
                 }
               }}
+              
               className="bg-green-500 hover:bg-green-600 transition px-6 py-2 rounded-lg text-white font-medium shadow-md"
             >
               Register Now
@@ -218,6 +330,7 @@ export default function ProviderRegister() {
                       placeholder="First Name / Business"
                       onChange={handleChange}
                       className="border px-4 py-2 rounded-lg w-full"
+                      readOnly={user?.role === "customer"}
                       required
                     />
                     <input
@@ -226,6 +339,7 @@ export default function ProviderRegister() {
                       placeholder="Last Name"
                       onChange={handleChange}
                       className="border px-4 py-2 rounded-lg w-full"
+                      readOnly={user?.role === "customer"}
                       required
                     />
                   </div>
@@ -235,6 +349,7 @@ export default function ProviderRegister() {
                     value={formData.nic}
                     onChange={handleChange}
                     className="border px-4 py-2 rounded-lg w-full"
+                    
                     required
                   />
                   
@@ -247,6 +362,7 @@ export default function ProviderRegister() {
                         value={formData.location}
                         onChange={handleChange}
                         className="border px-4 py-2 rounded-lg w-full"
+
                         required
                       />
                     </div>
@@ -286,11 +402,35 @@ export default function ProviderRegister() {
             {step === 2 && (
               <>
                 <div className="space-y-3">
-                  <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" readOnly={user?.role === "customer"} required />
                   <textarea name="address" placeholder="Full Address" rows={2} value={formData.address} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full resize-none" required />
-                  <input name="email" placeholder="Email" type="email" value={formData.email} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                  <input name="password" placeholder="Password" type="password" value={formData.password} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
-                  <input name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} type="password" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <input name="email" placeholder="Email" type="email" value={formData.email} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" readOnly={user?.role === "customer"} required />
+                  {user?.role !== "customer" && (
+                    <>
+                      <input
+                        name="password"
+                        placeholder="Password"
+                        type="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="border px-4 py-2 rounded-lg w-full"
+                        required
+                      />
+                      <input
+                        name="confirmPassword"
+                        placeholder="Confirm Password"
+                        type="password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        className="border px-4 py-2 rounded-lg w-full"
+                        required
+                      />
+                    </>
+                  )}
+
+
+                  {/* <input name="password" placeholder="Password" type="password" value={formData.password} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required />
+                  <input name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} type="password" onChange={handleChange} className="border px-4 py-2 rounded-lg w-full" required /> */}
                 </div>
                 <div className="flex justify-between pt-2">
                   <button type="button" onClick={() => setStep(1)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Back</button>
@@ -301,7 +441,7 @@ export default function ProviderRegister() {
 
             {step === 3 && (
               <>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {[
                     { label: "NIC (Front & Back)", name: "nicImages", info: "Upload clear images of both sides of your NIC to verify identity." },
                     { label: "Profile Image", name: "profileImage", single: true, info: "Upload a professional profile picture." },

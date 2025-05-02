@@ -45,7 +45,8 @@ export default function LogIn() {
         toast.error("Login failed: " + response.data.message);
       }
     } catch (error) {
-      toast.error("Login failed: " + error.message);
+      //toast.error("Login failed: " + error.message);
+      toast.error("Invalid email or password. Please try again.");
     }
   }
 

@@ -14,7 +14,7 @@ export default function ProfileDetails() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await api.get("/user", {
-        headers: {
+        headers: { 
           Authorization: `Bearer ${token}`,
         },
       });

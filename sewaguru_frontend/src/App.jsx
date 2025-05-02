@@ -61,10 +61,10 @@ function App() {
         
 
         
-        {/* <Route element={<ProtectedRoute isAllowed={isProvider} redirectPath="/forbidden"/>}>
+        <Route element={<ProtectedRoute isAllowed={isProvider} redirectPath="/forbidden"/>}>
         <Route path="/provider/*" element={<ProviderHomePage />} />
-        </Route> */}
-        <Route path="/provider/*" element={<ProviderHomePage />} />
+        </Route>
+        
         
         <Route path="/testing" element={<Testing />} />
         <Route path="*" element={<NotFoundPage />} />
