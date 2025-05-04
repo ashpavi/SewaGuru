@@ -1,4 +1,4 @@
-
+// HomePage.jsx
 import { HiSearch } from "react-icons/hi";
 import {
   FaBroom,
@@ -8,18 +8,16 @@ import {
   FaTruckMoving,
   FaToilet,
   FaPhoneAlt,
-  FaMapMarkerAlt
+  FaMapMarkerAlt,
+  FaShieldAlt,
+  FaTools,
 } from "react-icons/fa";
 import Header from "../components/header";
 import Footer from "../components/Footer";
 import { useState } from "react";
-
-import { Button} from "flowbite-react";
-
-
+import { Button } from "flowbite-react";
 
 export default function HomePage() {
-   
   const [isOpen, setIsOpen] = useState(false);
   const [form, setForm] = useState({
     fullName: "",
@@ -35,96 +33,104 @@ export default function HomePage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Emergency Request Submitted:", form);
-    // Add your backend call here
     setIsOpen(false);
     setForm({ fullName: "", contact: "", issue: "", address: "" });
   };
 
+  const mainServices = [
+    { icon: <FaTools size={30} />, label: "Home Service & Repairs" },
+    { icon: <FaBroom size={30} />, label: "Cleaning & Pest Control" },
+    { icon: <FaPlug size={30} />, label: "Appliance Repair & Installation" },
+    { icon: <FaShieldAlt size={30} />, label: "Home Security & Smart Solutions" },
+    { icon: <FaTruckMoving size={30} />, label: "Moving & Transport" },
+    { icon: <FaLeaf size={30} />, label: "Tree & Garden Services" },
+  ];
+
+  const testimonials = [
+    {
+      name: "Elizabeth Perera",
+      text: "Absolutely amazing service! The plumber was professional and fixed the issue fast.",
+      rating: "⭐⭐⭐⭐⭐",
+    },
+    {
+      name: "Nuwan Fernando",
+      text: "Highly recommend SewaGuru! They helped us move and it was smooth and stress-free.",
+      rating: "⭐⭐⭐⭐⭐",
+    },
+  ];
+
   return (
-    <div className="w-full h-screen bg-white max-h-screen  text-gray-800">
-      <Header/>
-      
+    <div className="w-full bg-white text-gray-800">
+      <Header />
 
-     
-      {/* Hero Section with Search */}
-        <section className="bg-gray-100 w-full py-12">
-          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center px-6">
-            {/* Left: Text + Search */}
-            <div className="space-y-6">
-              <h1 className="text-3xl md:text-5xl font-bold text-blue-700 leading-tight">
-                We provide <br />
-                <span className="text-black">quality service</span>
-              </h1>
-              <p className="text-lg text-gray-700">We work 24 hours a day to serve your home needs.</p>
-
-              {/* Search Bar */}
-              <div className="flex w-full max-w-md border rounded-xl overflow-hidden shadow-md">
-                <input
-                  type="text"
-                  placeholder="Search services..."
-                  className="flex-1 px-4 py-2 outline-none"
-                />
-                <Button color="info" className="flex items-center gap-2 rounded-none">
-                  <HiSearch className="text-lg" />
-                  Search
-                </Button>
-              </div>
-
-              {/* Contact/CTA */}
-              <div className="flex items-center gap-4 text-sm text-gray-600 pt-4">
-                <div className="flex items-center gap-2"><FaMapMarkerAlt />
-                126/2A, Main Street, Homagama
-                </div>
-                <div className="flex items-center gap-2"><FaPhoneAlt />
-                +94 77 002 1234
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Image */}
-            <div className="flex justify-center">
-              <img
-                src="/Hero 1.jpg"
-                alt="Hero Worker"
-                className="w-full max-w-md md:max-w-full rounded-xl shadow-lg"
+      {/* Hero Section */}
+      <section className="bg-gray-100 py-12">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center px-6">
+          <div className="space-y-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-blue-700 leading-tight">
+              We provide <br />
+              <span className="text-black">quality service</span>
+            </h1>
+            <p className="text-lg text-gray-700">
+              We work 24 hours a day to serve your home needs.
+            </p>
+            <div className="flex w-full max-w-md border rounded-xl overflow-hidden shadow-md">
+              <input
+                type="text"
+                placeholder="Search services..."
+                className="flex-1 px-4 py-2 outline-none"
               />
+              <Button color="info" className="flex items-center gap-2 rounded-none">
+                <HiSearch className="text-lg" /> Search
+              </Button>
+            </div>
+            <div className="flex items-center gap-4 text-sm text-gray-600 pt-4">
+              <div className="flex items-center gap-2">
+                <FaMapMarkerAlt /> No. 123, Main Street, Colombo, Sri Lanka
+              </div>
+              <a href="tel:+94771234567" className="flex items-center gap-2 text-blue-600 hover:underline">
+                <FaPhoneAlt /> +94 77 123 4567
+              </a>
             </div>
           </div>
-        </section>
+          <div className="flex justify-center">
+            <img
+              src="/Hero 1.jpg"
+              alt="Hero Worker"
+              className="w-full max-w-md md:max-w-full rounded-xl shadow-lg"
+            />
+          </div>
+        </div>
+      </section>
 
-
-      {/* Emergency Services Section */}       
-        <section className="relative py-12 px-8">
-        <div className="max-w-5xl mx-auto relative z-10 border-3 border-red-300 rounded-2xl bg-red-50/80 shadow-lg overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-100 via-white to-red-50 opacity-30 pointer-events-none rounded-2xl"></div>
+      {/* Emergency Services */}
+      <section className="py-12 px-8">
+        <div className="max-w-5xl mx-auto border-3 border-red-300 rounded-2xl bg-red-50/80 shadow-lg overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-100 via-white to-red-50 opacity-30 rounded-2xl" />
           <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6 p-8">
-            {/* Left */}
             <div className="space-y-5 max-w-xl">
-              <h2 className="text-3xl font-bold text-red-600">
-                Emergency Services, Anytime
-              </h2>
+              <h2 className="text-3xl font-bold text-red-600">Emergency Services, Anytime</h2>
               <p className="text-gray-700 text-lg">
                 We're here for you 24/7. Whether it's a burst pipe, sudden power outage, or a security concern — just give us a call.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 text-white text-base font-semibold">
-                <div className="bg-red-600 px-5 py-3 rounded-lg flex items-center gap-3 shadow-md">
-                  <FaPhoneAlt />
-                  <span>+94 77 111 4444 </span>
-                </div>
+              <div className="flex flex-col sm:flex-row gap-4 text-white font-semibold">
+                <a
+                  href="tel:+94771114444"
+                  className="bg-red-600 px-5 py-3 rounded-lg flex items-center gap-3 shadow-md hover:bg-red-700 transition"
+                >
+                  <FaPhoneAlt /> <span>+94 77 111 4444</span>
+                </a>
                 <button
-                onClick={() => setIsOpen(true)}
-                className="bg-red-600 text-white px-5 py-2 rounded-md shadow-md hover:bg-red-700 transition"
-              >
-                Request Emergency Help
-              </button>
+                  onClick={() => setIsOpen(true)}
+                  className="bg-red-600 px-5 py-2 rounded-md hover:bg-red-700 transition"
+                >
+                  Request Emergency Help
+                </button>
               </div>
               <p className="text-sm text-gray-600 pt-2">
                 We're available in Homagama and nearby towns.
               </p>
-              
             </div>
-
-            {/* Right */}
             <div className="flex justify-center w-full max-w-xs">
               <img
                 src="/plumbing.jpg"
@@ -134,165 +140,116 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        </section>
+      </section>
 
+     {/* Services Grid */}
+<section className="py-16 bg-gray-50">
+  <div className="max-w-7xl mx-auto px-6 text-center">
+    <h3 className="text-3xl font-bold mb-10 text-gray-800">Our Main Service Categories</h3>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      {mainServices.map((s, i) => (
+        <div
+          key={i}
+          className="p-6 bg-white rounded-2xl shadow-md hover:shadow-2xl transition duration-300 flex flex-col items-center border border-gray-200 hover:border-gray-400"
+        >
+          <div className="w-16 h-16 mb-4 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center shadow-lg">
+            {s.icon}
+          </div>
+          <h5 className="font-semibold text-lg text-blue-700">{s.label}</h5>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
 
-      {/* Modal */}
+      {/* Subscription Plans */}
+<section className="py-16 bg-gradient-to-br from-yellow-50 to-white">
+  <div className="max-w-6xl mx-auto px-6">
+    <h3 className="text-3xl font-bold text-center mb-12 text-yellow-800">Subscription Based Services</h3>
+    <div className="grid md:grid-cols-2 gap-10">
+      {[1, 2].map((item) => (
+        <div
+          key={item}
+          className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 border border-yellow-100 hover:border-yellow-300"
+        >
+          <img
+            src={item === 1 ? "/sub2.jpg" : "/sub1.jpg"}
+            alt={item === 1 ? "Home Essentials Plan" : "Premium Care Plan"}
+            className="w-full h-60 object-cover"
+          />
+          <div className="p-6">
+            <h5 className="text-2xl font-bold mb-3 text-yellow-800">
+              {item === 1 ? "Home Essentials Plan - LKR 2,500/month" : "Premium Care Plan - LKR 4,500/month"}
+            </h5>
+            <ul className="list-disc pl-5 text-gray-700 space-y-1 text-sm mb-5">
+              {item === 1 ? (
+                <>
+                  <li>3 maintenance visits per month</li>
+                  <li>Plumbing & electrical support</li>
+                  <li>15% discount on emergency calls</li>
+                </>
+              ) : (
+                <>
+                  <li>5 priority visits per month</li>
+                  <li>Free emergency visits</li>
+                  <li>All-inclusive maintenance coverage</li>
+                </>
+              )}
+            </ul>
+            <Button color="warning" className="w-full py-2">Learn More</Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* Testimonials */}
+<section className="py-16 bg-gradient-to-tr from-gray-100 to-white">
+  <div className="max-w-6xl mx-auto px-6 text-center">
+    <h3 className="text-3xl font-bold mb-10 text-gray-800">What Our Customers Say</h3>
+    <div className="grid md:grid-cols-2 gap-8">
+      {testimonials.map((t, i) => (
+        <div
+          key={i}
+          className="bg-white p-6 rounded-2xl border border-gray-100 hover:border-blue-200 shadow hover:shadow-xl transition-all text-left"
+        >
+          <p className="text-gray-700 italic mb-3 leading-relaxed">“{t.text}”</p>
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-800">{t.name}</span>
+            <span className="text-yellow-500 text-lg">{t.rating}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+      {/* Emergency Request Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 relative">
-            {/* Close Button */}
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 relative">
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-3 right-4 text-gray-400 hover:text-gray-700 text-2xl"
             >
               &times;
             </button>
-
             <h3 className="text-2xl font-bold text-red-600 mb-4 text-center">
               Emergency Request Form
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block font-medium text-gray-700 mb-1">Full Name</label>
-                <input
-                  name="fullName"
-                  value={form.fullName}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block font-medium text-gray-700 mb-1">Contact (Phone/Email)</label>
-                <input
-                  name="contact"
-                  value={form.contact}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block font-medium text-gray-700 mb-1">Issue Description</label>
-                <textarea
-                  name="issue"
-                  value={form.issue}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
-                  rows="3"
-                  required
-                ></textarea>
-              </div>
-              <div>
-                <label className="block font-medium text-gray-700 mb-1">Address / Location</label>
-                <textarea
-                  name="address"
-                  value={form.address}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
-                  rows="2"
-                  required
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-red-600 text-white font-semibold py-2 rounded-md hover:bg-red-700 transition"
-              >
-                Submit Emergency Request
-              </button>
+              <input name="fullName" placeholder="Full Name" value={form.fullName} onChange={handleChange} className="w-full border border-gray-300 rounded-md px-4 py-2" required />
+              <input name="contact" placeholder="Contact (Phone/Email)" value={form.contact} onChange={handleChange} className="w-full border border-gray-300 rounded-md px-4 py-2" required />
+              <textarea name="issue" placeholder="Issue Description" value={form.issue} onChange={handleChange} className="w-full border border-gray-300 rounded-md px-4 py-2" rows="3" required></textarea>
+              <textarea name="address" placeholder="Address / Location" value={form.address} onChange={handleChange} className="w-full border border-gray-300 rounded-md px-4 py-2" rows="2" required></textarea>
+              <button type="submit" className="w-full bg-red-600 text-white font-semibold py-2 rounded-md hover:bg-red-700 transition">Submit Emergency Request</button>
             </form>
           </div>
         </div>
       )}
 
-
-      {/* Services Icons */}
-      <section className="py-10 bg-gray-50">
-            <div className="max-w-6xl mx-auto px-6 grid grid-cols-3 md:grid-cols-6 gap-6 text-center text-sm text-gray-700">
-              {[ 
-                { icon: <FaBroom size={30} />, label: "Cleaning" },
-                { icon: <FaToilet size={30} />, label: "Plumbing" },
-                { icon: <FaPlug size={30} />, label: "Electrician" },
-                { icon: <FaPaintRoller size={30} />, label: "Painting" },
-                { icon: <FaLeaf size={30} />, label: "Gardening" },
-                { icon: <FaTruckMoving size={30} />, label: "Moving" },
-              ].map((service, i) => (
-                <div key={i} className="flex flex-col items-center gap-2 transition duration-300 transform hover:scale-105 hover:opacity-90">
-                  <div className="w-14 h-14 rounded-lg bg-blue-100 flex items-center justify-center shadow-md">
-                    {service.icon}
-                  </div>
-                  <span>{service.label}</span>
-                </div>
-              ))}
-            </div>
-      </section>
-
-
-      {/* Popular Services Near You */}
-      <section className="py-10">
-        <div className="max-w-6xl mx-auto px-6">
-          <h4 className="text-xl font-semibold mb-4">Popular Services Near You</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {["AC Repair", "Pest Control", "Packers & Movers", "Home Cleaning", "CCTV Setup", "Car Wash"].map((service, i) => (
-              <div key={i} className="bg-lime-100 text-center px-4 py-3 rounded-lg shadow-sm font-medium">
-                {service}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* Subscription Based Services */}
-      <section className="py-10 bg-gray-100">
-        <div className="max-w-6xl mx-auto px-6">
-          <h4 className="text-xl font-semibold mb-6">Subscription Based Services</h4>
-          <div className="grid md:grid-cols-2 gap-6">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="bg-lime-100 rounded-xl overflow-hidden shadow-md">
-                <img
-                  src={`https://placehold.co/600x300?text=Plan+${item}`}
-                  alt={`Plan ${item}`}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-5">
-                  <h5 className="text-lg font-semibold mb-2">Popular Plan - LKR 2,500/month</h5>
-                  <ul className="list-disc pl-5 text-sm text-gray-700 mb-4">
-                    <li>3 home visits / month</li>
-                    <li>Emergency support</li>
-                    <li>20% discount on additional services</li>
-                  </ul>
-                  <Button color="warning">Learn More</Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* Testimonials */}
-      <section className="py-10">
-        <div className="max-w-6xl mx-auto px-6">
-          <h4 className="text-xl font-semibold mb-6">See what happy customers are saying about SewaGuru</h4>
-          <div className="grid md:grid-cols-2 gap-6">
-            {["Elizabeth", "Ehsan"]?.map((name, i) => (
-              <div
-                key={i}
-                className="bg-gray-100 p-5 rounded-xl shadow-md text-sm text-gray-800"
-              >
-                <p className="mb-2">“Great experience! They arrived on time and completed the work flawlessly.”</p>
-                <div className="font-semibold">{name} ⭐⭐⭐⭐⭐</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-      </section>
-      <Footer/>
+      <Footer />
     </div>
-    
-  )
+  );
 }
-

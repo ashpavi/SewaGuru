@@ -16,51 +16,111 @@ import BookingModal from "./bookingModal";
 const serviceData = {
   "Home Service & Repairs": {
     image: homeRepairImg,
-    description: "Hire a SewaGuru expert for top-notch home repairs, plumbing, and electrical services.",
+    description: "Professional help for all your household repair needs — from plumbing leaks to electrical fixes and handyman support, we’ve got your home covered.",
     subServices: [
-      "Plumbing Services: Pipe repairs, leak fixes, water heater installation, bathroom fittings, drainage cleaning.",
-      "Electrical Services: Wiring installation, circuit repairs, fuse replacements, electrical appliance installations."
+      "Plumbing (leaks, fittings, drainage)",
+
+      "Electrical Repairs (wiring, sockets, switches)",
+
+      "Carpentry (furniture fixing, hinge alignment)",
+
+      "Masonry & Tile Work (tile fixing, wall repair)", 
+
+      "Door & Window Repair",
+
+      "Curtain Rod / Shelf Installation"
     ]
   },
   "Cleaning & Pest Control": {
     image: cleaningImg,
     description: "Keep your space clean and pest-free with our professional cleaning and pest control services.",
     subServices: [
-      "House Cleaning: Deep cleaning, move-in/move-out cleaning, post-construction cleaning.",
-      "Carpet & Sofa Cleaning: Professional cleaning of carpets, sofas, upholstery, and curtains."
+      "Home Deep Cleaning",
+
+      "Kitchen & Bathroom Cleaning",
+
+      "Sofa & Mattress Cleaning",
+
+      "Carpet & Curtain Cleaning",
+
+      "Termite Control",
+
+      "Cockroach / Ant / Bed Bug Control",
+
+      "Disinfection & Sanitization"
     ]
   },
   "Appliance Repair & Installation": {
     image: applianceImg,
     description: "Get your appliances installed or repaired by certified SewaGuru technicians.",
     subServices: [
-      "AC Repair & Servicing: Cleaning, gas refilling, repairing air conditioners.",
-      "Refrigerator Repair: Troubleshooting, compressor replacement, cooling issues.",
-      "Washing Machine Repair: Motor replacement, drum repair, draining problems."
+      "AC Repair & Installation",
+      "Washing Machine Repair",
+
+      "Refrigerator Repair",
+
+      "Microwave / Oven Setup",
+
+      "TV Wall Mounting",
+
+      "Water Heater (Geyser) Installation",
+
+      "Inverter / Stabilizer Setup"
     ]
   },
   "Home Security & Smart Solutions": {
     image: securityImg,
     description: "Secure your home with CCTV installation and smart automation solutions.",
     subServices: [
-      "CCTV Installation: Home security camera setup, maintenance, and repairs.",
-      "Smart Home Solutions: Smart lighting, smart thermostats, home automation."
+      "CCTV Installation",
+
+      "Smart Doorbell Setup",
+
+      "Video Intercom Installation",
+
+      "Alarm System Installation",
+
+"Smart Lock Installation",
+
+"Motion Sensor Setup",
+
+"Wi-Fi Router / IoT Configuration"
     ]
   },
   "Moving & Transport": {
     image: movingImg,
     description: "Efficient and reliable moving, packing, and transportation services.",
     subServices: [
-      "House Shifting: Packing, loading, unloading, and transportation of household items.",
-      "Office Relocation: Furniture disassembly, packing, transportation, and setup at the new location."
+      "House Shifting (Local / Long Distance)",
+
+"Office Relocation",
+
+"Furniture Transport",
+
+"Mini Truck Booking",
+
+"Packing & Unpacking Services",
+
+"Loading & Unloading Help"
     ]
   },
   "Tree & Garden Services": {
     image: gardenImg,
     description: "Professional tree care and gardening services to keep your outdoors beautiful and safe.",
     subServices: [
-      "Coconut Tree Straightening: Supporting leaning coconut trees to prevent damage.",
-      "Tree Pruning & Cutting: Trimming overgrown branches, cutting down unsafe trees, stump removal."
+      "Lawn Mowing",
+
+"Tree Trimming / Pruning",
+
+"Garden Cleaning",
+
+"Planting & Maintenance",
+
+"Outdoor Pest Control",
+
+"Landscaping Services",
+
+"Fertilizer & Soil Treatment"
     ]
   }
 };
