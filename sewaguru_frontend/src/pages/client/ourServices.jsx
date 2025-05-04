@@ -1,13 +1,17 @@
+// OurServices.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
 import Footer from "../../components/Footer";
+
+
 import homeRepairImg from "../../assets/services/home-repair.jpg";
 import cleaningImg from "../../assets/services/cleaning.jpg";
 import applianceImg from "../../assets/services/appliance.jpg";
 import securityImg from "../../assets/services/security.jpg";
 import movingImg from "../../assets/services/moving.jpg";
 import gardenImg from "../../assets/services/garden.jpg";
+import BookingModal from "./bookingModal";
 
 const serviceData = {
   "Home Service & Repairs": {
@@ -63,10 +67,10 @@ const serviceData = {
 
 export default function OurServices() {
   const [selectedCategory, setSelectedCategory] = useState("Home Service & Repairs");
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   const handleBooking = () => {
-    navigate(`/book-service?service=${encodeURIComponent(selectedCategory)}`);
+    setShowModal(true);
   };
 
   return (
@@ -88,7 +92,6 @@ export default function OurServices() {
                     : "bg-white text-gray-700 hover:bg-blue-100"
                 }`}
               >
-                {/* Here you can add a small icon for each category too if you want */}
                 {category}
               </button>
             ))}
@@ -132,6 +135,13 @@ export default function OurServices() {
       </main>
 
       <Footer />
+
+      {showModal && (
+        <BookingModal
+          category={selectedCategory}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }
