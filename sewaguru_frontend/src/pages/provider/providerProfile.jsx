@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { FaUser, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import api from "../../api/api";
@@ -16,7 +17,7 @@ export default function ProviderProfile() {
     gsCerts: null,
     otherCerts: [],
   });
-  
+
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
@@ -50,17 +51,17 @@ export default function ProviderProfile() {
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    
+
     if (name === "profileImage") {
       setFileInputs({ ...fileInputs, profileImage: files[0] });
     } else if (name === "gsCerts") {
       setFileInputs({ ...fileInputs, gsCerts: files[0] });
-    } else if(name==="policeCerts") {
+    } else if (name === "policeCerts") {
       setFileInputs({ ...fileInputs, policeCerts: files[0] });
     } else {
       setFileInputs({ ...fileInputs, [name]: [...files] });
     }
-    
+
   };
 
   const handleUpdate = async () => {
@@ -73,17 +74,39 @@ export default function ProviderProfile() {
         fileInputs.gsCerts ||
         fileInputs.nicImages.length > 0 ||
         fileInputs.otherCerts.length > 0;
-      
+
       if (!hasFileUploads) {
-        const { email, role, _id, refreshToken, ...cleanData } = formData;
+        const {
+          email,
+          role,
+          _id,
+          refreshToken,
+          profilePicSrc,
+          nicImgSrc,
+          gsCertSrc,
+          policeCertSrc,
+          otherSrc,
+          ...cleanData
+        } = formData;
         await api.put("/user/update", cleanData, {
           headers: { Authorization: `Bearer ${token}` },
         });
       } else {
         const updatedFormData = new FormData();
-        
+
+        const ignoreKeys = [
+          "email",
+          "role",
+          "_id",
+          "refreshToken",
+          'profilePicSrc',
+          'nicImgSrc',
+          'gsCertSrc',
+          'policeCertSrc',
+          'otherSrc',
+        ];
         for (const key in formData) {
-          if (!["email", "role", "_id", "refreshToken"].includes(key)) {
+          if (!ignoreKeys.includes(key)) {
             updatedFormData.append(key, formData[key]);
           }
         }
@@ -98,14 +121,14 @@ export default function ProviderProfile() {
           updatedFormData.append("nicImages", file));
         fileInputs.otherCerts.forEach(file =>
           updatedFormData.append("extraCerts", file));
-            
+
         await api.put("/user/update", updatedFormData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         });
-        
+
         console.log("Profile updated with files");
       }
 
@@ -125,7 +148,7 @@ export default function ProviderProfile() {
         otherCerts: [],
       });
 
-      
+
 
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -139,15 +162,15 @@ export default function ProviderProfile() {
       <div className="space-y-1" key={label}>
         <p className="text-sm text-gray-600">{label}</p>
         {isPDF ? (
-          <a href={fileUrl} target="_blank" rel="noopener noreferrer" 
-          className="flex justify-center items-center h-48 border rounded-lg shadow-sm bg-red-100 text-red-600 font-medium hover:bg-red-200 transition text-center">
+          <a href={fileUrl} target="_blank" rel="noopener noreferrer"
+            className="flex justify-center items-center h-48 border rounded-lg shadow-sm bg-red-100 text-red-600 font-medium hover:bg-red-200 transition text-center">
             View PDF
           </a>
         ) : (
-          <img 
-          src={fileUrl} 
-          alt={label} 
-          className="rounded-lg border shadow-sm w-full h-48 object-cover" />
+          <img
+            src={fileUrl}
+            alt={label}
+            className="rounded-lg border shadow-sm w-full h-48 object-cover" />
         )}
       </div>
     );
@@ -201,7 +224,7 @@ export default function ProviderProfile() {
       <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col md:flex-row gap-8">
         <div className="flex justify-center md:w-1/3">
           <img
-            src={profile.profilePicSrc || "/default-avatar.png"}
+            src={`${profile.profilePicSrc || "/default-avatar.png"}?v=${profile.updatedAt}`}
             alt="Profile"
             className="w-40 h-40 rounded-full object-cover border-4 border-[#48B8E3] shadow-md"
           />
@@ -353,10 +376,10 @@ export default function ProviderProfile() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {profile.nicImgSrc?.map((img, i) =>
-                renderDocument(`NIC ${i === 0 ? "Front" : "Back"}`, img)
+                renderDocument(`NIC ${i === 0 ? "Front" : "Back"}`, `${img}?v=${profile.updatedAt}`)
               )}
-              {profile.policeCertSrc && renderDocument("Police Certificate", profile.policeCertSrc)}
-              {profile.gsCertSrc && renderDocument("GS Certificate", profile.gsCertSrc)}
+              {profile.policeCertSrc && renderDocument("Police Certificate", `${profile.policeCertSrc}?v=${profile.updatedAt}`)}
+              {profile.gsCertSrc && renderDocument("GS Certificate", `${profile.gsCertSrc}?v=${profile.updatedAt}`)}
             </div>
 
             {profile.otherSrc?.length > 0 && (
@@ -364,7 +387,7 @@ export default function ProviderProfile() {
                 <h3 className="text-lg font-semibold text-gray-800 pt-4">Other Qualifications</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {profile.otherSrc.map((file, index) =>
-                    renderDocument(`Document ${index + 1}`, file)
+                    renderDocument(`Document ${index + 1}`, `${file}?v=${profile.updatedAt}`)
                   )}
                 </div>
               </>
@@ -377,4 +400,4 @@ export default function ProviderProfile() {
 }
 
 
- 
+
