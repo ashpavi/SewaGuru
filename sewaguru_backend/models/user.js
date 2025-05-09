@@ -52,6 +52,21 @@ const userSchema = new mongoose.Schema({
         required: function () {
             return this.role === 'provider';
         }
+    },rating: { 
+        type: Number, 
+        default: 0,
+        min: 0,
+        max: 5 ,
+        required: function () {
+            return this.role === 'provider';
+        }
+    },
+    numberOfRatings: {
+        type: Number,
+        default: 0,
+        required: function () {
+            return this.role === 'provider';
+        }
     },
     serviceType: {
         type: String,
@@ -104,6 +119,13 @@ userSchema.methods.comparePassword = function (password) {
     return bcrypt.compare(password, this.password);
 };
 
+// Update rating method
+userSchema.methods.updateRating = async function (newRating) {
+    if (this.role !== 'provider') return;
+    this.rating = ((this.rating * this.numberOfRatings) + newRating) / (this.numberOfRatings + 1);
+    this.numberOfRatings += 1;
+    await this.save();
+};
 
 
 export default mongoose.model("User", userSchema);

@@ -237,117 +237,196 @@ export const logout = async (req, res) => {
 };
 
 
+// export const upgradeToProvider = async (req, res) => {
+//     const uploadedFiles = [];
+
+//     try {
+//         const { nic, location, address, serviceType } = req.body;
+//         const files = req.files;
+//         const user = req.user;
+
+//         // Set basic info
+//         user.role = 'provider';
+//         user.nic = nic;
+//         user.location = location;
+//         user.address = address;
+//         user.serviceType = serviceType;
+
+//         // Image uploads (store in temporary variables)
+//         const nicImgSrc = [];
+//         if (files?.nicImages?.length) {
+//             user.nicImgSrc = [];
+//             for (let i = 0; i < files.nicImages.length; i++) {
+//                 const file = files.nicImages[i];
+//                 const url = await uploadBufferToSupabase(file.buffer, user.email, `nicImg_${i}`);
+//                 uploadedFiles.push(url);
+//                 user.nicImgSrc.push(url);
+//             }
+//         }
+
+//         let profilePicSrc = user.profilePicSrc;
+//         if (files?.profileImage?.[0]) {
+//             profilePicSrc = await uploadBufferToSupabase(files.profileImage[0].buffer, user.email, 'profileImg');
+//             uploadedFiles.push(profilePicSrc);
+//         }
+
+//         let gsCertSrc = user.gsCertSrc;
+//         if (files?.gsCerts?.[0]) {
+//             gsCertSrc = await uploadBufferToSupabase(files.gsCerts[0].buffer, user.email, 'gsCertImg');
+//             uploadedFiles.push(gsCertSrc);
+//         }
+
+//         let policeCertSrc = user.policeCertSrc;
+//         if (files?.policeCerts?.[0]) {
+//             policeCertSrc = await uploadBufferToSupabase(files.policeCerts[0].buffer, user.email, 'policeCertImg');
+//             uploadedFiles.push(policeCertSrc);
+//         }
+
+//         const otherSrc = [];
+//         if (files?.extraCerts?.length) {
+//             user.otherSrc = [];
+//             for (let i = 0; i < files.extraCerts.length; i++) {
+//                 const file = files.extraCerts[i];
+//                 const url = await uploadBufferToSupabase(file.buffer, user.email, `otherImg_${i}`, ['image/', 'application/pdf']);
+//                 uploadedFiles.push(url);
+//                 user.otherSrc.push(url);
+//             }
+//         }
+
+//         // Now assign URLs to user after successful uploads
+        
+//         user.profilePicSrc = profilePicSrc;
+//         user.gsCertSrc = gsCertSrc;
+//         user.policeCertSrc = policeCertSrc;
+        
+
+//         // Try saving
+//         await user.save();
+
+//         // Generate new tokens
+//         const { accessToken, refreshToken } = generateTokens(user);
+//         user.refreshToken = refreshToken;
+//         await user.save();
+
+//         return res.json({
+//             msg: 'Upgraded to provider successfully',
+//             accessToken,
+//             refreshToken
+//         });
+//     } catch (err) {
+//         // Clean up orphaned Supabase files
+//         if (uploadedFiles.length > 0) {
+//             const paths = uploadedFiles.map(url => {
+//                 const [, path] = url.split(`/storage/v1/object/public/`);
+//                 return path;
+//             });
+//             await getSupabase().storage.from('images').remove(paths);
+//         }
+
+//         if (err.name === 'ValidationError') {
+//             const userFriendlyMessages = {
+//                 nic: 'NIC is required.',
+//                 location: 'Location is required.',
+//                 address: 'Address is required.',
+//                 serviceType: 'Service type is required.',
+//                 profilePicSrc: 'Profile picture is required.',
+//                 gsCertSrc: 'Grama Sevaka certificate is required.',
+//                 policeCertSrc: 'Police clearance certificate is required.'
+//             };
+
+//             const errors = Object.keys(err.errors).map(field => ({
+//                 field,
+//                 message: userFriendlyMessages[field] || 'Invalid input.'
+//             }));
+
+//             return res.status(400).json({ msg: 'Validation failed', errors });
+//         }
+
+
+//         return res.status(500).json({ msg: 'Something went wrong', error: err.message });
+//     }
+
+// };
+
 export const upgradeToProvider = async (req, res) => {
     const uploadedFiles = [];
-
+  
     try {
-        const { nic, location, address, serviceType } = req.body;
-        const files = req.files;
-        const user = req.user;
-
-        // Set basic info
-        user.role = 'provider';
-        user.nic = nic;
-        user.location = location;
-        user.address = address;
-        user.serviceType = serviceType;
-
-        // Image uploads (store in temporary variables)
-        const nicImgSrc = [];
-        if (files?.nicImages?.length) {
-            user.nicImgSrc = [];
-            for (let i = 0; i < files.nicImages.length; i++) {
-                const file = files.nicImages[i];
-                const url = await uploadBufferToSupabase(file.buffer, user.email, `nicImg_${i}`);
-                uploadedFiles.push(url);
-                user.nicImgSrc.push(url);
-            }
+      const { nic, location, address, serviceType } = req.body;
+      const files = req.files;
+      const user = req.user;
+  
+      user.role = 'provider';
+      user.nic = nic;
+      user.location = location;
+      user.address = address;
+      user.serviceType = serviceType;
+  
+      // Images
+      if (files?.nicImages?.length) {
+        user.nicImgSrc = [];
+        for (let i = 0; i < files.nicImages.length; i++) {
+          const file = files.nicImages[i];
+          const url = await uploadBufferToSupabase(file.buffer, user.email, `nicImg_${i}`);
+          uploadedFiles.push(url);
+          user.nicImgSrc.push(url);
         }
-
-        let profilePicSrc = user.profilePicSrc;
-        if (files?.profileImage?.[0]) {
-            profilePicSrc = await uploadBufferToSupabase(files.profileImage[0].buffer, user.email, 'profileImg');
-            uploadedFiles.push(profilePicSrc);
+      }
+  
+      if (files?.profileImage?.[0]) {
+        const url = await uploadBufferToSupabase(files.profileImage[0].buffer, user.email, 'profileImg');
+        uploadedFiles.push(url);
+        user.profilePicSrc = url;
+      }
+  
+      if (files?.gsCerts?.[0]) {
+        const url = await uploadBufferToSupabase(files.gsCerts[0].buffer, user.email, 'gsCertImg');
+        uploadedFiles.push(url);
+        user.gsCertSrc = url;
+      }
+  
+      if (files?.policeCerts?.[0]) {
+        const url = await uploadBufferToSupabase(files.policeCerts[0].buffer, user.email, 'policeCertImg');
+        uploadedFiles.push(url);
+        user.policeCertSrc = url;
+      }
+  
+      if (files?.extraCerts?.length) {
+        user.otherSrc = [];
+        for (let i = 0; i < files.extraCerts.length; i++) {
+          const file = files.extraCerts[i];
+          const url = await uploadBufferToSupabase(file.buffer, user.email, `otherImg_${i}`, ['image/', 'application/pdf']);
+          uploadedFiles.push(url);
+          user.otherSrc.push(url);
         }
-
-        let gsCertSrc = user.gsCertSrc;
-        if (files?.gsCerts?.[0]) {
-            gsCertSrc = await uploadBufferToSupabase(files.gsCerts[0].buffer, user.email, 'gsCertImg');
-            uploadedFiles.push(gsCertSrc);
-        }
-
-        let policeCertSrc = user.policeCertSrc;
-        if (files?.policeCerts?.[0]) {
-            policeCertSrc = await uploadBufferToSupabase(files.policeCerts[0].buffer, user.email, 'policeCertImg');
-            uploadedFiles.push(policeCertSrc);
-        }
-
-        const otherSrc = [];
-        if (files?.extraCerts?.length) {
-            user.otherSrc = [];
-            for (let i = 0; i < files.extraCerts.length; i++) {
-                const file = files.extraCerts[i];
-                const url = await uploadBufferToSupabase(file.buffer, user.email, `otherImg_${i}`, ['image/', 'application/pdf']);
-                uploadedFiles.push(url);
-                user.otherSrc.push(url);
-            }
-        }
-
-        // Now assign URLs to user after successful uploads
-        user.nicImgSrc = nicImgSrc;
-        user.profilePicSrc = profilePicSrc;
-        user.gsCertSrc = gsCertSrc;
-        user.policeCertSrc = policeCertSrc;
-        user.otherSrc = otherSrc;
-
-        // Try saving
-        await user.save();
-
-        // Generate new tokens
-        const { accessToken, refreshToken } = generateTokens(user);
-        user.refreshToken = refreshToken;
-        await user.save();
-
-        return res.json({
-            msg: 'Upgraded to provider successfully',
-            accessToken,
-            refreshToken
-        });
+      }
+  
+      // Save and regenerate tokens
+      await user.save();
+  
+      const freshUser = await User.findById(user._id);
+      const { accessToken, refreshToken } = await generateTokens(freshUser);
+      freshUser.refreshToken = refreshToken;
+      await freshUser.save();
+  
+      return res.json({
+        msg: 'Upgraded to provider successfully',
+        accessToken,
+        refreshToken
+      });
     } catch (err) {
-        // Clean up orphaned Supabase files
-        if (uploadedFiles.length > 0) {
-            const paths = uploadedFiles.map(url => {
-                const [, path] = url.split(`/storage/v1/object/public/`);
-                return path;
-            });
-            await getSupabase().storage.from('images').remove(paths);
-        }
-
-        if (err.name === 'ValidationError') {
-            const userFriendlyMessages = {
-                nic: 'NIC is required.',
-                location: 'Location is required.',
-                address: 'Address is required.',
-                serviceType: 'Service type is required.',
-                profilePicSrc: 'Profile picture is required.',
-                gsCertSrc: 'Grama Sevaka certificate is required.',
-                policeCertSrc: 'Police clearance certificate is required.'
-            };
-
-            const errors = Object.keys(err.errors).map(field => ({
-                field,
-                message: userFriendlyMessages[field] || 'Invalid input.'
-            }));
-
-            return res.status(400).json({ msg: 'Validation failed', errors });
-        }
-
-
-        return res.status(500).json({ msg: 'Something went wrong', error: err.message });
+      if (uploadedFiles.length > 0) {
+        const paths = uploadedFiles.map(url => {
+          const [, path] = url.split(`/storage/v1/object/public/`);
+          return path;
+        });
+        await getSupabase().storage.from('images').remove(paths);
+      }
+  
+      return res.status(500).json({ msg: 'Something went wrong', error: err.message });
     }
-
-};
-
+  };
+  
 
 export const getLoggedInUser = async (req, res) => {
     try {
@@ -457,3 +536,6 @@ export const updateUser = async (req, res) => {
         res.status(500).json({ msg: 'Server error', error: err.message });
     }
 };
+
+
+

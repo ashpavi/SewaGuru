@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import api from "../../api/api"; 
 
 export default function ProviderEditProfile() {
   const [formData, setFormData] = useState({
@@ -11,15 +12,15 @@ export default function ProviderEditProfile() {
     serviceType: "AC Repair, Electrical Work",
     profilePic: "",
     nicImages: [],
-    policeCert: "",
-    gsCert: "",
-    otherQualifications: []
+    policeCerts: "",
+    gsCerts: "",
+    extraCerts: []
   });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files) {
-      if (name === "nicImages" || name === "otherQualifications") {
+      if (name === "nicImages" || name === "extraCerts") {
         setFormData({ ...formData, [name]: Array.from(files) });
       } else {
         setFormData({ ...formData, [name]: files[0] });
@@ -30,12 +31,58 @@ export default function ProviderEditProfile() {
   };
   
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   console.log("Profile updated:", formData);
+  //   alert("Profile updated successfully!");
+  //   // You can POST this data to backend here
+  // };
+
+  
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Profile updated:", formData);
-    alert("Profile updated successfully!");
-    // You can POST this data to backend here
+    try {
+      const form = new FormData();
+  
+      // Append all non-file fields
+      for (const key in formData) {
+        const value = formData[key];
+        if (typeof value === "string") {
+          form.append(key, value);
+        }
+      }
+  
+      // Append file fields
+      if (formData.profilePic) form.append("profileImage", formData.profilePic);
+      if (formData.policeCert) form.append("policeCerts", formData.policeCert);
+      if (formData.gsCert) form.append("gsCerts", formData.gsCert);
+  
+      formData.nicImages.forEach((file) => {
+        form.append("nicImages", file);
+      });
+  
+      formData.extraCerts.forEach((file) => {
+        form.append("extraCerts", file);
+      });
+  
+      const token = localStorage.getItem("accessToken");
+  
+      await api.put("/user/update", form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      alert("Profile updated successfully!");
+    } catch (err) {
+      console.error("Update failed:", err);
+      alert("Update failed. See console for details.");
+    }
   };
+  
+
 
   return (
     <div className="space-y-6">
@@ -155,7 +202,7 @@ export default function ProviderEditProfile() {
             <input
                 type="file"
                 accept="image/*,application/pdf"
-                name="otherQualifications"
+                name="extraCerts"
                 multiple
                 onChange={handleChange}
                 className="w-full p-2 border rounded-lg"

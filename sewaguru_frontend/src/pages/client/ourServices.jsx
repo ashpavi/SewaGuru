@@ -35,7 +35,7 @@ const serviceData = {
     image: cleaningImg,
     description: "Keep your space clean and pest-free with our professional cleaning and pest control services.",
     subServices: [
-      "Home Deep Cleaning",
+      " Deep Cleaning",
 
       "Kitchen & Bathroom Cleaning",
 
@@ -45,9 +45,8 @@ const serviceData = {
 
       "Termite Control",
 
-      "Cockroach / Ant / Bed Bug Control",
-
-      "Disinfection & Sanitization"
+      "Cockroach / Ant / Bed Bug Control"
+      
     ]
   },
   "Appliance Repair & Installation": {
@@ -61,11 +60,7 @@ const serviceData = {
 
       "Microwave / Oven Setup",
 
-      "TV Wall Mounting",
-
-      "Water Heater (Geyser) Installation",
-
-      "Inverter / Stabilizer Setup"
+      "TV Wall Mounting"
     ]
   },
   "Home Security & Smart Solutions": {
@@ -91,7 +86,7 @@ const serviceData = {
     image: movingImg,
     description: "Efficient and reliable moving, packing, and transportation services.",
     subServices: [
-      "House Shifting (Local / Long Distance)",
+      "House Shifting",
 
 "Office Relocation",
 

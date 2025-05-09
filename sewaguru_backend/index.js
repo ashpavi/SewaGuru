@@ -7,6 +7,7 @@ dotenv.config();
 
 
 import userRouter from './routes/userRouter.js';
+import bookingRouter from './routes/bookingRouter.js';
 
 
 const app = express();
@@ -35,6 +36,7 @@ mongoose.connect(process.env.MONGO).then(
 
 //---importing the Routers-------------------
 app.use("/api/user", userRouter)
+app.use("/api/bookings", bookingRouter)
 
 
 
