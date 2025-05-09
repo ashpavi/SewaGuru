@@ -10,7 +10,7 @@ export const findProviders = async (req, res) => {
         role: 'provider',
         serviceType: serviceType,
         location: location
-      }).select('firstName lastName profilePicSrc address rating');
+      }).select('firstName lastName profilePicSrc location serviceType address rating');
   
       res.json(providers);
     } catch (err) {
