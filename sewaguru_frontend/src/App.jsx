@@ -23,6 +23,7 @@ import PrivacyPolicyPage from "./pages/client/privacyPolicy";
 import NotFoundPage from "./pages/404";
 import ProfileDashboard from "./pages/client/profiledashboard";
 import ProviderHomePage from "./pages/providerHomePage";
+import SubscriptionPlans from "./pages/client/subscriptionPlans";
 
 
 
@@ -54,6 +55,7 @@ function App() {
         <Route path="/client/aboutUs" element={<AboutUsPage />} />
         <Route path="/client/contactUs" element={<ContactUs />} />
         <Route path="/client/ourServices" element={<OurServices />} />
+        <Route path="/client/subscriptionPlans" element={<SubscriptionPlans />} />
         <Route path="/client/privacyPolicy" element={<PrivacyPolicyPage />} />
         <Route path="/client/profileDashboard" element={<ProfileDashboard />} />
 
