@@ -16,7 +16,6 @@ export default function LogIn() {
   const handleLogin = async(email,password) => {
     try{
       const response = await api.post("/user/login", {
-
         email: email,
         password: password
       });
@@ -46,7 +45,7 @@ export default function LogIn() {
       }
     } catch (error) {
       //toast.error("Login failed: " + error.message);
-      toast.error("Invalid email or password. Please try again.");
+      toast.error(error.response.data.msg);
     }
   }
 

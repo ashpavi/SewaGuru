@@ -52,11 +52,18 @@ const userSchema = new mongoose.Schema({
         required: function () {
             return this.role === 'provider';
         }
-    },rating: { 
-        type: Number, 
+    },
+    isDisabled: {
+        type: Boolean,
+        default: function () {
+            return this.role === 'provider';
+        }
+    },
+    rating: {
+        type: Number,
         default: 0,
         min: 0,
-        max: 5 ,
+        max: 5,
         required: function () {
             return this.role === 'provider';
         }
