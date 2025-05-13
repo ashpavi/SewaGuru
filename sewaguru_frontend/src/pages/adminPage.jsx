@@ -23,12 +23,12 @@ export default function AdminPage() {
             <div className="flex flex-1 p-2.5">
                 {/* Sidebar */}
                 <div className="w-[300px]">
-                    <Link to="/admin/dashboard" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><GoHomeFill className="mr-2" />Dashboard</Link>
-                    <Link to="/admin/services" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><AiFillProduct className="mr-2" />Services</Link>
-                    <Link to="/admin/messages" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><BiSolidMessageDetail className="mr-2" />Messages</Link>
-                    <Link to="/admin/users" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><BsPersonFill className="mr-2" />Registered Customers</Link>
-                    <Link to="/admin/serviceProviders" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><GrUserWorker className="mr-2" />Service Providers</Link>
-                    <Link to="/admin/applications" className="w-[250px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><ImProfile className="mr-2" />Service Provider Applications</Link>
+                    <Link to="/admin/dashboard" className="w-[280px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><GoHomeFill className="mr-2" />Dashboard</Link>
+                    <Link to="/admin/services" className="w-[280px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><AiFillProduct className="mr-2" />Services</Link>
+                    <Link to="/admin/messages" className="w-[280px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><BiSolidMessageDetail className="mr-2" />Messages</Link>
+                    <Link to="/admin/users" className="w-[280px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><BsPersonFill className="mr-2" />Registered Customers</Link>
+                    <Link to="/admin/serviceProviders" className="w-[280px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><GrUserWorker className="mr-2" />Service Providers</Link>
+                    <Link to="/admin/applications" className="w-[280px] h-[50px] bg-white rounded-xl flex p-2 justify-center items-center m-[5px] hover:bg-gray-300"><ImProfile className="mr-2" />Service Provider Applications</Link>
                 </div>
 
                 {/* Content */}
