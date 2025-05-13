@@ -1,4 +1,4 @@
-import { Link, Routes, Route, useLocation, Navigate  } from "react-router-dom";
+import { Link, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { GoHomeFill } from "react-icons/go";
 import { BiSolidMessageDetail } from "react-icons/bi";
 import { PiNotepadFill } from "react-icons/pi";
@@ -6,7 +6,7 @@ import { FaCalendarDays } from "react-icons/fa6";
 import { BsPersonFill } from "react-icons/bs";
 
 import ProviderHeader from "../components/providerHeader";
-import ProviderDashboard from "./provider/providerDashboard";
+import ProviderDashboard from "./provider/providerDashboard"; 
 import ProviderMessages from "./provider/providermessages";
 import ServiceRequest from "./provider/serviceRequest";
 import ProviderBookings from "./provider/providerBookings";
@@ -40,7 +40,7 @@ export default function ProviderHomePage() {
                 : "bg-gray-200 text-gray-800 hover:bg-blue-100"
             }`}
           >
-            {link.label}
+            {link.icon} {link.label}
           </Link>
         ))}
       </nav>
@@ -65,15 +65,17 @@ export default function ProviderHomePage() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-4 overflow-y-auto">
+        <main className="flex-1 p-4 overflow-y-auto bg-white">
           <Routes>
-            <Route index element={<Navigate to="/provider/providerDashboard" />} />
-            <Route path="providerDashboard" element={<ProviderDashboard />} />
-            <Route path="providerMessages" element={<ProviderMessages />} />
-            <Route path="serviceRequests" element={<ServiceRequest />} />
-            <Route path="providerBookings" element={<ProviderBookings />} />
-            <Route path="providerProfile" element={<ProviderProfile />} />
-            <Route path="providerEditProfile" element={<ProviderEditProfile />} />
+            <Route index element={<ProviderDashboard />} />
+            <Route path="/providerDashboard" element={<ProviderDashboard />} />
+            <Route path="/providerMessages" element={<ProviderMessages />} />
+            <Route path="/serviceRequests" element={<ServiceRequest />} />
+            <Route path="/providerBookings" element={<ProviderBookings />} />
+            <Route path="/providerProfile" element={<ProviderProfile />} />
+            <Route path="/providerEditProfile" element={<ProviderEditProfile />} />
+            {/* Fallback Route */}
+            <Route path="*" element={<h1>Page Not Found</h1>} />
           </Routes>
         </main>
       </div>

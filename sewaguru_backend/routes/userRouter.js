@@ -1,6 +1,6 @@
 import express from "express";
 import { test } from '../controllers/test.js';
-import { createAdmin, getAll, getLoggedInUser, login, logout, refreshToken, register, toggleUserStatus, updateUser, upgradeToProvider } from "../controllers/userController.js";
+import { createAdmin, getAll, getLoggedInUser, googleLogin, login, logout, refreshToken, register, toggleUserStatus, updateUser, upgradeToProvider } from "../controllers/userController.js";
 import { adminOnly, customerOnly } from '../middleware/accessLevel.js';
 import { authenticate } from '../middleware/auth.js';
 import { upload } from "../middleware/fileHandler.js";
@@ -13,6 +13,7 @@ router.get('/', authenticate, getLoggedInUser);
 router.get('/all/:role', authenticate, adminOnly, getAll);
 router.post('/create-admin', authenticate, adminOnly, createAdmin);
 router.post('/login', login);
+router.post("/google", googleLogin);
 router.post('/refresh', refreshToken);
 router.post('/logout', authenticate, logout);
 router.patch('/:userId/status', authenticate, adminOnly, toggleUserStatus);

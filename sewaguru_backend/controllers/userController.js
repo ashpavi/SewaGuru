@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import { getSupabase, uploadBufferToSupabase } from '../utils/uploadToSuperbase.js';
+import axios from 'axios';
 
 const generateTokens = async (user) => {
     const accessToken = jwt.sign({
@@ -170,6 +171,48 @@ export const register = async (req, res) => {
     }
 };
 
+export async function googleLogin(req, res) {
+    const googleToken = req.body.accessToken;
+
+    try {
+        const googleResponse = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: {
+                Authorization: "Bearer " + googleToken
+            }
+        });
+
+        const googleUserInfo = googleResponse.data;
+        let user = await User.findOne({ email: googleUserInfo.email });
+
+        if (!user) {
+            const newUser = new User({
+                email: googleUserInfo.email,
+                firstName: googleUserInfo.given_name,
+                lastName: googleUserInfo.family_name,
+                // role: "customer",
+                // profilePicSrc: googleUserInfo.picture,
+                password: googleToken 
+            });
+
+            const savedUser = await newUser.save();
+            const { accessToken, refreshToken } = await generateTokens(savedUser);
+            savedUser.refreshToken = refreshToken;
+            await savedUser.save();
+
+            res.json({ accessToken, refreshToken });
+        } else {
+            const { accessToken, refreshToken } = await generateTokens(user);
+            user.refreshToken = refreshToken;
+            await user.save();
+
+            res.json({ accessToken, refreshToken });
+        }
+
+    } catch (error) {
+        console.error("Error during Google login:", error);
+        res.status(500).json({ message: 'Google login Failed', error: error.message });
+    }
+}
 
 export const login = async (req, res) => {
     try {
@@ -198,6 +241,8 @@ export const login = async (req, res) => {
         console.log(err);
     }
 };
+
+
 
 
 export const refreshToken = async (req, res) => {

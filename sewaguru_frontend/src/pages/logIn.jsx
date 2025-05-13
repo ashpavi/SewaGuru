@@ -1,17 +1,58 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FcGoogle } from "react-icons/fc";
 import api from "../api/api";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import {jwtDecode} from "jwt-decode";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+
+
+
+
 
 
 
 export default function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+  const [loading, setLoading]=useState(false);
+  const navigate = useNavigate();
+  const loginWithGoogle= useGoogleLogin(
+    {
+      onSuccess:(res)=>{
+        setLoading(true);
+        axios.post(import.meta.env.VITE_BACKEND_URL+"/user/google",{
+          accessToken: res.access_token
+        }).then((response)=>{
+          if (response.status === 200) {
+            const { accessToken, refreshToken } = response.data;
+            toast.success("Login successful!");
+            
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+            const decodedToken = jwtDecode(accessToken);
+            const userrole = decodedToken.role;
+            
+            if (userrole === "admin") {
+              navigate("/admin");
+            } else if (userrole === "provider") {
+              navigate("/provider/providerDashboard");
+            } else {
+              navigate("/");
+            }
+            setLoading(false);
+          } else {
+            toast.error("Login failed: " + response.data.message);
+          }
+        }).catch((error)=>{
+          setLoading(false);
+          toast.error("Login failed: " + error.message);
+        });
+    }
+    }
+  );
 
   const handleLogin = async(email,password) => {
     try{
@@ -24,7 +65,7 @@ export default function LogIn() {
         const { accessToken, refreshToken } = response.data;
         toast.success("Login successful!");
         
-
+ 
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
         const decodedToken = jwtDecode(accessToken);
@@ -34,11 +75,11 @@ export default function LogIn() {
 
 
         if (userrole === "admin") {
-          window.location.href = "/admin"; 
+          navigate("/admin");
         } else if (userrole === "provider") {
-          window.location.href = "provider/providerDashboard";
+          navigate("/provider/providerDashboard");
         } else {
-          window.location.href = "/";
+          navigate("/");
         }
       } else {
         toast.error("Login failed: " + response.data.message);
@@ -84,7 +125,7 @@ export default function LogIn() {
 
         {/* Login Button */}
         <button onClick={() => handleLogin(email, password)} className="w-full bg-gradient-to-r from-[#48B8E3] to-[#2498d2] hover:from-[#3baede] hover:to-[#1f88c3] transition text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg mb-4">
-          Login
+          {loading ? "Loading..." : "Login"}
         </button>
 
 
@@ -98,9 +139,12 @@ export default function LogIn() {
         {/* Google Login Button */}
         <button
           className="w-full flex items-center justify-center gap-3 bg-white text-[#1F2937] font-medium py-3 rounded-xl shadow-sm hover:bg-gray-100 transition"
+        onClick={loginWithGoogle}
         >
           <FcGoogle className="text-xl" />
-          <span>Continue with Google</span>
+          <span>
+            {loading ? "Loading..." : "Login with Google"}
+          </span>
         </button>
 
 

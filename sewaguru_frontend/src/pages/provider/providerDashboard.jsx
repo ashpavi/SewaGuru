@@ -4,7 +4,7 @@ import { MdOutlineNotificationsActive } from "react-icons/md";
 import { jwtDecode } from "jwt-decode";
 
 export default function ProviderDashboard() {
-  const [firstName, setFirstName] = useState("Provider");
+  const [firstName, setFirstName] = useState("Provider"); 
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
