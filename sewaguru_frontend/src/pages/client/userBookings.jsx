@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from "../../api/api"; // Assuming your API instance
+import { token } from '../../utils/auth';
 
 export default function UserBookings() {
     const [activeBookings, setActiveBookings] = useState([]);
@@ -9,70 +10,68 @@ export default function UserBookings() {
     const [customerId, setCustomerId] = useState(null);
 
     useEffect(() => {
-    const fetchUserDataAndServices = async () => {
-        setLoading(true);
-        setError('');
-        try {
-            const token = localStorage.getItem("accessToken");
-            console.log("Token from localStorage:", token);
+        const fetchUserDataAndServices = async () => {
+            setLoading(true);
+            setError('');
+            try {
+                console.log("Token from localStorage:", token);
 
-            if (!token) {
-                setError("Authentication required.");
+                if (!token) {
+                    setError("Authentication required.");
+                    setLoading(false);
+                    return;
+                }
+
+                // Fetch user data to get the ID
+                console.log("Fetching user data from /user endpoint...");
+                const userResponse = await api.get("/user", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const userData = userResponse.data;
+                console.log("User data received:", userData);
+                setCustomerId(userData.id);
+
+                // Fetch bookings using the userId from userData
+                console.log(`Fetching bookings for user ID: ${userData.id} from /bookings/user/${userData.id}...`);
+                const bookingsResponse = await api.get(`/bookings/user/${userData.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                console.log("Bookings data received:", bookingsResponse.data);
+                setActiveBookings(bookingsResponse.data);
+
+                // Fetch subscriptions using the userId from userData
+                console.log(`Fetching subscriptions for user ID: ${userData.id} from /subscriptions/user/${userData.id}...`);
+                const subscriptionsResponse = await api.get(`/subscriptions/user/${userData.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                console.log("Subscriptions data received:", subscriptionsResponse.data);
+                setActiveSubscriptions(subscriptionsResponse.data);
+
+                console.log("CustomerId set:", customerId); // Log after potential update
+
+            } catch (err) {
+                console.error("Error fetching user data and services:", err);
+                setError(err.response?.data?.message || "Failed to fetch bookings and subscriptions.");
+                console.log("Error details:", err);
+            } finally {
                 setLoading(false);
-                return;
+                console.log("Loading state:", loading);
             }
+        };
 
-            // Fetch user data to get the ID
-            console.log("Fetching user data from /user endpoint...");
-            const userResponse = await api.get("/user", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            const userData = userResponse.data;
-            console.log("User data received:", userData);
-            setCustomerId(userData.id);
-
-            // Fetch bookings using the userId from userData
-            console.log(`Fetching bookings for user ID: ${userData.id} from /bookings/user/${userData.id}...`);
-            const bookingsResponse = await api.get(`/bookings/user/${userData.id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            console.log("Bookings data received:", bookingsResponse.data);
-            setActiveBookings(bookingsResponse.data);
-
-            // Fetch subscriptions using the userId from userData
-            console.log(`Fetching subscriptions for user ID: ${userData.id} from /subscriptions/user/${userData.id}...`);
-            const subscriptionsResponse = await api.get(`/subscriptions/user/${userData.id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            console.log("Subscriptions data received:", subscriptionsResponse.data);
-            setActiveSubscriptions(subscriptionsResponse.data);
-
-            console.log("CustomerId set:", customerId); // Log after potential update
-
-        } catch (err) {
-            console.error("Error fetching user data and services:", err);
-            setError(err.response?.data?.message || "Failed to fetch bookings and subscriptions.");
-            console.log("Error details:", err);
-        } finally {
-            setLoading(false);
-            console.log("Loading state:", loading);
-        }
-    };
-
-    fetchUserDataAndServices();
-}, []);
+        fetchUserDataAndServices();
+    }, []);
 
     const handleCancelBooking = async (bookingId) => {
         console.log("Attempting to cancel booking with ID:", bookingId);
         if (window.confirm("Are you sure you want to cancel this booking?")) {
             try {
-                const token = localStorage.getItem("accessToken");
                 await api.delete(`/bookings/${bookingId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -105,7 +104,6 @@ export default function UserBookings() {
         console.log("Attempting to cancel subscription with ID:", subscriptionId);
         if (window.confirm("Are you sure you want to cancel this subscription?")) {
             try {
-                const token = localStorage.getItem("accessToken");
                 await api.delete(`/subscriptions/${subscriptionId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,

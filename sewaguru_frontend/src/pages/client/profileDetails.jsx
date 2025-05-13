@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import api from "../../api/api";
 import toast from "react-hot-toast";
+import api from "../../api/api";
 import Loader from "../../components/loader";
+import { token } from "../../utils/auth";
 
 export default function ProfileDetails() {
   const [userData, setUserData] = useState(null);
@@ -13,14 +14,13 @@ export default function ProfileDetails() {
   const getUserData = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await api.get("/user", {
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setUserData(response.data);
-      setFormData(response.data); 
+      setFormData(response.data);
       console.log("User data fetched:", response.data);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -32,8 +32,7 @@ export default function ProfileDetails() {
 
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
-      const {email,role, ...rest} = formData; // exclude email from formData
+      const { email, role, ...rest } = formData; // exclude email from formData
 
       const response = await api.put("/user/update", rest, { // use rest instead of formData
         headers: {
@@ -61,7 +60,7 @@ export default function ProfileDetails() {
   }, []);
 
   if (loading || !userData) {
-    return <Loader/>
+    return <Loader />
   }
 
   return (
@@ -85,12 +84,11 @@ export default function ProfileDetails() {
               name={name}
               value={formData[name] || ""}
               onChange={handleChange}
-              disabled={name=="email" || !editable}
-              className={`w-full px-4 py-2 border rounded-lg shadow-sm ${
-                name != "email" && editable
+              disabled={name == "email" || !editable}
+              className={`w-full px-4 py-2 border rounded-lg shadow-sm ${name != "email" && editable
                   ? "bg-white border-blue-400"
                   : "bg-gray-100 border-gray-300"
-              }`}
+                }`}
             />
           </div>
         ))}

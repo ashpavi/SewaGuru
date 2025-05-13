@@ -1,9 +1,10 @@
 // SubscriptionPlans.jsx
-import React, { useEffect, useState } from 'react';
-import Header from '../../components/header';
-import Footer from '../../components/Footer';
-import SubscriptionDetailsModal from './subscriptionDetailsModal';
+import { useEffect, useState } from 'react';
 import api from "../../api/api";
+import Footer from '../../components/Footer';
+import Header from '../../components/header';
+import { token } from '../../utils/auth';
+import SubscriptionDetailsModal from './subscriptionDetailsModal';
 
 
 const subscriptionPlans = [
@@ -11,16 +12,16 @@ const subscriptionPlans = [
         name: 'Home Essentials Plan',
         price: 'LKR 2,500/month',
         image: '/sub2.jpg',
-        details: [ 
+        details: [
             '3 maintenance visits per month',
             'Plumbing & electrical support',
             '15% discount on emergency calls',
             'Coverage within 20km radius of Colombo',
             'Standard response time for scheduled visits',
             'Applicable for residential properties only',
-            
+
         ],
-        conditions: [ 
+        conditions: [
             'Visits are for general maintenance and minor repairs. Major repairs may incur additional charges.',
             'Free emergency visits, not parts.',
             'Service availability is subject to scheduling and technician availability.',
@@ -32,7 +33,7 @@ const subscriptionPlans = [
         price: 'LKR 4,500/month',
         image: '/sub1.jpg',
         details: [
-             '5 priority visits per month',
+            '5 priority visits per month',
             'Free emergency visits',
             'All-inclusive maintenance coverage (within reasonable limits)',
             'Coverage within 20km radius of Colombo',
@@ -41,12 +42,12 @@ const subscriptionPlans = [
 
         ],
         conditions: [
-             'Visits are for general maintenance and minor repairs. Major repairs may incur additional charges.',
+            'Visits are for general maintenance and minor repairs. Major repairs may incur additional charges.',
             'Emergency call discounts apply to the service fee, not parts.',
             'Service availability is subject to scheduling and technician availability.',
 
         ],
-        planType: 'Premium Care Plan' 
+        planType: 'Premium Care Plan'
     },
 ];
 
@@ -68,46 +69,45 @@ export default function SubscriptionPlans() {
     };
 
     const handlePayment = async (customerDetails) => {
-    console.log(customerDetails); // This shows the correct data
+        console.log(customerDetails); // This shows the correct data
 
-    setIsLoading(true);
-    setSubscriptionError('');
-    try {
-        const token = localStorage.getItem('accessToken');
-        const response = await api.post(
-            '/subscriptions',
-            {
-                customerId: customerDetails.userId,     // Include customer ID
-                planType: customerDetails.plan.planType,
-                transactionId: `TEMP_${Date.now()}`, // Placeholder transaction ID
-                customerName: customerDetails.name,     // Include customer name
-                customerContact: customerDetails.contact, // Include customer contact
-                customerAddress: customerDetails.address, // Include customer address
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
+        setIsLoading(true);
+        setSubscriptionError('');
+        try {
+            const token = localStorage.getItem('accessToken');
+            const response = await api.post(
+                '/subscriptions',
+                {
+                    customerId: customerDetails.userId,     // Include customer ID
+                    planType: customerDetails.plan.planType,
+                    transactionId: `TEMP_${Date.now()}`, // Placeholder transaction ID
+                    customerName: customerDetails.name,     // Include customer name
+                    customerContact: customerDetails.contact, // Include customer contact
+                    customerAddress: customerDetails.address, // Include customer address
                 },
-            }
-        );
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-        console.log('Subscription successful:', response.data);
-        setIsLoading(false);
-        closeModal();
-        alert('Subscription successful!');
-    } catch (error) {
-        console.error('Error creating subscription:', error);
-        setIsLoading(false);
-        setSubscriptionError(error.response?.data?.message || 'Failed to create subscription. Please try again.');
-    }
-};
+            console.log('Subscription successful:', response.data);
+            setIsLoading(false);
+            closeModal();
+            alert('Subscription successful!');
+        } catch (error) {
+            console.error('Error creating subscription:', error);
+            setIsLoading(false);
+            setSubscriptionError(error.response?.data?.message || 'Failed to create subscription. Please try again.');
+        }
+    };
 
     // Fetch user data to get the ID
     const [userData, setUserData] = useState(null);
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const token = localStorage.getItem("accessToken");
                 const response = await api.get("/user", {
                     headers: {
                         Authorization: `Bearer ${token}`,

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import api from "../../api/api"; 
+import { useState } from "react";
+import api from "../../api/api";
+import { token } from "../../utils/auth";
 
 export default function ProviderEditProfile() {
   const [formData, setFormData] = useState({
@@ -29,7 +30,7 @@ export default function ProviderEditProfile() {
       setFormData({ ...formData, [name]: value });
     }
   };
-  
+
 
   // const handleSubmit = (e) => {
   //   e.preventDefault();
@@ -38,13 +39,13 @@ export default function ProviderEditProfile() {
   //   // You can POST this data to backend here
   // };
 
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const form = new FormData();
-  
+
       // Append all non-file fields
       for (const key in formData) {
         const value = formData[key];
@@ -52,36 +53,34 @@ export default function ProviderEditProfile() {
           form.append(key, value);
         }
       }
-  
+
       // Append file fields
       if (formData.profilePic) form.append("profileImage", formData.profilePic);
       if (formData.policeCert) form.append("policeCerts", formData.policeCert);
       if (formData.gsCert) form.append("gsCerts", formData.gsCert);
-  
+
       formData.nicImages.forEach((file) => {
         form.append("nicImages", file);
       });
-  
+
       formData.extraCerts.forEach((file) => {
         form.append("extraCerts", file);
       });
-  
-      const token = localStorage.getItem("accessToken");
-  
+
       await api.put("/user/update", form, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
-  
+
       alert("Profile updated successfully!");
     } catch (err) {
       console.error("Update failed:", err);
       alert("Update failed. See console for details.");
     }
   };
-  
+
 
 
   return (
@@ -197,17 +196,17 @@ export default function ProviderEditProfile() {
             />
           </div>
           {/* Other Qualifications */}
-            <div>
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Other Qualifications (Optional)</label>
             <input
-                type="file"
-                accept="image/*,application/pdf"
-                name="extraCerts"
-                multiple
-                onChange={handleChange}
-                className="w-full p-2 border rounded-lg"
+              type="file"
+              accept="image/*,application/pdf"
+              name="extraCerts"
+              multiple
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg"
             />
-            </div>
+          </div>
 
         </div>
 

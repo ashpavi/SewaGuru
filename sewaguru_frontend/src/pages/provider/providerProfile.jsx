@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import { FaUser, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import api from "../../api/api";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
+import api from "../../api/api";
 import Loader from "../../components/loader";
+import { token } from "../../utils/auth";
 
 export default function ProviderProfile() {
   const [profile, setProfile] = useState(null);
@@ -22,7 +23,6 @@ export default function ProviderProfile() {
     const fetchProfile = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await api.get("/user", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -66,8 +66,6 @@ export default function ProviderProfile() {
 
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
-
       const hasFileUploads =
         fileInputs.profileImage ||
         fileInputs.policeCerts ||

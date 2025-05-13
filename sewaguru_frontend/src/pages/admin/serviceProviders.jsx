@@ -4,6 +4,7 @@ import api from "../../api/api";
 import ListItem from "../../components/listItem";
 import Loader from "../../components/loader";
 import ProviderDetailsModal from "../../components/providerDetailsModal";
+import { token } from "../../utils/auth";
 
 export default function AdminServiceProviders() {
   const hasFetched = useRef(false);
@@ -39,7 +40,6 @@ export default function AdminServiceProviders() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await api.get("/user/all/provider", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -59,7 +59,6 @@ export default function AdminServiceProviders() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("accessToken");
       await api.patch(`/user/${id}/status`,
         { isDisabled },
         {

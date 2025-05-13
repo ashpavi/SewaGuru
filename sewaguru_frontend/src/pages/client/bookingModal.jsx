@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { FaSearchLocation } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { FaSearchLocation } from 'react-icons/fa';
 import api from "../../api/api";
+import { token } from '../../utils/auth';
 
 const subServices = {
     'Home Service & Repairs': ['Plumbing', 'Electrical Repairs', 'Carpentry', 'Masonry & Tile Work', 'Door & Window Repair', 'Curtain Rod / Shelf Installation'],
@@ -48,7 +49,6 @@ export default function BookingModal({ category, onClose }) {
     const getUserData = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem("accessToken");
             const response = await api.get("/user", {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -342,7 +342,7 @@ export default function BookingModal({ category, onClose }) {
                                 <option>Urgent</option>
                             </select>
                             <select name="complexity" value={formData.complexity} onChange={handleChange} required className="w-full p-3 border rounded">
-                                 <option value="" disabled>Select Complexity</option>
+                                <option value="" disabled>Select Complexity</option>
                                 <option>Simple</option>
                                 <option>Moderate</option>
                                 <option>Complex</option>
@@ -369,8 +369,7 @@ export default function BookingModal({ category, onClose }) {
                             <button
                                 type="button"
                                 onClick={step === 1 ? handleNextStep : (step === 2 ? handleFindProvidersAndProceed : () => { })}
-                                className={`ml-auto px-4 py-2 rounded ${
-                                    (step === 1 || step === 2) ? 'bg-blue-500 text-white hover:bg-blue-600' :
+                                className={`ml-auto px-4 py-2 rounded ${(step === 1 || step === 2) ? 'bg-blue-500 text-white hover:bg-blue-600' :
                                         'bg-gray-400 text-white cursor-not-allowed'
                                     }`}
                                 style={{ display: step === 3 ? 'none' : 'inline-block' }}
