@@ -18,11 +18,6 @@ export default function AdminRegisteredCustomers() {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(customersList)
-  }, [customersList]);
-
-
   const fetchUsers = async () => {
     setLoading(true);
     try {

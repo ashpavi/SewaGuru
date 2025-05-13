@@ -53,6 +53,12 @@ const userSchema = new mongoose.Schema({
             return this.role === 'provider';
         }
     },
+    isVerified: {
+        type: Boolean,
+        default: function () {
+            return this.role !== 'provider';
+        }
+    },
     isDisabled: {
         type: Boolean,
         default: function () {

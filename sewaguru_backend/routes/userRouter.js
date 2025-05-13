@@ -15,7 +15,7 @@ router.post('/create-admin', authenticate, adminOnly, createAdmin);
 router.post('/login', login);
 router.post('/refresh', refreshToken);
 router.post('/logout', authenticate, logout);
-router.patch('/:userId/status', authenticate, adminOnly, toggleUserStatus);
+router.patch('/status/:status/:userId', authenticate, adminOnly, toggleUserStatus);
 
 router.post('/register', upload.fields([
   { name: 'nicImages', maxCount: 2 },

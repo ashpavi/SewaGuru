@@ -23,7 +23,7 @@ import PrivacyPolicyPage from "./pages/client/privacyPolicy";
 import ProfileDashboard from "./pages/client/profiledashboard";
 import SubscriptionPlans from "./pages/client/subscriptionPlans";
 import ProviderHomePage from "./pages/providerHomePage";
-import { isAdmin, isProvider, isTokenExpired } from "./utils/auth";
+import { isAdmin, isProvider } from "./utils/auth";
 
 function App() {
   return (
@@ -34,9 +34,7 @@ function App() {
         <Route element={<ProtectedRoute isAllowed={isAdmin} redirectPath="/forbidden" />}>
           <Route path="/admin/*" element={<AdminPage />} />
         </Route>
-        <Route element={<ProtectedRoute isAllowed={!isTokenExpired} redirectPath="/logIn" />}>
-          <Route path="/" element={<HomePage />} />
-        </Route>
+        <Route path="/" element={<HomePage />} />
 
 
         <Route path="/forbidden" element={<ForbiddenPage />} />

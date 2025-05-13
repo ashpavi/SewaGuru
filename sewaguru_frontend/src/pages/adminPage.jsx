@@ -13,6 +13,7 @@ import AdminHeader from "../components/adminHeader";
 import AdminDashboard from "./admin/dashboard";
 import AdminRegisteredCustomers from "./admin/registeredCustomers";
 import AdminServiceProviders from "./admin/serviceProviders";
+import AdminVerifyProviders from "./admin/verifyProviders";
 
 
 export default function AdminPage() {
@@ -39,7 +40,7 @@ export default function AdminPage() {
                         <Route path="/messages" element={<h1>Messages</h1>} />
                         <Route path="/users" element={<AdminRegisteredCustomers />} />
                         <Route path="/serviceProviders" element={<AdminServiceProviders />} />
-                        <Route path="/applications" element={<h1>Service Provider Applications</h1>} />
+                        <Route path="/applications" element={<AdminVerifyProviders />} />
                     </Routes>
                 </div>
             </div>

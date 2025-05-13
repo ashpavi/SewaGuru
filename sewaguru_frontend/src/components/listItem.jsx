@@ -4,7 +4,7 @@ const ListItem = ({ imageUrl, name, registeredOn, onAccept, onDeny, disabled, on
   const formattedDate = format(new Date(registeredOn), 'yyyy-MMM-dd hh:mm:ss a');
 
   // Class names for the ListItem when disabled
-  const disabledClass = disabled === true ? 'bg-red-100 border-red-500 text-gray-500 hover:bg-red-200' : 'bg-gray-100 hover:bg-gray-200';
+  const disabledClass =  disabled === true ? 'bg-red-100 border-red-500 text-gray-500 hover:bg-red-200' : 'bg-gray-100 hover:bg-gray-200';
 
   return (
     <li onClick={onClick}
