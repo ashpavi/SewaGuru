@@ -1,7 +1,7 @@
+import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import { getSupabase, uploadBufferToSupabase } from '../utils/uploadToSuperbase.js';
-import axios from 'axios';
 
 const generateTokens = async (user) => {
     const accessToken = jwt.sign({
@@ -191,7 +191,7 @@ export async function googleLogin(req, res) {
                 lastName: googleUserInfo.family_name,
                 // role: "customer",
                 // profilePicSrc: googleUserInfo.picture,
-                password: googleToken 
+                password: googleToken
             });
 
             const savedUser = await newUser.save();
@@ -221,6 +221,9 @@ export const login = async (req, res) => {
         const user = await User.findOne({ email });
         if (!user || !(await user.comparePassword(password)))
             return res.status(400).json({ msg: 'Invalid credentials' });
+
+        if (!user.isVerified)
+            return res.status(403).json({ msg: 'Account pending verification' });
 
         if (user.isDisabled)
             return res.status(403).json({ msg: 'Account is disabled' });
@@ -475,16 +478,16 @@ export const updateUser = async (req, res) => {
 export const getAll = async (req, res) => {
     try {
         const { role } = req.params;
-        const customers = await User.find({ role: role }).select('-password -refreshToken -role');
+        const users = await User.find({ role: role }).select('-password -refreshToken -role');
 
-        // Modify each customer to change _id to id
-        const customersWithId = customers.map(customer => ({
-            ...customer.toObject(),
-            id: customer._id,
+        // Modify each user to change _id to id
+        const usersWithId = users.map(user => ({
+            ...user.toObject(),
+            id: user._id,
         }));
 
         // Remove the _id field from each customer object
-        const response = customersWithId.map(({ _id, ...rest }) => rest);
+        const response = usersWithId.map(({ _id, ...rest }) => rest);
 
         res.json(response);
 
@@ -497,11 +500,11 @@ export const getAll = async (req, res) => {
 
 export const toggleUserStatus = async (req, res) => {
     try {
-        const { userId } = req.params;
-        const { isDisabled } = req.body;
+        const { userId, status } = req.params;
+        const { enable } = req.body;
 
-        if (typeof isDisabled !== 'boolean') {
-            return res.status(400).json({ msg: "[isDisabled] must be a boolean value." });
+        if (typeof enable !== 'boolean') {
+            return res.status(400).json({ msg: "[enable] must be a boolean value." });
         }
 
         const user = await User.findById(userId);
@@ -509,13 +512,15 @@ export const toggleUserStatus = async (req, res) => {
             return res.status(404).json({ msg: 'User not found' });
         }
 
-        user.isDisabled = isDisabled;
+        if (status === 'verify')
+            user.isVerified = enable;
+        user.isDisabled = !enable;
+
         await user.save();
 
-        res.json({ msg: `User has been ${isDisabled ? 'disabled' : 'enabled'} successfully.` });
+        res.json({ msg: `User has been ${status === 'disable' ? (enable ? 'disabled' : 'enabled') : (enable ? 'verified' : 'unverified')} successfully.` });
     } catch (err) {
         console.log(err);
         res.status(500).json({ msg: 'Server error', error: err.message });
     }
 };
-

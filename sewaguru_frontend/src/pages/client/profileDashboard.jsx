@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { FaBookOpen, FaEnvelope, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { FaUser, FaBookOpen, FaEnvelope, FaSignOutAlt } from "react-icons/fa";
 
-import Header from "../../components/header";
 import Footer from "../../components/Footer";
+import Header from "../../components/header";
 
 
+import api from "../../api/api";
+import { token } from "../../utils/auth";
 import ProfileDetails from "./ProfileDetails";
 import UserBookings from "./userBookings";
 import UserMessages from "./UserMessages";
-import api from "../../api/api";
 
 export default function ProfileDashboard() {
   const navigate = useNavigate();
@@ -18,13 +18,12 @@ export default function ProfileDashboard() {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
       console.log("Logout token:", token);
-      await api.post("/user/logout",null, {
+      await api.post("/user/logout", null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }); 
+      });
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       navigate("/logIn");
@@ -102,11 +101,10 @@ function TabButton({ icon, label, isActive, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium transition ${
-        isActive
-          ? "bg-blue-500 text-white shadow-md"
-          : "bg-gray-100 text-gray-700 hover:bg-blue-100"
-      }`}
+      className={`flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium transition ${isActive
+        ? "bg-blue-500 text-white shadow-md"
+        : "bg-gray-100 text-gray-700 hover:bg-blue-100"
+        }`}
     >
       {icon} {label}
     </button>

@@ -6,7 +6,7 @@ import Loader from "../../components/loader";
 import ProviderDetailsModal from "../../components/providerDetailsModal";
 import { token } from "../../utils/auth";
 
-export default function AdminServiceProviders() {
+export default function AdminVerifyProviders() {
   const hasFetched = useRef(false);
 
   const [loading, setLoading] = useState(true);
@@ -42,8 +42,8 @@ export default function AdminServiceProviders() {
         },
       });
 
-      const verifiedProviders = response.data.filter(user => user.isVerified);
-      setProviderList(verifiedProviders);
+      const unverifiedUsers = response.data.filter(user => !user.isVerified);
+      setProviderList(unverifiedUsers);
     } catch (error) {
       console.error("Error fetching profile:", error);
       toast.error("Failed to fetch profile data.");
@@ -52,12 +52,12 @@ export default function AdminServiceProviders() {
     }
   };
 
-  const changeUserStatus = async (id, isDisabled) => {
+  const changeUserStatus = async (id, enable) => {
     setLoading(true);
 
     try {
-      await api.patch(`/user/status/disable/${id}`,
-        { enable: !isDisabled },
+      await api.patch(`/user/status/verify/${id}`,
+        { enable },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -67,15 +67,13 @@ export default function AdminServiceProviders() {
 
       // Update local state to reflect new status
       setProviderList((prevList) =>
-        prevList.map((user) =>
-          user.id === id ? { ...user, isDisabled } : user
-        )
+        prevList.filter((user) => user.id !== id)
       );
 
-      toast.success(`Provider has been ${isDisabled ? "disabled" : "enabled"}.`);
+      toast.success(`Provider has been ${enable ? "verfied" : "rejected"}.`);
     } catch (e) {
-      console.error("Error changing User Status:", e);
-      toast.error("Failed to change user Status.");
+      console.error("Error changing User verification status:", e);
+      toast.error("Failed to change user verification status.");
     } finally {
       setLoading(false)
     }
@@ -87,7 +85,7 @@ export default function AdminServiceProviders() {
 
   return (
     <div className="m-2">
-      <h2 className="text-xl font-bold mb-6 text-center text-gray-800">Registered Providers</h2>
+      <h2 className="text-xl font-bold mb-6 text-center text-gray-800">Providers Pending Verification</h2>
 
       <ul className="space-y-2">
         {providerList.map((provider) => (
@@ -97,9 +95,9 @@ export default function AdminServiceProviders() {
             imageUrl={provider.profilePicSrc}
             name={`${provider.firstName} ${provider.lastName}`}
             registeredOn={`${provider.createdAt}`}
-            disabled={provider.isDisabled}
-            onAccept={() => changeUserStatus(provider.id, false)}
-            onDeny={() => changeUserStatus(provider.id, true)}
+            disabled={!provider.isVerified}
+            onAccept={() => changeUserStatus(provider.id, true)}
+            onDeny={() => changeUserStatus(provider.id, false)}
           />
         ))}
       </ul>

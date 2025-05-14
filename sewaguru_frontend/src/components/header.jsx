@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { jwtDecode } from "jwt-decode";
+import { isTokenExpired, token } from "../utils/auth";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,9 +11,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-
-    if (token) {
+    if (!isTokenExpired) {
       setIsLoggedIn(true);
       try {
         const decoded = jwtDecode(token);
@@ -74,9 +73,8 @@ export default function Header() {
 
         {/* Nav Links */}
         <div
-          className={`flex flex-col md:flex-row items-start md:items-center md:gap-6 absolute md:static top-full left-0 w-full md:w-auto bg-[#48B8E3] md:bg-transparent px-6 py-4 md:py-0 transition-all duration-300 z-10 ${
-            menuOpen ? "flex" : "hidden"
-          } md:flex`}
+          className={`flex flex-col md:flex-row items-start md:items-center md:gap-6 absolute md:static top-full left-0 w-full md:w-auto bg-[#48B8E3] md:bg-transparent px-6 py-4 md:py-0 transition-all duration-300 z-10 ${menuOpen ? "flex" : "hidden"
+            } md:flex`}
         >
           {/* Navigation */}
           <ul className="flex flex-col md:flex-row gap-3 md:gap-6 text-sm font-medium uppercase w-full md:w-auto">

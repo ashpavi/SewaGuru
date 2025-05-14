@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import api from "../../api/api";
 import ListItem from "../../components/listItem";
 import Loader from "../../components/loader";
+import { token } from "../../utils/auth";
 
 export default function AdminRegisteredCustomers() {
   const hasFetched = useRef(false);
@@ -17,15 +18,9 @@ export default function AdminRegisteredCustomers() {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(customersList)
-  }, [customersList]);
-
-
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await api.get("/user/all/customer", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -45,7 +40,6 @@ export default function AdminRegisteredCustomers() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("accessToken");
       await api.patch(`/user/${id}/status`,
         { isDisabled },
         {

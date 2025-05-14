@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
 import api from "../api/api";
+import logo from "../assets/logo.png";
+import { token } from "../utils/auth";
 
 export default function ProviderHeader() {
   const navigate = useNavigate();
@@ -9,13 +10,12 @@ export default function ProviderHeader() {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
       console.log("Logout token:", token);
-      await api.post("/user/logout",null, {
+      await api.post("/user/logout", null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }); 
+      });
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       navigate("/logIn");
@@ -30,7 +30,7 @@ export default function ProviderHeader() {
   return (
     <header className="bg-[#48B8E3] text-white shadow-md w-full">
       <div className="max-w-7xl mx-auto px-4 lg:px-10 py-3 flex items-center justify-between relative">
-        
+
         {/* Logo */}
         <Link to="/provider/providerDashboard" className="flex items-center gap-2 flex-shrink-0">
           <img
