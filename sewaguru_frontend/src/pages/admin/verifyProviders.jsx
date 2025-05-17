@@ -4,7 +4,7 @@ import api from "../../api/api";
 import ListItem from "../../components/listItem";
 import Loader from "../../components/loader";
 import ProviderDetailsModal from "../../components/providerDetailsModal";
-import { token } from "../../utils/auth";
+import { getToken } from "../../utils/auth";
 
 export default function AdminVerifyProviders() {
   const hasFetched = useRef(false);
@@ -38,7 +38,7 @@ export default function AdminVerifyProviders() {
     try {
       const response = await api.get("/user/all/provider", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
 
@@ -60,7 +60,7 @@ export default function AdminVerifyProviders() {
         { enable },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
           },
         },
       );

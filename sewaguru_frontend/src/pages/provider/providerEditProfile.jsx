@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../../api/api";
-import { token } from "../../utils/auth";
+import { getToken } from "../../utils/auth";
 
 export default function ProviderEditProfile() {
   const [formData, setFormData] = useState({
@@ -42,6 +42,7 @@ export default function ProviderEditProfile() {
 
 
   const handleSubmit = async (e) => {
+    const token = getToken();
     e.preventDefault();
     try {
       const form = new FormData();

@@ -1,7 +1,9 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { getUser } from '../utils/auth';
 
-const ProtectedRoute = ({ isAllowed, redirectPath = '/login' }) => {
-  if (!isAllowed) {
+const ProtectedRoute = ({ requiredRole, redirectPath = '/login' }) => {
+  const user = getUser();
+  if (!user || user.role !== requiredRole) {
     return <Navigate to={redirectPath} replace />;
   }
   return <Outlet />;

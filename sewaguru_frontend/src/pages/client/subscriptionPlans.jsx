@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import api from "../../api/api";
 import Footer from '../../components/Footer';
 import Header from '../../components/header';
-import { token } from '../../utils/auth';
+import { getToken } from '../../utils/auth';
 import SubscriptionDetailsModal from './subscriptionDetailsModal';
 
 
@@ -74,7 +74,7 @@ export default function SubscriptionPlans() {
         setIsLoading(true);
         setSubscriptionError('');
         try {
-            const token = localStorage.getItem('accessToken');
+            const token = getToken();
             const response = await api.post(
                 '/subscriptions',
                 {
@@ -106,6 +106,7 @@ export default function SubscriptionPlans() {
     // Fetch user data to get the ID
     const [userData, setUserData] = useState(null);
     useEffect(() => {
+        const token = getToken();
         const fetchUserData = async () => {
             try {
                 const response = await api.get("/user", {

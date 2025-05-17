@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { FaSearchLocation } from 'react-icons/fa';
 import api from "../../api/api";
-import { token } from '../../utils/auth';
+import { getToken } from '../../utils/auth';
 
 const subServices = {
     'Home Service & Repairs': ['Plumbing', 'Electrical Repairs', 'Carpentry', 'Masonry & Tile Work', 'Door & Window Repair', 'Curtain Rod / Shelf Installation'],
@@ -51,7 +51,7 @@ export default function BookingModal({ category, onClose }) {
         try {
             const response = await api.get("/user", {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
             const userData = response.data;

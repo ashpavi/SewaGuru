@@ -8,14 +8,14 @@ import api from "../../api/api";
 import Footer from "../../components/Footer";
 import Header from "../../components/header";
 import Loader from "../../components/loader";
-import { token } from "../../utils/auth";
+import { getToken } from "../../utils/auth";
 
 
 
 
 export default function ProviderRegister() {
-
   const handleLogout = async () => {
+    const token = getToken();
     try {
       if (token) {
         await api.post("/user/logout", null, {
@@ -37,6 +37,7 @@ export default function ProviderRegister() {
   };
 
   const handleRegister = async () => {
+    const token = getToken();
     let user = null;
 
     if (token) {
@@ -106,6 +107,7 @@ export default function ProviderRegister() {
 
   useEffect(() => {
     const fetchCustomerData = async () => {
+      const token = getToken();
       if (!token) return;
       setLoading(true);
 

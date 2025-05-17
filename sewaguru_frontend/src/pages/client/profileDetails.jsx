@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../../api/api";
 import Loader from "../../components/loader";
-import { token } from "../../utils/auth";
+import { getToken } from "../../utils/auth";
 
 export default function ProfileDetails() {
   const [userData, setUserData] = useState(null);
@@ -12,6 +12,7 @@ export default function ProfileDetails() {
   const [formData, setFormData] = useState({});
 
   const getUserData = async () => {
+    const token = getToken();
     setLoading(true);
     try {
       const response = await api.get("/user", {
@@ -31,6 +32,7 @@ export default function ProfileDetails() {
   };
 
   const handleUpdate = async () => {
+    const token = getToken();
     try {
       const { email, role, ...rest } = formData; // exclude email from formData
 

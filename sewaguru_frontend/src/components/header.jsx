@@ -2,7 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { isTokenExpired, token } from "../utils/auth";
+import { getToken, isTokenExpired } from "../utils/auth";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,10 +11,10 @@ export default function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isTokenExpired) {
+    if (!isTokenExpired()) {
       setIsLoggedIn(true);
       try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(getToken);
         const userFirstName = decoded.firstName || "U";
         setFirstLetter(userFirstName.charAt(0).toUpperCase());
       } catch (err) {

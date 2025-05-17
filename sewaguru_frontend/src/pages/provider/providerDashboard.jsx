@@ -2,12 +2,13 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { FaCalendarCheck, FaClipboardList, FaComments, FaTools } from "react-icons/fa";
 import { MdOutlineNotificationsActive } from "react-icons/md";
-import { token } from "../../utils/auth";
+import { getToken } from "../../utils/auth";
 
 export default function ProviderDashboard() {
   const [firstName, setFirstName] = useState("Provider");
 
   useEffect(() => {
+    const token = getToken();
     if (token) {
       try {
         const decoded = jwtDecode(token);

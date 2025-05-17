@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from "../../api/api"; // Assuming your API instance
-import { token } from '../../utils/auth';
+import { getToken } from '../../utils/auth';
 
 export default function UserBookings() {
     const [activeBookings, setActiveBookings] = useState([]);
@@ -10,6 +10,7 @@ export default function UserBookings() {
     const [customerId, setCustomerId] = useState(null);
 
     useEffect(() => {
+        const token = getToken();
         const fetchUserDataAndServices = async () => {
             setLoading(true);
             setError('');
@@ -69,6 +70,7 @@ export default function UserBookings() {
     }, []);
 
     const handleCancelBooking = async (bookingId) => {
+        const token = getToken();
         console.log("Attempting to cancel booking with ID:", bookingId);
         if (window.confirm("Are you sure you want to cancel this booking?")) {
             try {
@@ -101,6 +103,7 @@ export default function UserBookings() {
     };
 
     const handleCancelSubscription = async (subscriptionId) => {
+        const token = getToken();
         console.log("Attempting to cancel subscription with ID:", subscriptionId);
         if (window.confirm("Are you sure you want to cancel this subscription?")) {
             try {

@@ -13,17 +13,15 @@ import ProtectedRoute from "./components/protectedRoute";
 import ForbiddenPage from "./pages/forbidden";
 import LogIn from "./pages/logIn";
 import ProviderRegister from "./pages/provider/providerRegister";
-
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import NotFoundPage from "./pages/404";
 import AboutUsPage from "./pages/client/AboutUs";
 import ContactUs from "./pages/client/contactUs";
 import OurServices from "./pages/client/ourServices";
 import PrivacyPolicyPage from "./pages/client/privacyPolicy";
-import ProfileDashboard from "./pages/client/profiledashboard";
+import ProfileDashboard from "./pages/client/profileDashboard";
 import SubscriptionPlans from "./pages/client/subscriptionPlans";
 import ProviderHomePage from "./pages/providerHomePage";
-import { isAdmin, isProvider } from "./utils/auth";
 
 function App() {
   return (
@@ -47,24 +45,14 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
 
           {/* Protected Admin Routes */}
-          <Route
-            path="/admin/*"
-            element={
-              <ProtectedRoute isAllowed={isAdmin} redirectPath="/forbidden">
-                <AdminPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route element={<ProtectedRoute requiredRole={'admin'} redirectPath="/forbidden" />}>
+            <Route path="/admin/*" element={<AdminPage />} />
+          </Route>
 
           {/* Protected Provider Routes */}
-          <Route
-            path="/provider/*"
-            element={
-              <ProtectedRoute isAllowed={isProvider} redirectPath="/forbidden">
-                <ProviderHomePage />
-              </ProtectedRoute>
-            }
-          />
+          <Route element={<ProtectedRoute requiredRole={'provider'} redirectPath="/forbidden" />}>
+            <Route path="/provider/*" element={<ProviderHomePage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>

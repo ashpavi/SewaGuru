@@ -2,15 +2,15 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/api";
 import logo from "../assets/logo.png";
-import { token } from "../utils/auth";
+import { getToken } from "../utils/auth";
 
 export default function ProviderHeader() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = async () => {
+    const token = getToken();
     try {
-      console.log("Logout token:", token);
       await api.post("/user/logout", null, {
         headers: {
           Authorization: `Bearer ${token}`,

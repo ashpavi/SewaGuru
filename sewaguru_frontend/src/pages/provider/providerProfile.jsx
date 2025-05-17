@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import api from "../../api/api";
 import Loader from "../../components/loader";
-import { token } from "../../utils/auth";
+import { getToken } from "../../utils/auth";
 
 export default function ProviderProfile() {
   const [profile, setProfile] = useState(null);
@@ -20,6 +20,7 @@ export default function ProviderProfile() {
   });
 
   useEffect(() => {
+    const token = getToken();
     const fetchProfile = async () => {
       setLoading(true);
       try {
@@ -65,6 +66,7 @@ export default function ProviderProfile() {
   };
 
   const handleUpdate = async () => {
+    const token = getToken();
     try {
       const hasFileUploads =
         fileInputs.profileImage ||

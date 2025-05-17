@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { FaBookOpen, FaEnvelope, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
+import api from "../../api/api";
 import Footer from "../../components/Footer";
 import Header from "../../components/header";
-
-
-import api from "../../api/api";
-import { token } from "../../utils/auth";
+import { getToken } from "../../utils/auth";
 import ProfileDetails from "./ProfileDetails";
 import UserBookings from "./userBookings";
 import UserMessages from "./UserMessages";
@@ -17,8 +16,8 @@ export default function ProfileDashboard() {
   const [activeTab, setActiveTab] = useState("profile");
 
   const handleLogout = async () => {
+    const token = getToken();
     try {
-      console.log("Logout token:", token);
       await api.post("/user/logout", null, {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import api from "../../api/api";
 import ListItem from "../../components/listItem";
 import Loader from "../../components/loader";
-import { token } from "../../utils/auth";
+import { getToken } from "../../utils/auth";
 
 export default function AdminRegisteredCustomers() {
   const hasFetched = useRef(false);
@@ -23,7 +23,7 @@ export default function AdminRegisteredCustomers() {
     try {
       const response = await api.get("/user/all/customer", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
 
@@ -44,7 +44,7 @@ export default function AdminRegisteredCustomers() {
         { isDisabled },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
           },
         },
       );
