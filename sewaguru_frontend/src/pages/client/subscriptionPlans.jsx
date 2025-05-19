@@ -175,7 +175,7 @@ export default function SubscriptionPlans() {
                                 className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-full shadow-md transition mt-4"
                                 onClick={() => handleProceedClick(plan)}
                             >
-                                Proceed to Payment
+                                Subscribe
                             </button>
                         </div>
                     ))}

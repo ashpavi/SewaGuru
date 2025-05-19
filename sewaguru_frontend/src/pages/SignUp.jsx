@@ -5,6 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FcGoogle } from "react-icons/fc";
 import api from "../api/api";
+import { useGoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -14,8 +17,43 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+ 
   const navigate = useNavigate();
+
+  const loginWithGoogle = useGoogleLogin(
+    {
+      onSuccess: (res) => {
+        setLoading(true);
+        axios.post(import.meta.env.VITE_BACKEND_URL + "/user/google", {
+          accessToken: res.access_token
+        }).then((response) => {
+          if (response.status === 200) {
+            const { accessToken, refreshToken } = response.data;
+            toast.success("Login successful!");
+
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+            const decodedToken = jwtDecode(accessToken);
+            const userrole = decodedToken.role;
+
+            if (userrole === "admin") {
+              navigate("/admin");
+            } else if (userrole === "provider") {
+              navigate("/provider/providerDashboard");
+            } else {
+              navigate("/");
+            }
+            setLoading(false);
+          } else {
+            toast.error("Login failed: " + response.data.message);
+          }
+        }).catch((error) => {
+          setLoading(false);
+          toast.error("Login failed: " + error.message);
+        });
+      }
+    }
+  );
 
   const handleRegister = () => {
     if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
@@ -137,12 +175,15 @@ export default function SignUp() {
           <div className="flex-grow h-px bg-white/30"></div>
         </div>
 
-        {/* Google Signup */}
+        {/* Google Login Button */}
         <button
           className="w-full flex items-center justify-center gap-3 bg-white text-[#1F2937] font-medium py-3 rounded-xl shadow-sm hover:bg-gray-100 transition"
+          onClick={loginWithGoogle}
         >
-          <FcGoogle className="text-lg sm:text-xl" />
-          <span>Continue with Google</span>
+          <FcGoogle className="text-xl" />
+          <span>
+            {loading ? "Loading..." : "Login with Google"}
+          </span>
         </button>
 
         {/* Redirect */}

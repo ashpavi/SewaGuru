@@ -8,9 +8,10 @@ import {
 } from "@react-google-maps/api";
 import Header from "../../components/header";
 import Footer from "../../components/Footer";
-import logo from "../../assets/logo.png"; 
+import logo from "../../assets/logo.png";
 import { FaStar } from "react-icons/fa";
 import toast from "react-hot-toast";
+import api from "../../api/api";
 
 const containerStyle = {
   width: "100%",
@@ -46,17 +47,30 @@ export default function ContactUs() {
     setFormData({ ...formData, rating: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success("Your message has been submitted!");
-    setFormData({
-      name: "",
-      email: "",
-      category: "Complaint",
-      message: "",
-      complainAgainst: "",
-      rating: 0
-    });
+
+    try {
+      const response = await api.post('/feedback', formData); 
+
+      if (response.status === 201) {
+        toast.success("Your feedback has been submitted successfully!");
+        setFormData({
+          name: "",
+          email: "",
+          category: "Complaint",
+          message: "",
+          complainAgainst: "",
+          rating: 0
+        });
+      } else {
+        const errorData = response.data; 
+        toast.error(errorData?.error || "Failed to submit your feedback. Please try again.");
+      }
+    } catch (error) {
+      console.error('There was an error submitting the feedback:', error);
+      toast.error("An unexpected error occurred. Please try again later.");
+    }
   };
 
   return (
@@ -185,7 +199,7 @@ export default function ContactUs() {
                     <span
                       key={star}
                       onClick={() => handleRating(star)}
-                      className={`cursor-pointer  text-3xl ${
+                      className={`cursor-pointer  text-3xl ${
                         formData.rating >= star
                           ? "text-yellow-400"
                           : "text-gray-300"
@@ -236,7 +250,7 @@ export default function ContactUs() {
                           <img
                             src={logo}
                             alt="SewaGuru Logo"
-                            className="w-30  mx-auto mb-2"
+                            className="w-30  mx-auto mb-2"
                           />
                           <p className="font-semibold">SewaGuru Headquarters</p>
                           <p className="text-gray-600 text-xs">

@@ -4,9 +4,14 @@ import {
     getSubscriptionById,
     getSubscriptionsByUser,
     updateSubscription,
-    deleteSubscription
-} from '../controllers/subscriptionController.js'; // Updated import path
+    deleteSubscription,
+    getAllActiveSubscriptions,
+    getSubscriptionCount
+} from '../controllers/subscriptionController.js'; 
 import { authenticate } from '../middleware/auth.js';
+import { adminOnly } from '../middleware/accessLevel.js';
+
+
 
 const router = express.Router();
 
@@ -19,10 +24,15 @@ router.get('/:id', getSubscriptionById);
 // Route to get all subscriptions for a specific user
 router.get('/user/:customerId', getSubscriptionsByUser);
 
-// Route to update a subscription by ID
+// Route to update a subscription by IDrs
 router.put('/:id', updateSubscription);
 
 // Route to delete a subscription by ID
 router.delete('/:id', deleteSubscription);
+
+router.get('/admin/active', authenticate, adminOnly, getAllActiveSubscriptions);
+
+router.get('/admin/count', authenticate, adminOnly, getSubscriptionCount);
+
 
 export default router; 

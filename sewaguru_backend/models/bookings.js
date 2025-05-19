@@ -37,7 +37,7 @@ const bookingSchema = new mongoose.Schema({
     complexity: {
     type: String,
     enum: ['Simple', 'Moderate', 'Complex'],
-    default: 'Simple'
+    default: 'Simple' 
     },
   description: {
     type: String

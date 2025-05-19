@@ -9,6 +9,8 @@ dotenv.config();
 import userRouter from './routes/userRouter.js';
 import bookingRouter from './routes/bookingRouter.js';
 import subscriptionRouter from './routes/subscriptionRouter.js';
+import feedbackRouter from './routes/feedbackRouter.js';
+import paymentRoutes from './paymentRoutes.js';
 
 
 const app = express();
@@ -19,7 +21,6 @@ app.use(cors({
 }));
 
 
-//use the body parser middleware
 //BodyParser is used to simplify the process of parsing the body of an HTTP request
 app.use(bodyParser.json());
 
@@ -39,10 +40,14 @@ mongoose.connect(process.env.MONGO).then(
 app.use("/api/user", userRouter)
 app.use("/api/bookings", bookingRouter)
 app.use("/api/subscriptions", subscriptionRouter)
+app.use("/api/feedback", feedbackRouter)
 
+
+app.use("/api/payment", paymentRoutes);
 
 
 // -------------------------------------------
+
 
 // Declare port
 const PORT = process.env.PORT || 5001;

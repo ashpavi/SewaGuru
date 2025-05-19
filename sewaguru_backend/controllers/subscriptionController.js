@@ -1,4 +1,4 @@
-import subscription from '../models/subscription.js';
+import Subscription from '../models/subscription.js';
 import User from '../models/user.js'; // Assuming your User model path
 import { calculateNextBillingDate } from '../utils/billing.js'; // Optional utility
 
@@ -31,12 +31,11 @@ export const createSubscription = async (req, res) => {
             endDate.setMonth(endDate.getMonth() + subscriptionDurationMonths);
         }
 
-        const newSubscription = new subscription({
+        const newSubscription = new Subscription({
             customerId,
-            customerName,        // Take from form data
-            customerContact,     // Take from form data
-            customerAddress,     // Take from form data
-            planType,
+            customerName,       
+            customerContact,     
+            customerAddress,     
             startDate,
             endDate,
             nextBillingDate,
@@ -57,7 +56,7 @@ export const createSubscription = async (req, res) => {
 export const getSubscriptionById = async (req, res) => {
     try {
         const subscriptionId = req.params.id;
-        const subscription = await subscription.findById(subscriptionId).populate('customerId', 'firstName lastName email');
+        const subscription = await Subscription.findById(subscriptionId).populate('customerId', 'firstName lastName email');
         if (!subscription) {
             return res.status(404).json({ message: 'Subscription not found.' });
         }
@@ -72,7 +71,7 @@ export const getSubscriptionById = async (req, res) => {
 export const getSubscriptionsByUser = async (req, res) => {
     try {
         const customerId = req.params.customerId;
-        const subscriptions = await subscription.find({ customerId }).populate('customerId', 'firstName lastName email');
+        const subscriptions = await Subscription.find({ customerId }).populate('customerId', 'firstName lastName email');
         res.status(200).json(subscriptions);
     } catch (error) {
         console.error('Error getting user subscriptions:', error);
@@ -91,7 +90,7 @@ export const updateSubscription = async (req, res) => {
             return res.status(400).json({ message: 'Cannot update billing cycle or payment method.' });
         }
 
-        const updatedSubscription = await subscription.findByIdAndUpdate(subscriptionId, updates, { new: true });
+        const updatedSubscription = await Subscription.findByIdAndUpdate(subscriptionId, updates, { new: true });
         if (!updatedSubscription) {
             return res.status(404).json({ message: 'Subscription not found.' });
         }
@@ -106,7 +105,7 @@ export const updateSubscription = async (req, res) => {
 export const deleteSubscription = async (req, res) => {
     try {
         const subscriptionId = req.params.id;
-        const deletedSubscription = await subscription.findByIdAndDelete(subscriptionId);
+        const deletedSubscription = await Subscription.findByIdAndDelete(subscriptionId);
         if (!deletedSubscription) {
             return res.status(404).json({ message: 'Subscription not found.' });
         }
@@ -121,7 +120,7 @@ export const deleteSubscription = async (req, res) => {
 export const processMonthlyBilling = async () => {
     try {
         const today = new Date();
-        const subscriptionsDue = await subscription.find({
+        const subscriptionsDue = await Subscription.find({
             nextBillingDate: { $lte: today },
             subscriptionStatus: 'active',
             paymentStatus: { $ne: 'paid' } // Avoid double charging if something went wrong
@@ -162,5 +161,32 @@ export const processMonthlyBilling = async () => {
         }
     } catch (error) {
         console.error('Error processing monthly billing:', error);
+    }
+};
+
+export const getAllActiveSubscriptions = async (req, res) => {
+    try {
+        const today = new Date();
+        const activeSubscriptions = await Subscription.find({
+            $or: [
+                { endDate: { $gt: today } }, // endDate is in the future
+                { endDate: null }             // No end date (ongoing)
+            ],
+            paymentStatus: 'paid'
+        }).populate('customerId', 'firstName lastName email'); // Populate customer details
+        res.status(200).json(activeSubscriptions);
+    } catch (error) {
+        console.error('Error getting all active subscriptions:', error);
+        res.status(500).json({ message: 'Failed to get active subscriptions.', error: error.message });
+    }
+};
+
+export const getSubscriptionCount = async (req, res) => {
+    try {
+        const subscriptionCount = await Subscription.countDocuments();
+        res.status(200).json({ count: subscriptionCount });
+    } catch (error) {
+        console.error('Error getting subscription count:', error);
+        res.status(500).json({ message: 'Failed to get subscription count.', error: error.message });
     }
 };

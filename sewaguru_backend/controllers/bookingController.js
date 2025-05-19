@@ -34,9 +34,18 @@ export const updateBookingStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
+        const providerId = req.user._id; // Get the ID of the logged-in provider
 
-        const booking = await Booking.findByIdAndUpdate(id, { status }, { new: true });
+        const booking = await Booking.findById(id);
         if (!booking) return res.status(404).json({ msg: 'Booking not found' });
+
+        // Ensure the logged-in provider is the recipient of this booking
+        if (booking.providerId.toString() !== providerId.toString()) {
+            return res.status(403).json({ msg: 'Unauthorized to update this booking' });
+        }
+
+        booking.status = status;
+        await booking.save();
 
         res.json({ msg: 'Booking status updated', booking });
     } catch (err) {
@@ -70,3 +79,14 @@ export const getBookingsByUser = async (req, res) => {
         res.status(500).json({ message: 'Failed to get bookings by user.', error: error.message });
     }
 };
+export const getProviderBookings = async (req, res) => {
+    const providerId = req.user._id; // Assuming provider's ID is in the authenticated user object
+    try {
+        const bookings = await Booking.find({ providerId: providerId })
+            .populate('customerId', 'firstName lastName'); // Populate customer details
+        res.status(200).json(bookings);
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error', error: err.message });
+    }
+};
+

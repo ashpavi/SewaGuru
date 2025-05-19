@@ -1,6 +1,6 @@
 import express from "express";
 import { test } from '../controllers/test.js';
-import { createAdmin, getAll, getLoggedInUser, googleLogin, login, logout, refreshToken, register, toggleUserStatus, updateUser, upgradeToProvider } from "../controllers/userController.js";
+import { createAdmin, getAll, getCustomerCount, getLoggedInUser, getProviderCount, googleLogin, login, logout, refreshToken, register, toggleUserStatus, updateUser, upgradeToProvider } from "../controllers/userController.js";
 import { adminOnly, customerOnly } from '../middleware/accessLevel.js';
 import { authenticate } from '../middleware/auth.js';
 import { upload } from "../middleware/fileHandler.js";
@@ -17,6 +17,9 @@ router.post("/google", googleLogin);
 router.post('/refresh', refreshToken);
 router.post('/logout', authenticate, logout);
 router.patch('/status/:status/:userId', authenticate, adminOnly, toggleUserStatus);
+
+router.get('/admin/customers/count', authenticate, adminOnly, getCustomerCount);
+router.get('/admin/providers/count', authenticate, adminOnly, getProviderCount);
 
 router.post('/register', upload.fields([
   { name: 'nicImages', maxCount: 2 },

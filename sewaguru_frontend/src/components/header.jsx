@@ -6,7 +6,7 @@ import { getToken, isTokenExpired } from "../utils/auth";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [firstLetter, setFirstLetter] = useState("U");
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ export default function Header() {
     if (!isTokenExpired()) {
       setIsLoggedIn(true);
       try {
-        const decoded = jwtDecode(getToken);
+        const decoded = jwtDecode(getToken());
         const userFirstName = decoded.firstName || "U";
         setFirstLetter(userFirstName.charAt(0).toUpperCase());
       } catch (err) {

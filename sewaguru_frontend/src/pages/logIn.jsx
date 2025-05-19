@@ -75,7 +75,7 @@ export default function LogIn() {
 
 
         if (userrole === "admin") {
-          navigate("/admin/adminDashboard");
+          navigate("/admin/dashboard");
         } else if (userrole === "provider") {
           navigate("/provider/providerDashboard");
         } else {

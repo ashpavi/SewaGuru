@@ -524,3 +524,23 @@ export const toggleUserStatus = async (req, res) => {
         res.status(500).json({ msg: 'Server error', error: err.message });
     }
 };
+
+export const getCustomerCount = async (req, res) => {
+    try {
+        const customerCount = await User.countDocuments({ role: 'customer' });
+        res.status(200).json({ count: customerCount });
+    } catch (error) {
+        console.error('Error getting customer count:', error);
+        res.status(500).json({ message: 'Failed to get customer count.', error: error.message });
+    }
+};
+
+export const getProviderCount = async (req, res) => {
+    try {
+        const providerCount = await User.countDocuments({ role: 'provider' });
+        res.status(200).json({ count: providerCount });
+    } catch (error) {
+        console.error('Error getting provider count:', error);
+        res.status(500).json({ message: 'Failed to get provider count.', error: error.message });
+    }
+};
