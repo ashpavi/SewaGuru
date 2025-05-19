@@ -187,7 +187,7 @@ export default function SubscriptionPlans() {
                 <SubscriptionDetailsModal
                     plan={selectedPlan}
                     onClose={closeModal}
-                    onProceedToPayment={(name, contact, address) => handleConfirmPayment(selectedPlan, name, contact, address)}
+                    onProceedToPayment={(plan, name, contact, address) => handleConfirmPayment(plan, name, contact, address)}
                 />
             )}
 

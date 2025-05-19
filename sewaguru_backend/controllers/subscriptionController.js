@@ -41,7 +41,8 @@ export const createSubscription = async (req, res) => {
             nextBillingDate,
             paymentStatus: 'paid',
             paymentMethod: 'online',
-            transactionId
+            transactionId,
+            planType
         });
 
         const savedSubscription = await newSubscription.save();

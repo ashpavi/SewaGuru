@@ -12,7 +12,7 @@ function SubscriptionDetailsModal({ plan, onClose, onProceedToPayment }) {
     };
 
     const handleConfirmPayment = () => {
-        onProceedToPayment(name, contact, address);
+        onProceedToPayment(plan, name, contact, address);
     };
 
     return (
