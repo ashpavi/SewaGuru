@@ -13,6 +13,9 @@ import AdminServiceProviders from "./admin/serviceProviders";
 import AdminVerifyProviders from "./admin/verifyProviders";
 import Subscription from "./admin/subscriptions";
 import AdminFeedbackDashboard from "./admin/feedback";
+import AdminMessages from "./admin/conversationList";
+import ConversationList from "./admin/conversationList";
+import MessagesView from "./admin/messagesView";
 
 
 export default function AdminPage() {
@@ -36,9 +39,9 @@ export default function AdminPage() {
                 <div className="flex-1 bg-white rounded-lg p-4 overflow-y-auto">
                     <Routes path="/*">
                         <Route path="/dashboard" element={<AdminDashboard />} />
-                        <Route path="/subscriptions" element={<Subscription/>} />
+                        <Route path="/subscriptions" element={<Subscription />} />
                         <Route path="/feedback" element={<AdminFeedbackDashboard />} />
-                        <Route path="/messages" element={<h1>Messages</h1>} />
+                        <Route path="/messages" element={<MessagesView />} />
                         <Route path="/users" element={<AdminRegisteredCustomers />} />
                         <Route path="/serviceProviders" element={<AdminServiceProviders />} />
                         <Route path="/applications" element={<AdminVerifyProviders />} />
