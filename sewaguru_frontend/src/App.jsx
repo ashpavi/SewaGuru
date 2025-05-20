@@ -1,7 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { Toaster } from "react-hot-toast";
+import { Elements } from '@stripe/react-stripe-js'; 
+import { loadStripe } from '@stripe/stripe-js'; 
 
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 import AdminPage from "./pages/adminPage";
 import SignUp from "./pages/signUp";
@@ -22,10 +25,12 @@ import PrivacyPolicyPage from "./pages/client/privacyPolicy";
 import ProfileDashboard from "./pages/client/profileDashboard";
 import SubscriptionPlans from "./pages/client/subscriptionPlans";
 import ProviderHomePage from "./pages/providerHomePage";
+import SubscriptionSuccessPage from "./pages/client/subscriptionSuccessPage";
 
 function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <Elements stripe={stripePromise}>
       <BrowserRouter>
         <Toaster position="top-right" />
 
@@ -38,6 +43,7 @@ function App() {
           <Route path="/client/contactUs" element={<ContactUs />} />
           <Route path="/client/ourServices" element={<OurServices />} />
           <Route path="/client/subscriptionPlans" element={<SubscriptionPlans />} />
+          <Route path="/client/subscriptionSuccessPage" element={<SubscriptionSuccessPage />} />
           <Route path="/client/privacyPolicy" element={<PrivacyPolicyPage />} />
           <Route path="/client/profileDashboard" element={<ProfileDashboard />} />
           <Route path="/provider/providerRegister" element={<ProviderRegister />} />
@@ -55,6 +61,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      </Elements>
     </GoogleOAuthProvider>
   );
 }

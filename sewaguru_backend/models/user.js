@@ -120,7 +120,14 @@ const userSchema = new mongoose.Schema({
         }
     },
     otherSrc: { type: [String] },
-    refreshToken: { type: String }
+    refreshToken: { type: String },
+
+    stripeCustomerId: {
+        type: String,
+        required: false, // It's not required until a user makes a Stripe payment
+        unique: true,
+        sparse: true // Allows multiple null values, but enforces uniqueness for non-null values
+    }
 }, { timestamps: true, versionKey: false });
 
 userSchema.pre('save', async function () {

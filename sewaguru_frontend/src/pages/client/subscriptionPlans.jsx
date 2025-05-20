@@ -1,11 +1,10 @@
 // SubscriptionPlans.jsx
 import { useEffect, useState } from 'react';
-import api from "../../api/api";
+import api from "../../api/api"; // Assuming your axios instance is correctly configured here
 import Footer from '../../components/Footer';
 import Header from '../../components/header';
-import { getToken } from '../../utils/auth';
-import SubscriptionDetailsModal from './subscriptionDetailsModal';
-
+import { getToken } from '../../utils/auth'; // Utility to get JWT token
+import SubscriptionDetailsModal from './subscriptionDetailsModal'; // Corrected capitalization for consistency
 
 const subscriptionPlans = [
     {
@@ -19,11 +18,10 @@ const subscriptionPlans = [
             'Coverage within 20km radius of Colombo',
             'Standard response time for scheduled visits',
             'Applicable for residential properties only',
-
         ],
         conditions: [
             'Visits are for general maintenance and minor repairs. Major repairs may incur additional charges.',
-            'Free emergency visits, not parts.',
+            'Free emergency visits, not parts.', // This condition might contradict "15% discount on emergency calls" in details. Clarify or remove one.
             'Service availability is subject to scheduling and technician availability.',
         ],
         planType: 'Home Essentials Plan' // Add planType to match backend enum
@@ -34,18 +32,16 @@ const subscriptionPlans = [
         image: '/sub1.jpg',
         details: [
             '5 priority visits per month',
-            'Free emergency visits',
+            'Free emergency visits', // This likely refers to the service fee, not parts. Clarify if needed.
             'All-inclusive maintenance coverage (within reasonable limits)',
             'Coverage within 20km radius of Colombo',
             'Priority response time for all service requests',
             'Applicable for residential and small commercial properties',
-
         ],
         conditions: [
             'Visits are for general maintenance and minor repairs. Major repairs may incur additional charges.',
-            'Emergency call discounts apply to the service fee, not parts.',
+            'Emergency call discounts apply to the service fee, not parts.', // This condition contradicts "Free emergency visits" in details. Clarify or remove one.
             'Service availability is subject to scheduling and technician availability.',
-
         ],
         planType: 'Premium Care Plan'
     },
@@ -54,10 +50,63 @@ const subscriptionPlans = [
 export default function SubscriptionPlans() {
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [subscriptionError, setSubscriptionError] = useState('');
+
+    // State to store fetched user data
+    const [userData, setUserData] = useState(null);
+    // State to manage loading of user data
+    const [isUserDataLoading, setIsUserDataLoading] = useState(true);
+    // State to manage error during user data fetch
+    const [userDataError, setUserDataError] = useState(null);
+
+    useEffect(() => {
+        const token = getToken();
+        if (!token) {
+            console.log("No token found. User might need to log in.");
+            setIsUserDataLoading(false); // Stop loading if no token
+            setUserDataError("Please log in to view subscription plans.");
+            // Optionally: navigate('/login'); // Uncomment if you want to redirect
+            return;
+        }
+
+        const fetchUserData = async () => {
+            setIsUserDataLoading(true);
+            setUserDataError(null);
+            try {
+                
+                const response = await api.get("/user", { 
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true // Important if your backend uses session cookies
+                });
+                // Assuming response.data contains user fields like _id, firstName, lastName, contactNumber, address
+                // Adjust these field names based on your actual user model
+                setUserData({
+                    _id: response.data.id,
+                    firstName: response.data.firstName,
+                    lastName: response.data.lastName,
+                    contactNumber: response.data.contactNumber,
+                    address: response.data.address,
+                    // Add any other user data you need
+                });
+                console.log("Fetched User Data:", response.data); // Debugging
+            } catch (error) {
+                console.error("Error fetching user data:", error.response ? error.response.data : error.message);
+                setUserDataError(error.response?.data?.message || 'Failed to load user data. Please try again.');
+                // Handle error (e.g., redirect to login if token is invalid)
+            } finally {
+                setIsUserDataLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     const handleProceedClick = (plan) => {
+        if (!userData) {
+            alert("User data is not loaded. Please ensure you are logged in and refresh the page.");
+            return;
+        }
         setSelectedPlan(plan);
         setIsModalOpen(true);
     };
@@ -65,74 +114,53 @@ export default function SubscriptionPlans() {
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedPlan(null);
-        setSubscriptionError('');
+        // Any other state resets if needed
     };
 
-    const handlePayment = async (customerDetails) => {
-        console.log(customerDetails); // This shows the correct data
-
-        setIsLoading(true);
-        setSubscriptionError('');
-        try {
-            const token = getToken();
-            const response = await api.post(
-                '/subscriptions',
-                {
-                    customerId: customerDetails.userId,     // Include customer ID
-                    planType: customerDetails.plan.planType,
-                    transactionId: `TEMP_${Date.now()}`, // Placeholder transaction ID
-                    customerName: customerDetails.name,     // Include customer name
-                    customerContact: customerDetails.contact, // Include customer contact
-                    customerAddress: customerDetails.address, // Include customer address
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            console.log('Subscription successful:', response.data);
-            setIsLoading(false);
-            closeModal();
-            alert('Subscription successful!');
-        } catch (error) {
-            console.error('Error creating subscription:', error);
-            setIsLoading(false);
-            setSubscriptionError(error.response?.data?.message || 'Failed to create subscription. Please try again.');
-        }
-    };
-
-    // Fetch user data to get the ID
-    const [userData, setUserData] = useState(null);
-    useEffect(() => {
-        const token = getToken();
-        const fetchUserData = async () => {
-            try {
-                const response = await api.get("/user", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setUserData(response.data);
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-                // Handle error (e.g., redirect to login if not authenticated)
-            }
-        };
-
-        fetchUserData();
-    }, []);
-
-    // Render nothing if user data is still loading
-    if (!userData) {
-        return <div>Loading user data...</div>;
+    if (isUserDataLoading) {
+        return (
+            <div className="flex flex-col min-h-screen bg-gray-50">
+                <Header />
+                <main className="flex-grow flex items-center justify-center py-10">
+                    <div>Loading user data...</div>
+                </main>
+                <Footer />
+            </div>
+        );
     }
 
-    const handleConfirmPayment = (plan, name, contact, address) => {
-        // Include the userId in the customer details
-        handlePayment({ plan, name, contact, address, userId: userData.id });
-    };
+    if (userDataError) {
+        return (
+            <div className="flex flex-col min-h-screen bg-gray-50">
+                <Header />
+                <main className="flex-grow flex items-center justify-center py-10">
+                    <div className="text-red-600 font-semibold text-center">
+                        {userDataError}
+                        <p className="mt-2 text-sm text-gray-600">Please try logging in again or contact support.</p>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
+
+    // If userData is null after loading and no error, it means user is not authenticated or data is empty.
+    // This case should ideally be caught by userDataError if `getToken()` fails.
+    // However, if the API returns an empty user object for some reason, this acts as a safeguard.
+    if (!userData || !userData._id) { // Check if _id exists to ensure it's a valid user object
+      return (
+          <div className="flex flex-col min-h-screen bg-gray-50">
+              <Header />
+              <main className="flex-grow flex items-center justify-center py-10">
+                  <div className="text-gray-600 font-semibold text-center">
+                      User data could not be loaded or is incomplete. Please ensure you are logged in.
+                  </div>
+              </main>
+              <Footer />
+          </div>
+      );
+    }
+
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-50">
@@ -183,27 +211,20 @@ export default function SubscriptionPlans() {
             </main>
             <Footer />
 
+            {/* The SubscriptionDetailsModal now contains the entire payment flow */}
             {isModalOpen && selectedPlan && userData && (
                 <SubscriptionDetailsModal
                     plan={selectedPlan}
                     onClose={closeModal}
-                    onProceedToPayment={(plan, name, contact, address) => handleConfirmPayment(plan, name, contact, address)}
+                    // Pass customerData to pre-fill the form in the modal
+                    // Ensure the names match your User model fields from the backend /users/profile endpoint
+                    customerData={{
+                        name: `${userData.firstName || ''} ${userData.lastName || ''}`.trim(),
+                        contact: userData.contactNumber || '', // Assuming your user model has 'contactNumber'
+                        address: userData.address || '',       // Assuming your user model has 'address'
+                        userId: userData._id // Essential: Pass the MongoDB User ID
+                    }}
                 />
-            )}
-
-            {isLoading && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-                    <div className="spinner-border animate-spin text-white w-10 h-10" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            )}
-
-            {subscriptionError && (
-                <div className="fixed bottom-4 left-4 bg-red-200 text-red-700 border border-red-400 p-3 rounded-md shadow-md">
-                    {subscriptionError}
-                    <button onClick={() => setSubscriptionError('')} className="ml-2 font-bold">&times;</button>
-                </div>
             )}
         </div>
     );
