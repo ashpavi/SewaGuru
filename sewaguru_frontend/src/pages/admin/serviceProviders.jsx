@@ -14,6 +14,10 @@ export default function AdminServiceProviders() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState(null);
+  const [message, setMessage] = useState('');
+
   useEffect(() => {
     if (!hasFetched.current) {
       fetchUsers();
@@ -31,6 +35,45 @@ export default function AdminServiceProviders() {
     setModalOpen(false);
     setSelectedUser(null);
   };
+
+  const handleOpenMessageModal = (provider) => {
+    setSelectedProvider(provider);
+    setMessage('');
+    setIsMessageModalOpen(true);
+  };
+
+  const handleCloseMessageModal = () => {
+    setIsMessageModalOpen(false);
+    setSelectedProvider(null);
+  };
+
+  const handleSendMessage = async () => {
+    if (!message.trim()) return toast.error('Please enter a message');
+
+    try {
+      // 1. Create conversation
+      const conversationRes = await api.post('/conversations/create', {
+        userId2: selectedProvider.id,
+      }, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+
+      // 2. Send message
+     await api.post('/messages', {
+        conversationId: conversationRes.data._id,
+        content: message,
+      }, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+
+      toast.success('Message sent!');
+      handleCloseMessageModal();
+    } catch (err) {
+      toast.error('Failed to send message');
+      console.error(err);
+    }
+  };
+
 
 
   const fetchUsers = async () => {
@@ -100,6 +143,7 @@ export default function AdminServiceProviders() {
             disabled={provider.isDisabled}
             onAccept={() => changeUserStatus(provider.id, false)}
             onDeny={() => changeUserStatus(provider.id, true)}
+            onMessage={() => handleOpenMessageModal(provider)}
           />
         ))}
       </ul>
@@ -109,6 +153,37 @@ export default function AdminServiceProviders() {
         onClose={handleCloseModal}
         user={selectedUser}
       />
+
+      {isMessageModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 className="text-lg font-semibold mb-4">
+              Send Message to {selectedProvider?.firstName}
+            </h2>
+            <textarea
+              className="w-full p-2 border rounded resize-none"
+              rows={4}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type your message..."
+            />
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={handleCloseMessageModal}
+                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSendMessage}
+                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,14 +1,19 @@
 // ChatWindow.jsx
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { socket } from './socket';
+import api from '../../api/api';
+import { socket } from '../../utils/socket';
+import { getToken } from '../../utils/auth';
 
 const ChatWindow = ({ conversationId, userId }) => {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
 
   useEffect(() => {
-    axios.get(`/api/messages/${conversationId}`).then((res) => {
+    api.get(`/messages/${conversationId}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    }).then((res) => {
       setMessages(res.data);
     });
 
@@ -33,11 +38,13 @@ const ChatWindow = ({ conversationId, userId }) => {
   return (
     <div>
       <div style={{ height: '300px', overflowY: 'scroll' }}>
-        {messages.map((m, i) => (
-          <div key={i}>
-            <b>{m.senderId}:</b> {m.text}
-          </div>
-        ))}
+        {messages.map((m, i) => {
+          return (
+            <div key={i}>
+              <b>{m.sender?.name || 'Unknown'}:</b> {m.text}
+            </div>
+          );
+        })}
       </div>
       <input
         value={text}

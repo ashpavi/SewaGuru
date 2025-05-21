@@ -7,15 +7,14 @@ import { ImProfile } from "react-icons/im";
 import { Link, Route, Routes } from "react-router-dom";
 
 import AdminHeader from "../components/adminHeader";
+import { getUser } from "../utils/auth";
 import AdminDashboard from "./admin/dashboard";
+import AdminFeedbackDashboard from "./admin/feedback";
+import MessagesView from "./admin/messagesView";
 import AdminRegisteredCustomers from "./admin/registeredCustomers";
 import AdminServiceProviders from "./admin/serviceProviders";
-import AdminVerifyProviders from "./admin/verifyProviders";
 import Subscription from "./admin/subscriptions";
-import AdminFeedbackDashboard from "./admin/feedback";
-import AdminMessages from "./admin/conversationList";
-import ConversationList from "./admin/conversationList";
-import MessagesView from "./admin/messagesView";
+import AdminVerifyProviders from "./admin/verifyProviders";
 
 
 export default function AdminPage() {
@@ -41,7 +40,7 @@ export default function AdminPage() {
                         <Route path="/dashboard" element={<AdminDashboard />} />
                         <Route path="/subscriptions" element={<Subscription />} />
                         <Route path="/feedback" element={<AdminFeedbackDashboard />} />
-                        <Route path="/messages" element={<MessagesView />} />
+                        <Route path="/messages" element={<MessagesView userId={getUser().id} />} />
                         <Route path="/users" element={<AdminRegisteredCustomers />} />
                         <Route path="/serviceProviders" element={<AdminServiceProviders />} />
                         <Route path="/applications" element={<AdminVerifyProviders />} />
