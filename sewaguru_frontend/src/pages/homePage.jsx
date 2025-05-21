@@ -176,12 +176,7 @@ export default function HomePage() {
                                 >
                                     <FaPhoneAlt /> <span>+94 77 111 4444</span>
                                 </a>
-                                <button
-                                    onClick={() => setIsOpen(true)}
-                                    className="bg-red-600 px-5 py-2 rounded-md hover:bg-red-700 transition"
-                                >
-                                    Request Emergency Help
-                                </button>
+                                
                             </div>
                             <p className="text-sm text-gray-600 pt-2">
                                 We're available in Homagama and nearby towns.

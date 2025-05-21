@@ -139,7 +139,7 @@ export default function ProviderRegister() {
         }
       } catch (err) {
         console.error("Error loading user data:", err);
-        toast.error("Failed to load user data. Please try again.");
+        
       } finally {
         setLoading(false);
       }
