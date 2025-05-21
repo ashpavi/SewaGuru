@@ -16,6 +16,8 @@ import conversationRouter from './routes/conversationRouter.js';
 import feedbackRouter from './routes/feedbackRouter.js';
 import subscriptionRouter from './routes/subscriptionRouter.js';
 import userRouter from './routes/userRouter.js';
+import messageRouter from './routes/messageRouter.js';
+import message from './models/message.js';
 
 
 const app = express();
@@ -23,6 +25,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
     cors: { origin: '*' },
 });
+
+app.set('io', io); // Set the io instance in the app
 
 app.use(cors({
     origin: 'http://localhost:5173', // frontend address
@@ -52,7 +56,7 @@ app.use("/api/subscriptions", subscriptionRouter)
 app.use("/api/feedback", feedbackRouter)
 app.use("/api/payment", paymentRoutes);
 app.use("/api/conversations", conversationRouter);
-
+app.use("/api/messages", messageRouter);
 
 // -------------------------------------------
 
@@ -78,15 +82,25 @@ io.on('connection', (socket) => {
     socket.on('send_message', async (data) => {
         const { conversationId, senderId, text } = data;
 
-        const message = new message({ conversationId, senderId, text });
-        await message.save();
+        try {
+            // Save the message
+            const messageData = await message.create({ conversationId, senderId, text });
 
-        await conversation.findByIdAndUpdate(conversationId, {
-            lastUpdated: new Date(),
-        });
+            // Update conversation's lastUpdated timestamp
+            await conversation.findByIdAndUpdate(conversationId, {
+                lastUpdated: new Date(),
+            });
 
-        io.to(conversationId).emit('receive_message', message);
+            // Populate sender name before emitting
+            const populatedMessage = await messageData.populate('senderId', 'firstName lastName role');
+
+            // Emit to room
+            io.to(conversationId).emit('receive_message', populatedMessage);
+        } catch (err) {
+            console.error('Error in send_message socket handler:', err);
+        }
     });
+
 
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);

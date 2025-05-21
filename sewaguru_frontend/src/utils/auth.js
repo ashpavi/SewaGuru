@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 export const getToken = () => localStorage.getItem("accessToken");
 
 export const getUser = () => {
-  const token = getToken();
+  const token = isTokenExpired() ? null : getToken();
   return token ? jwtDecode(token) : null;
 };
 

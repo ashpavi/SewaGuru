@@ -18,11 +18,14 @@ const ConversationList = ({ userId, onSelect }) => {
 
     return (
         <div>
-            {conversations.map((conv) => (
-                <div key={conv._id} onClick={() => onSelect(conv._id)}>
-                    <strong>Conversation with:</strong> {conv.members.filter(id => id !== userId).join(', ')}
-                </div>
-            ))}
+            {conversations.map((conv) => {
+                console.log(conv);
+                return (
+                    <div key={conv._id} onClick={() => onSelect(conv._id)}>
+                        <strong>{conv.members[1].role}</strong> {conv.members[1].firstName} {conv.members[1].lastName}
+                    </div>
+                );
+            })}
         </div>
     );
 };

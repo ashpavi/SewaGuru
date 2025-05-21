@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-const ListItem = ({ imageUrl, name, registeredOn, onAccept, onDeny, disabled, onClick }) => {
+const ListItem = ({ imageUrl, name, registeredOn, onAccept, onDeny, disabled, onClick, onMessage }) => {
   const formattedDate = format(new Date(registeredOn), 'yyyy-MMM-dd hh:mm:ss a');
 
   // Class names for the ListItem when disabled
@@ -29,7 +29,17 @@ const ListItem = ({ imageUrl, name, registeredOn, onAccept, onDeny, disabled, on
           </p>
         </div>
       </div>
+
       <div className="flex items-center space-x-1">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onMessage(); // Triggers popup
+          }}
+          className="p-2 rounded-full text-sm font-medium text-blue-500 hover:bg-blue-100"
+        >
+          Message
+        </button>
         {disabled !== false && (
           <button
             onClick={(e) => { e.stopPropagation(); onAccept(); }}

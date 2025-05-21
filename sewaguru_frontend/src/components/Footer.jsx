@@ -21,7 +21,7 @@ export default function Footer() {
         <div className="flex-1 px-0 md:px-6 border-b md:border-b-0 md:border-r border-white/20">
           <h3 className="font-semibold mb-3">QUICK LINKS</h3>
           <ul className="space-y-2 text-gray-300">
-            <li><Link to="/" className="hover:text-white">HOME PAGE</Link></li>
+            <li><Link to="/home" className="hover:text-white">HOME PAGE</Link></li>
             <li><Link to="/ourServices" className="hover:text-white">OUR SERVICES</Link></li>
             <li><Link to="/privacyPolicy" className="hover:text-white">PRIVACY POLICY</Link></li>
             <li><Link to="/aboutUs" className="hover:text-white">ABOUT US</Link></li>

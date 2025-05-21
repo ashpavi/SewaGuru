@@ -31,7 +31,7 @@ export default function Header() {
     <header className="w-full h-[70px] bg-[#48B8E3] text-white shadow-md">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 flex items-center justify-between relative">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 flex-shrink-1">
+        <Link to="/home" className="flex items-center gap-2 flex-shrink-1">
           <img src={logo} alt="SewaGuru Logo" className="h-12 w-auto object-contain" />
         </Link>
 
@@ -78,7 +78,7 @@ export default function Header() {
         >
           {/* Navigation */}
           <ul className="flex flex-col md:flex-row gap-3 md:gap-6 text-sm font-medium uppercase w-full md:w-auto">
-            <Link to="/" className="hover:text-[#104DA3]">Home</Link>
+            <Link to="/home" className="hover:text-[#104DA3]">Home</Link>
             <Link to="/client/ourServices" className="hover:text-[#104DA3]">Our Services</Link>
             <Link to="/client/privacyPolicy" className="hover:text-[#104DA3]">Privacy Policy</Link>
             <Link to="/client/aboutUs" className="hover:text-[#104DA3]">About Us</Link>
