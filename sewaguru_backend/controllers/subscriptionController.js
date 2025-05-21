@@ -1,6 +1,6 @@
 import Subscription from '../models/subscription.js';
 import User from '../models/user.js'; // Assuming your User model path
-import { calculateNextBillingDate } from '../utils/billing.js'; // Optional utility
+import { sendSubscriptionConfirmationEmail } from '../utils/emailSender.js';
 
 import Stripe from 'stripe'; 
 import dotenv from 'dotenv';
@@ -57,7 +57,6 @@ export const createSubscription = async (req, res) => {
             const customer = await stripe.customers.create({
                 email: user.email || customerContact,
                 name: customerName,
-                phone: customerContact,
                 address: { line1: customerAddress },
                 metadata: {
                     yourAppUserId: userId.toString(),
@@ -74,7 +73,6 @@ export const createSubscription = async (req, res) => {
                 const customer = await stripe.customers.create({
                     email: user.email || customerContact,
                     name: customerName,
-                    phone: customerContact,
                     address: { line1: customerAddress },
                     metadata: { yourAppUserId: userId.toString() },
                 });
@@ -269,9 +267,34 @@ export const createSubscription = async (req, res) => {
         const savedSubscription = await newSubscription.save();
         console.log('New Subscription saved to DB:', savedSubscription);
 
+        // --- Send Subscription Confirmation Email ---
+        // ONLY send if the payment was successful (not requiring action or failed)
+        if (localPaymentStatus === 'active' && localSubscriptionStatus === 'active') {
+            try {
+                await sendSubscriptionConfirmationEmail(
+                    user.email, // Or customerEmail from req.body if you prefer
+                    {
+                        customerName: customerName,
+                        planType: planType,
+                        startDate: savedSubscription.startDate,
+                        endDate: savedSubscription.endDate,
+                        paymentStatus: savedSubscription.paymentStatus,
+                        customerContact: customerContact,
+                        customerAddress: customerAddress
+                    }
+                );
+            } catch (emailError) {
+                console.error('Error sending subscription confirmation email:', emailError);
+                
+            }
+        }
+
+
         res.status(201).json({ message: 'Subscription created successfully!', subscription: savedSubscription });
 
-    } catch (error) {
+    }   
+
+     catch (error) {
         console.error('Catch-all Error creating Stripe subscription:', error);
         let errorMessage = 'Failed to create Stripe subscription. Please try again.';
         if (error.type === 'StripeCardError') {
@@ -320,6 +343,23 @@ export const confirmSubscriptionPayment = async (req, res) => {
             if (!updatedSubscription) {
                 console.warn(`Subscription with Stripe ID ${stripeSubscriptionId} not found for user ${userId} during confirmation.`);
                 return res.status(404).json({ message: 'Matching subscription not found in your database.' });
+            }
+
+            try {
+                await sendSubscriptionConfirmationEmail(
+                    paymentIntent.receipt_email || user.email, // Use receipt_email from PI if available, else user's email
+                    {
+                        customerName: updatedSubscription.customerName, // From updated subscription
+                        planType: updatedSubscription.planType,
+                        startDate: updatedSubscription.startDate,
+                        endDate: updatedSubscription.endDate,
+                        paymentStatus: updatedSubscription.paymentStatus,
+                        customerContact: updatedSubscription.customerContact,
+                        customerAddress: updatedSubscription.customerAddress
+                    }
+                );
+            } catch (emailError) {
+                console.error('Error sending subscription confirmation email after payment confirmation:', emailError);
             }
 
             res.status(200).json({
@@ -428,18 +468,18 @@ export const deleteSubscription = async (req, res) => {
 };
 
 
-export const getAllActiveSubscriptions = async (req, res) => {
+export const getAllSubscriptions = async (req, res) => {
     try {
-        const today = new Date();
-        const activeSubscriptions = await Subscription.find({
-            status: { $in: ['active', 'trialing'] }, // Check for active or trialing status
-            endDate: { $gt: today } // Ensure the current period hasn't ended
-        }).populate('user', 'firstName lastName email');
 
-        res.status(200).json(activeSubscriptions);
+        const allSubscriptions = await Subscription.find({
+            //  status: { $in: ['active', 'trialing', 'incomplete', 'canceled', 'past_due', 'unpaid'] } // Include all possible statuses or remove this line to fetch all
+        }).populate('user', 'firstName lastName email'); // Populate user details as before
+
+        
+        res.status(200).json(allSubscriptions);
     } catch (error) {
-        console.error('Error getting all active subscriptions:', error);
-        res.status(500).json({ message: 'Failed to get active subscriptions.', error: error.message });
+        console.error('Error getting all subscriptions (admin view):', error);
+        res.status(500).json({ message: 'Failed to get subscriptions for admin view.', error: error.message });
     }
 };
 

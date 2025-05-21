@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true,
-        default: "Not Given"
+        default: "0721555245"
     },
     nic: {
         type: String,

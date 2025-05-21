@@ -6,9 +6,9 @@ import {
     getSubscriptionsByUser,
     updateSubscription,
     deleteSubscription,
-    getAllActiveSubscriptions,
     getSubscriptionCount,
-    confirmSubscriptionPayment 
+    confirmSubscriptionPayment, 
+    getAllSubscriptions
 } from '../controllers/subscriptionController.js';
 import { authenticate } from '../middleware/auth.js'; // Assuming you have this middleware
 import { adminOnly } from '../middleware/accessLevel.js'; // Assuming you have this middleware
@@ -34,10 +34,10 @@ router.get('/user/:userId', authenticate, getSubscriptionsByUser);
 router.put('/:id', authenticate, updateSubscription);
 
 // Route to delete a subscription by ID (requires authentication and typically adminOnly)
-router.delete('/:id', authenticate, adminOnly, deleteSubscription);
+router.delete('/:id', authenticate, deleteSubscription);
 
 // Admin-only routes for active subscriptions and count
-router.get('/admin/active', authenticate, adminOnly, getAllActiveSubscriptions);
+router.get('/admin/all', authenticate, adminOnly, getAllSubscriptions);
 router.get('/admin/count', authenticate, adminOnly, getSubscriptionCount);
 
 export default router;
