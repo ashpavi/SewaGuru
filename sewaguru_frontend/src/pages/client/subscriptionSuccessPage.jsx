@@ -34,7 +34,7 @@ function SubscriptionSuccessPage() {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             
             <Link
-              to="/"
+              to="/home"
               className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out shadow-sm"
             >
               Return to Home

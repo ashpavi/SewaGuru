@@ -40,7 +40,7 @@ export default function LogIn() {
             } else if (userrole === "provider") {
               navigate("/provider/providerDashboard");
             } else {
-              navigate("/");
+              navigate("/home");
             }
             setLoading(false);
           } else {
@@ -79,7 +79,7 @@ export default function LogIn() {
         } else if (userrole === "provider") {
           navigate("/provider/providerDashboard");
         } else {
-          navigate("/");
+          navigate("/home");
         }
       } else {
         toast.error("Login failed: " + response.data.message);
@@ -96,7 +96,7 @@ export default function LogIn() {
       <div className="w-full max-w-md bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl shadow-xl p-10 text-[#1F2937] flex flex-col items-center">
 
         {/* Logo */}
-        <Link to="/" className="mb-6">
+        <Link to="/home" className="mb-6">
           <img
             src={logo}
             alt="SewaGuru Logo"

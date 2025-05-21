@@ -41,7 +41,7 @@ export default function SignUp() {
             } else if (userrole === "provider") {
               navigate("/provider/providerDashboard");
             } else {
-              navigate("/");
+              navigate("/home");
             }
             setLoading(false);
           } else {
@@ -94,7 +94,7 @@ export default function SignUp() {
       <div className="w-full max-w-md bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl shadow-xl px-6 py-8 md:p-10 text-[#1F2937] flex flex-col items-center space-y-4 mt-4 mb-8 sm:my-10">
         
         {/* Logo */}
-        <Link to="/" className="mb-6">
+        <Link to="/home" className="mb-6">
           <img src={logo} alt="SewaGuru Logo" className="h-14 w-auto object-contain" />
         </Link>
 
