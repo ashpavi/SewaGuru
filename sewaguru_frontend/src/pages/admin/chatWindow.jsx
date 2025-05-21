@@ -39,9 +39,10 @@ const ChatWindow = ({ conversationId, userId }) => {
     <div>
       <div style={{ height: '300px', overflowY: 'scroll' }}>
         {messages.map((m, i) => {
+          const name = `${m.senderId?.firstName} ${m.senderId?.lastName}`;
           return (
             <div key={i}>
-              <b>{m.sender?.name || 'Unknown'}:</b> {m.text}
+              <b>{name.trim() || 'Unknown'}:</b> {m.text}
             </div>
           );
         })}

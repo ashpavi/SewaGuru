@@ -33,7 +33,7 @@ export const getMessagesByConversation = async (req, res) => {
 
   try {
     const messages = await Message.find({ conversationId })
-      .populate('senderId', 'name') // get sender name
+      .populate('senderId', 'firstName lastName role')
       .sort({ createdAt: 1 }); // oldest to newest
 
     res.status(200).json(messages);

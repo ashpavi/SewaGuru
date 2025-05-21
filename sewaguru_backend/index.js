@@ -92,7 +92,7 @@ io.on('connection', (socket) => {
             });
 
             // Populate sender name before emitting
-            const populatedMessage = await messageData.populate('senderId', 'name');
+            const populatedMessage = await messageData.populate('senderId', 'firstName lastName role');
 
             // Emit to room
             io.to(conversationId).emit('receive_message', populatedMessage);
