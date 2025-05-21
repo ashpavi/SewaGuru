@@ -179,7 +179,7 @@ export default function HomePage() {
                                 
                             </div>
                             <p className="text-sm text-gray-600 pt-2">
-                                We're available in Homagama and nearby towns.
+                                We're available in Colombo and nearby towns.
                             </p>
                         </div>
                         <div className="flex justify-center w-full max-w-xs">
@@ -230,20 +230,20 @@ export default function HomePage() {
                                 />
                                 <div className="p-6">
                                     <h5 className="text-2xl font-bold mb-3 text-yellow-800">
-                                        {item === 1 ? "Home Essentials Plan - LKR 3,500/month" : "Premium Care Plan - LKR 5,500/month"}
+                                        {item === 1 ? "Home Essentials Plan - LKR 2,500/month" : "Premium Care Plan - LKR 4,500/month"}
                                     </h5>
                                     <ul className="list-disc pl-5 text-gray-700 space-y-1 text-sm mb-5">
                                         {item === 1 ? (
                                             <>
                                                 <li>3 maintenance visits per month</li>
                                                 <li>Plumbing & electrical support</li>
-                                                <li>15% discount on emergency calls</li>
+                                                <li>Applicable for residential properties only</li>
                                             </>
                                         ) : (
                                             <>
                                                 <li>5 priority visits per month</li>
                                                 <li>Free emergency visits</li>
-                                                <li>All-inclusive maintenance coverage</li>
+                                                <li>Applicable for residential and small commercial properties</li>
                                             </>
                                         )}
                                     </ul>

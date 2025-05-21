@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
-import { FaClock, FaUser, FaMapMarkerAlt, FaCalendarAlt, FaTag, FaMoneyBillWave } from "react-icons/fa"; // Added more icons for richer details
-import api from "../../api/api"; // Adjust path as needed
-import { getToken } from "../../utils/auth"; // Adjust path as needed
-import Loader from "../../components/loader"; // Assuming you have a Loader component
+import { FaClock, FaUser, FaMapMarkerAlt, FaCalendarAlt, FaTag, FaMoneyBillWave } from "react-icons/fa"; 
+import api from "../../api/api"; 
+import { getToken } from "../../utils/auth"; 
+import Loader from "../../components/loader"; 
 
 export default function ProviderBookings() {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [acceptedBookings, setAcceptedBookings] = useState([]); // State to hold real accepted bookings
+  const [acceptedBookings, setAcceptedBookings] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -32,9 +32,7 @@ export default function ProviderBookings() {
       }
 
       try {
-        // Fetch all provider bookings, then filter for accepted status
-        // If your backend has a specific endpoint for 'accepted' bookings, use that for efficiency.
-        // e.g., await api.get("/bookings/provider?status=accepted", { headers: { Authorization: `Bearer ${token}` } });
+     
         const response = await api.get("/bookings/provider", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -100,8 +98,7 @@ export default function ProviderBookings() {
     // If the backend returns a full ISO date string, we can extract time from it.
     // Assuming `bookingTime` property exists and is a string, or `bookingDate` can provide it.
     if (timeString) return timeString;
-    // Fallback if bookingTime isn't explicitly provided but is part of bookingDate
-    // This part might need adjustment based on your actual API response structure for time.
+    
     return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
   };
 

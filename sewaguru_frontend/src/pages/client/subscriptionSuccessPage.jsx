@@ -1,8 +1,8 @@
-// src/pages/client/SubscriptionSuccessPage.jsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../../components/header'; // Assuming your header component path
-import Footer from '../../components/Footer'; // Assuming your footer component path
+import Header from '../../components/header'; 
+import Footer from '../../components/Footer'; 
 
 function SubscriptionSuccessPage() {
   return (

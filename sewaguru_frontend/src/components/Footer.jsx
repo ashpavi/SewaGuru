@@ -36,7 +36,7 @@ export default function Footer() {
             <li className="flex items-center gap-2"><FaEnvelope /> sewaguru@gmail.com</li>
             <li className="flex items-center gap-2"><FaGlobe /> www.sewaguru.online.lk</li>
             <li className="flex items-center gap-2"><FaPhoneAlt /> +94 77 002 1234</li>
-            <li className="flex items-center gap-2"><FaMapMarkerAlt /> 126/2A, Main Street, Homagama</li>
+            <li className="flex items-center gap-2"><FaMapMarkerAlt /> No. 123, Main Street, Colombo, Sri Lanka</li>
           </ul>
         </div>
       </div>

@@ -9,7 +9,7 @@ export default function UserBookings() {
     const [activeSubscriptions, setActiveSubscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [userId, setUserId] = useState(null); // Store userId in state
+    const [userId, setUserId] = useState(null); 
 
     useEffect(() => {
         const token = getToken();
