@@ -7,19 +7,23 @@ const MessagesView = ({ userId }) => {
   const [selectedConversationId, setSelectedConversationId] = useState(null);
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div className="flex h-screen font-sans bg-gray-50">
       {/* Left Sidebar: Conversations */}
-      <div style={{ width: '30%', borderRight: '1px solid #ccc', overflowY: 'auto' }}>
-        <h3>Your Conversations</h3>
+      <div className="w-1/3 border-r border-gray-200 overflow-y-auto bg-white shadow-md p-4">
+        <h3 className="pb-4 border-b border-gray-200 mb-4 text-gray-800 text-center text-lg font-semibold">
+          Your Conversations
+        </h3>
         <ConversationList userId={userId} onSelect={setSelectedConversationId} />
       </div>
 
       {/* Right Panel: Chat Window */}
-      <div style={{ flexGrow: 1, padding: '1rem' }}>
+      <div className="flex-grow p-6 bg-blue-50">
         {selectedConversationId ? (
           <ChatWindow conversationId={selectedConversationId} userId={userId} />
         ) : (
-          <div>Select a conversation to view messages</div>
+          <div className="flex justify-center items-center h-full text-gray-600 text-xl text-center">
+            <p>👋 Select a conversation to start chatting!</p>
+          </div>
         )}
       </div>
     </div>
