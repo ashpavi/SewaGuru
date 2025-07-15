@@ -4,13 +4,13 @@ import { toast } from 'react-hot-toast';
 import { getToken } from '../../utils/auth';
 import Loader from '../../components/loader';
 
-// Renamed component for clarity since it will now fetch all subscriptions
+
 const AdminAllSubscriptions = () => {
-    const [subscriptions, setSubscriptions] = useState([]); // Renamed from activeSubscriptions for clarity
+    const [subscriptions, setSubscriptions] = useState([]); 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Helper for consistent date formatting
+    
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         try {
@@ -21,7 +21,7 @@ const AdminAllSubscriptions = () => {
         }
     };
 
-    // Function to fetch subscriptions, wrapped in useCallback
+    
     const fetchSubscriptions = useCallback(async () => {
         setLoading(true);
         setError(null); // Clear previous errors
@@ -34,26 +34,25 @@ const AdminAllSubscriptions = () => {
                 return;
             }
 
-            // Using the existing '/subscriptions/admin/active' route
-            // If you changed the backend route to '/subscriptions/admin/all', update this line
+            
             const response = await api.get('/subscriptions/admin/all', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setSubscriptions(response.data); // Update state with all fetched subscriptions
+            setSubscriptions(response.data); 
         } catch (err) {
             const errorMessage = err.response?.data?.message || 'Failed to fetch subscriptions.';
             setError(errorMessage);
-            toast.error(errorMessage); // Display the actual error message in the toast
+            toast.error(errorMessage); 
         } finally {
-            setLoading(false); // Ensure loading is always set to false
+            setLoading(false); 
         }
-    }, []); // Empty dependency array for useCallback means this function is created once
+    }, []); 
 
     useEffect(() => {
         fetchSubscriptions();
-    }, [fetchSubscriptions]); // Dependency on fetchSubscriptions to re-run if it changes
+    }, [fetchSubscriptions]); 
 
     if (loading) {
         return <Loader />;
@@ -115,7 +114,7 @@ const AdminAllSubscriptions = () => {
                                     <strong>Transaction ID:</strong> {sub.transactionId}
                                 </p>
                             )}
-                            {sub.stripeSubscriptionId && ( // Show Stripe ID for debugging/reference
+                            {sub.stripeSubscriptionId && ( 
                                 <p className="text-gray-700 text-sm">
                                     <strong>Stripe Sub ID:</strong> {sub.stripeSubscriptionId}
                                 </p>

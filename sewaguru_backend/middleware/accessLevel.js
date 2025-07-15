@@ -14,8 +14,7 @@ export const providerOnly = (req, res, next) => {
   next();
 };
 
-//customer only
-// provider only
+
 export const customerOnly = (req, res, next) => {
   if (!req.user || req.user.role !== 'customer') {
     return res.status(403).json({ msg: "Access level 'customer' required" });

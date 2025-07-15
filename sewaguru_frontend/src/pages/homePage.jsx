@@ -1,4 +1,4 @@
-// HomePage.jsx
+
 import { HiSearch } from "react-icons/hi";
 import {
     FaBroom,
@@ -43,7 +43,7 @@ export default function HomePage() {
             const filteredSuggestions = allServicesAndSubservices.filter(item =>
                 item.toLowerCase().includes(searchQuery.toLowerCase())
             );
-            setSuggestions(filteredSuggestions.slice(0, 5)); // Limit to a reasonable number of suggestions
+            setSuggestions(filteredSuggestions.slice(0, 5)); 
         } else {
             setSuggestions([]);
         }
@@ -59,7 +59,7 @@ export default function HomePage() {
 
     const handleSuggestionClick = (suggestion) => {
         setSearchQuery(suggestion);
-        setSuggestions([]); // Clear suggestions after clicking
+        setSuggestions([]); 
         navigate(`/client/ourServices?query=${encodeURIComponent(suggestion.trim())}`);
     };
 

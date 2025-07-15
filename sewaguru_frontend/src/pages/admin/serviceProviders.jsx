@@ -51,14 +51,14 @@ export default function AdminServiceProviders() {
     if (!message.trim()) return toast.error('Please enter a message');
 
     try {
-      // 1. Create conversation
+      
       const conversationRes = await api.post('/conversations/create', {
         userId2: selectedProvider.id,
       }, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
 
-      // 2. Send message
+      
      await api.post('/messages', {
         conversationId: conversationRes.data._id,
         content: message,
@@ -108,7 +108,7 @@ export default function AdminServiceProviders() {
         },
       );
 
-      // Update local state to reflect new status
+      
       setProviderList((prevList) =>
         prevList.map((user) =>
           user.id === id ? { ...user, isDisabled } : user

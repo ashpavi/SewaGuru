@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaBookOpen, FaEnvelope, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-// eslint-disable-next-line no-unused-vars
+
 import { motion } from "framer-motion";
 import api from "../../api/api";
 import Footer from "../../components/Footer";

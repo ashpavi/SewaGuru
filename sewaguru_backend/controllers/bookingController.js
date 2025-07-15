@@ -42,36 +42,32 @@ export const createBooking = async (req, res) => {
             return res.status(404).json({ msg: 'Provider not found.' });
         }
 
-        // Augment bookingData with customerName, customerEmail, and providerName
-        // These fields are needed for the email, and good to have on the booking record
+       
         const augmentedBookingData = {
             ...bookingData,
             customerName: customer.firstName ? `${customer.firstName} ${customer.lastName}` : customer.email,
             customerEmail: customer.email,
-            // providerName will be stored in the booking record as well
+            
             providerName: provider.firstName ? `${provider.firstName} ${provider.lastName}` : provider.email,
-            // If you want customerContact and customerAddress in the email,
-            // they must either be sent from frontend or fetched from the User model
-            // For now, let's assume they come from bookingData or are added to the User model.
-            // If they are on the User model, you'd fetch them like:
+            
             customerContact: customer.contactNumber || bookingData.customerContact || 'N/A', // Assuming 'contactNumber' on User, or from bookingData
             customerAddress: customer.address || bookingData.customerAddress || 'N/A', // Assuming 'address' on User, or from bookingData
         };
 
         const newBooking = new Booking(augmentedBookingData);
-        const savedBooking = await newBooking.save(); // Booking is saved to DB
+        const savedBooking = await newBooking.save(); 
 
-        // --- NOW, SEND THE EMAIL AFTER SUCCESSFUL SAVE ---
+        
         if (customer.email) {
             await sendBookingConfirmationEmail(customer.email, {
                 customerName: augmentedBookingData.customerName,
                 serviceType: savedBooking.serviceType,
                 subService: savedBooking.subService,
-                providerName: augmentedBookingData.providerName, // Use the fetched provider's name
+                providerName: augmentedBookingData.providerName, 
                 bookingDate: savedBooking.bookingDate,
                 status: savedBooking.status,
-                customerAddress: augmentedBookingData.customerAddress, // Use augmented data
-                customerContact: augmentedBookingData.customerContact // Use augmented data
+                customerAddress: augmentedBookingData.customerAddress, 
+                customerContact: augmentedBookingData.customerContact 
             });
         }
         // ------------------------------------------
@@ -129,9 +125,9 @@ export const getBookingsByUser = async (req, res) => {
 
         const bookings = await Booking.find({ customerId: userId })
                                       .populate({
-                                          path: 'providerId', // The field in Booking that references the User model
-                                          model: 'User',      // Explicitly tell Mongoose to populate from the 'User' model
-                                          select: 'firstName lastName' // Select the name fields from the User document
+                                          path: 'providerId', 
+                                          model: 'User',      
+                                          select: 'firstName lastName' 
                                       })
                                       .exec(); // Execute the query
 
@@ -166,7 +162,7 @@ export const getBookingsByUser = async (req, res) => {
             };
         });
 
-        res.status(200).json(formattedBookings); // Send the formatted bookings
+        res.status(200).json(formattedBookings); 
 
     } catch (error) {
         console.error('Error getting bookings by user:', error);
@@ -174,10 +170,10 @@ export const getBookingsByUser = async (req, res) => {
     }
 };
 export const getProviderBookings = async (req, res) => {
-    const providerId = req.user._id; // Assuming provider's ID is in the authenticated user object
+    const providerId = req.user._id; 
     try {
         const bookings = await Booking.find({ providerId: providerId })
-            .populate('customerId', 'firstName lastName'); // Populate customer details
+            .populate('customerId', 'firstName lastName'); 
         res.status(200).json(bookings);
     } catch (err) {
         res.status(500).json({ msg: 'Server error', error: err.message });
@@ -194,15 +190,12 @@ export const deleteBooking = async (req, res) => {
             return res.status(404).json({ msg: 'Booking not found' });
         }
 
-        // Ensure that only the customer who created the booking can delete it
+       
         if (booking.customerId.toString() !== customerId.toString()) {
             return res.status(403).json({ msg: 'Unauthorized to delete this booking' });
         }
 
-        // You might want to add additional logic here:
-        // - Prevent deletion if the booking status is 'accepted' or 'completed'
-        // - Optionally, mark as 'cancelled' instead of completely deleting for audit trails
-        // For now, we'll proceed with direct deletion as requested.
+        
         if (booking.status === 'accepted' || booking.status === 'completed') {
              return res.status(400).json({ msg: 'Cannot delete accepted or completed bookings. Please contact support to cancel.' });
         }

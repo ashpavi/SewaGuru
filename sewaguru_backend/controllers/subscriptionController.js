@@ -1,5 +1,5 @@
 import Subscription from '../models/subscription.js';
-import User from '../models/user.js'; // Assuming your User model path
+import User from '../models/user.js'; 
 import { sendSubscriptionConfirmationEmail } from '../utils/emailSender.js';
 
 import Stripe from 'stripe'; 
@@ -12,9 +12,9 @@ const stripe = new Stripe(process.env.STRIPE_KEY);
 const getStripePriceId = (planType) => {
     switch (planType) {
         case 'Home Essentials Plan':
-            return 'price_1RQq8iD5PuptLcZzJWLMczRj'; // Replace with YOUR Home Essentials Price ID
+            return 'price_1RQq8iD5PuptLcZzJWLMczRj'; 
         case 'Premium Care Plan':
-            return 'price_1RQjOpD5PuptLcZzvvy5Er5z'; // Replace with YOUR Premium Care Price ID
+            return 'price_1RQjOpD5PuptLcZzvvy5Er5z'; 
         default:
             return null;
     }

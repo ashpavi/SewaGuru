@@ -1,10 +1,10 @@
-// OurServices.jsx
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import Header from "../../components/header";
 import Footer from "../../components/Footer";
 import BookingModal from "./bookingModal";
-import serviceData from '../../data/services'; // Import service data
+import serviceData from '../../data/services'; 
 
 export default function OurServices() {
     const [selectedCategory, setSelectedCategory] = useState(Object.keys(serviceData)[0]);
