@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 import { motion } from "framer-motion";
 import api from "../../api/api";
-import Footer from "../../components/Footer";
+import Footer from "../../components/footer";
 import Header from "../../components/header";
 import { getToken } from "../../utils/auth";
 import ProfileDetails from "./profileDetails";
 import UserBookings from "./userBookings";
-import UserMessages from "./UserMessages";
+import UserMessages from "./userMessages";
 
 export default function ProfileDashboard() {
   const navigate = useNavigate();
