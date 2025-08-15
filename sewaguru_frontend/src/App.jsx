@@ -7,7 +7,7 @@ import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 import AdminPage from "./pages/adminPage";
-import SignUp from "./pages/signUp";
+
 
 import HomePage from "./pages/homePage";
 import Testing from "./pages/testing";
@@ -27,6 +27,7 @@ import SubscriptionPlans from "./pages/client/subscriptionPlans";
 import ProviderHomePage from "./pages/providerHomePage";
 import SubscriptionSuccessPage from "./pages/client/subscriptionSuccessPage";
 import InitialRedirect from "./components/initialRoute";
+import SignUp from "./pages/signUp";
 
 function App() {
   return (
