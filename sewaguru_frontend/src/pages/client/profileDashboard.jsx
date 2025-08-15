@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { motion } from "framer-motion";
 import api from "../../api/api";
-import Footer from "../../components/footer";
+import Footer from "../../components/Footer";
 import Header from "../../components/header";
 import { getToken } from "../../utils/auth";
 import ProfileDetails from "./profileDetails";
