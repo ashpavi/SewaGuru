@@ -36,7 +36,7 @@ function App() {
         <BrowserRouter>
           <Toaster position="top-right" />
 
-          <Routes>
+          <Routes> 
             <Route path="/" element={<InitialRedirect />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/forbidden" element={<ForbiddenPage />} />
