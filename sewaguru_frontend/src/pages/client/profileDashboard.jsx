@@ -7,7 +7,7 @@ import api from "../../api/api";
 import Footer from "../../components/Footer";
 import Header from "../../components/header";
 import { getToken } from "../../utils/auth";
-import ProfileDetails from "./ProfileDetails";
+import ProfileDetails from "./profileDetails";
 import UserBookings from "./userBookings";
 import UserMessages from "./UserMessages";
 
