@@ -11,6 +11,7 @@ import AdminPage from "./pages/adminPage";
 
 import HomePage from "./pages/homePage";
 import Testing from "./pages/testing";
+import AboutUsPage from "./pages/client/aboutUs";
 
 import ProtectedRoute from "./components/protectedRoute";
 import ForbiddenPage from "./pages/forbidden";
@@ -18,7 +19,6 @@ import LogIn from "./pages/logIn";
 import ProviderRegister from "./pages/provider/providerRegister";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import NotFoundPage from "./pages/404";
-import AboutUsPage from "./pages/client/AboutUs";
 import ContactUs from "./pages/client/contactUs";
 import OurServices from "./pages/client/ourServices";
 import PrivacyPolicyPage from "./pages/client/privacyPolicy";

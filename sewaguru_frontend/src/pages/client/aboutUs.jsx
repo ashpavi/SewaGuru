@@ -11,7 +11,7 @@ export default function AboutUsPage() {
   return (
     <div className="w-full h-screen bg-white max-h-screen  text-gray-800">
       <Header />
-
+ 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 to-white py-16 px-4 text-center">
         <motion.h1
