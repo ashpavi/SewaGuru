@@ -23,22 +23,19 @@ const app = express();
 // --- CORS: allow prod + localhost -----------------------------------------
 const allowedOrigins = [
   'https://sewa-guru.vercel.app',
-  'https://www.sewa-guru.vercel.app',
-  // Add your preview domains if needed (uncomment to allow all Vercel previews):
-  // /\.vercel\.app$/
-  'http://localhost:5173',
+  'http://localhost:5173'
 ];
 
 const corsOptions = {
   origin(origin, cb) {
-    // allow server-to-server, curl, or same-origin with no Origin header
-    if (!origin) return cb(null, true);
-    const ok = allowedOrigins.some(o => (o instanceof RegExp ? o.test(origin) : o === origin));
-    return ok ? cb(null, true) : cb(new Error('Not allowed by CORS: ' + origin));
+    if (!origin) return cb(null, true); // curl/server-to-server
+    return allowedOrigins.includes(origin)
+      ? cb(null, true)
+      : cb(new Error('Not allowed by CORS: ' + origin));
   },
   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // set to true only if you actually use cookies/auth cross-site
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true, // only true if you actually use cookies/auth cross-site
 };
 
 // Apply CORS **before** anything else that handles requests
@@ -54,12 +51,12 @@ app.use(bodyParser.json());
 
 const server = http.createServer(app);
 
-// Socket.IO must use the same CORS policy (don’t leave as "*")
+
 const io = new Server(server, {
   cors: {
-    origin: (origin, cb) => corsOptions.origin(origin, cb),
+    origin: allowedOrigins,
     methods: ['GET','POST'],
-    credentials: true, // must match how you use cookies with socket.io (ok to keep true)
+    credentials: true,
   },
 });
 
