@@ -1,120 +1,110 @@
-// index.js (minimal production setup)
-import dotenv from "dotenv";
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import http from 'http';
+import mongoose from 'mongoose';
+import { Server } from 'socket.io';
+
 dotenv.config();
 
-import express from "express";
-import http from "http";
-import mongoose from "mongoose";
-import cors from "cors";
-import { Server } from "socket.io";
+import conversation from './models/conversation.js';
+import paymentRoutes from './paymentRoutes.js';
+import bookingRouter from './routes/bookingRouter.js';
+import conversationRouter from './routes/conversationRouter.js';
+import feedbackRouter from './routes/feedbackRouter.js';
+import subscriptionRouter from './routes/subscriptionRouter.js';
+import userRouter from './routes/userRouter.js';
+import messageRouter from './routes/messageRouter.js';
+import message from './models/message.js';
 
-// Models
-import conversation from "./models/conversation.js";
-import message from "./models/message.js";
-
-// Routers
-import paymentRoutes from "./paymentRoutes.js";
-import bookingRouter from "./routes/bookingRouter.js";
-import conversationRouter from "./routes/conversationRouter.js";
-import feedbackRouter from "./routes/feedbackRouter.js";
-import subscriptionRouter from "./routes/subscriptionRouter.js";
-import userRouter from "./routes/userRouter.js";
-import messageRouter from "./routes/messageRouter.js";
-
-// -------------------- App & Server --------------------
 const app = express();
-const server = http.createServer(app);
 
-// Allow only your known frontends (no trailing slash)
+// --- CORS: allow prod + localhost -----------------------------------------
 const allowedOrigins = [
-  "http://localhost:5173",
-  "https://sewa-guru.vercel.app",
+  'https://sewa-guru.vercel.app',
+  'https://www.sewa-guru.vercel.app',
+  // Add your preview domains if needed (uncomment to allow all Vercel previews):
+  // /\.vercel\.app$/
+  'http://localhost:5173',
 ];
 
-// Socket.IO with same CORS as REST
+const corsOptions = {
+  origin(origin, cb) {
+    // allow server-to-server, curl, or same-origin with no Origin header
+    if (!origin) return cb(null, true);
+    const ok = allowedOrigins.some(o => (o instanceof RegExp ? o.test(origin) : o === origin));
+    return ok ? cb(null, true) : cb(new Error('Not allowed by CORS: ' + origin));
+  },
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // set to true only if you actually use cookies/auth cross-site
+};
+
+// Apply CORS **before** anything else that handles requests
+app.use(cors(corsOptions));
+// Make sure preflight OPTIONS are handled
+app.options('*', cors(corsOptions));
+
+// Body parsing
+app.use(bodyParser.json());
+// (or just: app.use(express.json());)
+
+// --------------------------------------------------------------------------
+
+const server = http.createServer(app);
+
+// Socket.IO must use the same CORS policy (don’t leave as "*")
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
-    credentials: true,
+    origin: (origin, cb) => corsOptions.origin(origin, cb),
+    methods: ['GET','POST'],
+    credentials: true, // must match how you use cookies with socket.io (ok to keep true)
   },
 });
 
-// Expose io to routes if you need it
-app.set("io", io);
+app.set('io', io);
 
-// -------------------- Middleware --------------------
-app.set("trust proxy", 1); // good if you ever use cookies behind a proxy
+// DB
+mongoose.connect(process.env.MONGO)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.log('Error connecting to MongoDB: ' + err));
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
+// Routes
+app.use('/api/user', userRouter);
+app.use('/api/bookings', bookingRouter);
+app.use('/api/subscriptions', subscriptionRouter);
+app.use('/api/feedback', feedbackRouter);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/conversations', conversationRouter);
+app.use('/api/messages', messageRouter);
 
-// preflight for all routes (helps with PUT/DELETE, custom headers)
-app.options("*", cors());
-
-app.use(express.json({ limit: "1mb" }));
-app.use(express.urlencoded({ extended: true }));
-
-// -------------------- Database --------------------
-mongoose
-  .connect(process.env.MONGO)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Error connecting to MongoDB:", err));
-
-// -------------------- Routers --------------------
-app.use("/api/user", userRouter);
-app.use("/api/bookings", bookingRouter);
-app.use("/api/subscriptions", subscriptionRouter);
-app.use("/api/feedback", feedbackRouter);
-app.use("/api/payment", paymentRoutes);
-app.use("/api/conversations", conversationRouter);
-app.use("/api/messages", messageRouter);
-
-// -------------------- Socket.IO --------------------
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
-  socket.on("join_conversation", (conversationId) => {
-    socket.join(conversationId);
-  });
-
-  socket.on("send_message", async ({ conversationId, senderId, text }) => {
-    try {
-      const messageData = await message.create({ conversationId, senderId, text });
-
-      await conversation.findByIdAndUpdate(conversationId, {
-        lastUpdated: new Date(),
-      });
-
-      const populatedMessage = await messageData.populate(
-        "senderId",
-        "firstName lastName role"
-      );
-
-      io.to(conversationId).emit("receive_message", populatedMessage);
-    } catch (err) {
-      console.error("send_message error:", err);
-    }
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-  });
-});
-
-// -------------------- Start Server --------------------
+// Server
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });
 
-// -------------------- Safety --------------------
-process.on("unhandledRejection", (reason) => {
-  console.error("Unhandled Rejection:", reason);
-});
-process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
+// Socket.IO
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
+
+  socket.on('join_conversation', (conversationId) => {
+    socket.join(conversationId);
+  });
+
+  socket.on('send_message', async ({ conversationId, senderId, text }) => {
+    try {
+      const messageData = await message.create({ conversationId, senderId, text });
+      await conversation.findByIdAndUpdate(conversationId, { lastUpdated: new Date() });
+      const populatedMessage = await messageData.populate('senderId', 'firstName lastName role');
+      io.to(conversationId).emit('receive_message', populatedMessage);
+    } catch (err) {
+      console.error('Error in send_message socket handler:', err);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
 });
